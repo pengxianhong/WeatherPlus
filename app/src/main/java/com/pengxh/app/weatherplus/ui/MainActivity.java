@@ -2,6 +2,7 @@ package com.pengxh.app.weatherplus.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,6 +64,12 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     TextView mTextViewRealtimePurple;
     @BindView(R.id.mTextView_realtime_dress)
     TextView mTextViewRealtimeDress;
+    @BindView(R.id.mLayout_realtime)
+    LinearLayout mLayoutRealtime;
+    @BindView(R.id.mTextView_realtime_aqi)
+    TextView mTextViewRealtimeAqi;
+    @BindView(R.id.mTextView_realtime_quality)
+    TextView mTextViewRealtimeQuality;
 
     @BindView(R.id.mRecyclerView_hourly)
     RecyclerView mRecyclerViewHourly;
@@ -155,11 +163,16 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
         mTextViewRealtimeWeather.setText(resultBean.getWeather());
         mTextViewRealtimeTemplow.setText(resultBean.getTemplow() + "℃~");
         mTextViewRealtimeTemphigh.setText(resultBean.getTemphigh() + "℃");
-        mTextViewRealtimeUpdate.setText(resultBean.getUpdatetime());
+        String updatetime = resultBean.getUpdatetime();
+        mTextViewRealtimeUpdate.setText(updatetime.substring(5, 16) + "\r\r更新");
 
         mTextViewRealtimeHumidity.setText(resultBean.getHumidity() + "%");
         mTextViewRealtimePurple.setText(resultBean.getIndex().get(2).getDetail());
         mTextViewRealtimeDress.setText(resultBean.getIndex().get(6).getDetail());
+
+        mLayoutRealtime.setBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));
+        mTextViewRealtimeAqi.setText(resultBean.getAqi().getAqi());
+        mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
     }
 
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {

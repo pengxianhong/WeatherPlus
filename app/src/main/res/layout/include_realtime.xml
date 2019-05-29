@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@mipmap/bg_main"
@@ -25,6 +26,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl"
@@ -43,7 +45,7 @@
             android:id="@+id/TextView_realtime_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/mTextView_realtime_date"
             android:text="星期三"
             android:textColor="#fff"
@@ -51,8 +53,44 @@
 
     </RelativeLayout>
 
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/rl2"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="5dp">
+
+        <LinearLayout
+            android:id="@+id/mLayout_realtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/mTextView_realtime_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:text="优"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/mTextView_realtime_aqi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="110"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
     <RelativeLayout
-        android:id="@+id/rl2"
+        android:id="@+id/rl3"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_alignParentEnd="true"
@@ -125,18 +163,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:drawableStart="@mipmap/a301"
             android:gravity="center"
             android:text="05-21 16:05"
             android:textColor="#fff" />
 
     </RelativeLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl2"
+        android:layout_below="@id/rl3"
         android:orientation="vertical"
         android:padding="40dp">
 
