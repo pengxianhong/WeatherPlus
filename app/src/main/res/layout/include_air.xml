@@ -50,11 +50,17 @@
                 android:gravity="center"
                 android:text="污染物" />
 
-            <ListView
-                android:id="@+id/mListView_air_aqi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none" />
+            <include layout="@layout/include_air_pm10"/>
+
+            <include layout="@layout/include_air_pm2_5"/>
+
+            <include layout="@layout/include_air_no2"/>
+
+            <include layout="@layout/include_air_so2"/>
+
+            <include layout="@layout/include_air_o3"/>
+
+            <include layout="@layout/include_air_co"/>
 
         </LinearLayout>
 

@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl3"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginTop="120dp"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/mImageView_realtime_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/a0" />
+
+    <TextView
+        android:id="@+id/mTextView_realtime_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_toStartOf="@id/v"
+        android:text="27°"
+        android:textColor="#fff"
+        android:textSize="45sp" />
+
+    <View
+        android:id="@+id/v"
+        android:layout_width="1dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:background="#fff" />
+
+    <TextView
+        android:id="@+id/mTextView_realtime_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="42dp"
+        android:layout_toEndOf="@id/v"
+        android:text="晴"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/mTextView_realtime_templow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mTextView_realtime_weather"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/v"
+        android:text="12℃~"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/mTextView_realtime_temphigh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mTextView_realtime_weather"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/mTextView_realtime_templow"
+        android:text="30℃"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/mTextView_realtime_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="05-21 16:05"
+        android:textColor="#fff" />
+
+</RelativeLayout>

@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
@@ -79,8 +78,18 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     @BindView(R.id.mTextView_air_aqi)
     TextView mTextViewAirAqi;
-    @BindView(R.id.mListView_air_aqi)
-    ListView mListViewAirAqi;
+    @BindView(R.id.mTextView_air_pm10)
+    TextView mTextViewAirPM10;
+    @BindView(R.id.mTextView_air_pm2_5)
+    TextView mTextViewAirPM2_5;
+    @BindView(R.id.mTextView_air_no2)
+    TextView mTextViewAirNO2;
+    @BindView(R.id.mTextView_air_so2)
+    TextView mTextViewAirSO2;
+    @BindView(R.id.mTextView_air_o3)
+    TextView mTextViewAirO3;
+    @BindView(R.id.mTextView_air_co)
+    TextView mTextViewAirCO;
 
     @BindView(R.id.mFramedGridView_life)
     FramedGridView mFramedGridViewLife;
@@ -193,9 +202,12 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
-//        AqiListViewAdapter adapter = new AqiListViewAdapter(this, aqiBean);
-//        OtherUtil.measureViewHeight(this,mMVPListViewAqi);
-//        mMVPListViewAqi.setAdapter(adapter);
+        mTextViewAirPM10.setText(aqiBean.getPm10());
+        mTextViewAirPM2_5.setText(aqiBean.getPm2_5());
+        mTextViewAirNO2.setText(aqiBean.getNo2());
+        mTextViewAirSO2.setText(aqiBean.getSo2());
+        mTextViewAirO3.setText(aqiBean.getO3());
+        mTextViewAirCO.setText(aqiBean.getCo());
     }
 
     private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
