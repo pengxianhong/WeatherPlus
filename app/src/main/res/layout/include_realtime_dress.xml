@@ -44,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。"
             android:textColor="#fff" />
 
     </LinearLayout>

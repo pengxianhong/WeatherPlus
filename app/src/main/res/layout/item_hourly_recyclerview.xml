@@ -11,8 +11,7 @@
         android:id="@+id/mRecyclerView_hourly_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="09:00" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/mRecyclerView_hourly_weather"
@@ -20,8 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="晴" />
+        android:gravity="center" />
 
     <ImageView
         android:id="@+id/mRecyclerView_hourly_img"
@@ -35,7 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="24°"
         android:textColor="#333" />
 
 </LinearLayout>

@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="2019-05-21"
             android:textColor="#fff"
             android:textSize="18sp" />
 
@@ -28,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
-            android:text="星期二"
             android:textColor="#fff"
             android:textSize="18sp" />
 

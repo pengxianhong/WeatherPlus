@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,14 +30,16 @@ import com.pengxh.app.weatherplus.widgets.FramedGridView;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseNormalActivity implements EasyPermissions.PermissionCallbacks
-        , IWeatherView {
+        , IWeatherView, OnClickListener {
 
     private static final int permissionCode = 999;
     private static final String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE
-            , Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            , Manifest.permission.WRITE_EXTERNAL_STORAGE
+            , Manifest.permission.ACCESS_FINE_LOCATION};
 
     @BindView(R.id.mTextView_realtime_cityName)
     TextView mTextViewRealtimeCityName;
@@ -245,5 +248,19 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     @Override
     public void onRequestPermissionsResult(int i, @NonNull String[] strings, @NonNull int[] ints) {
         Log.e("MainActivity", "onRequestPermissionsResult: " + strings);
+    }
+
+    @OnClick({R.id.mTextView_realtime_cityName})
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mTextView_realtime_cityName:
+
+                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+                break;
+
+            default:
+                break;
+        }
     }
 }

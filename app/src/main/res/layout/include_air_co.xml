@@ -17,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:paddingEnd="15dp"
-        android:text="95" />
+        android:paddingEnd="15dp" />
 
 </RelativeLayout>

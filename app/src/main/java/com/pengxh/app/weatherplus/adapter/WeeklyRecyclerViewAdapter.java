@@ -81,8 +81,8 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
         void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
             mTextView_weekly_date.setText(dailyBean.getDate());
             mTextView_weekly_week.setText(dailyBean.getWeek());
-            float sunrise = Float.parseFloat(dailyBean.getSunrise());
-            float sunset = Float.parseFloat(dailyBean.getSunset());
+            String sunrise = dailyBean.getSunrise();
+            String sunset = dailyBean.getSunset();
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mIncludeImageView_day_img.setImageResource(OtherUtil.getImageResource(mContext, dayBean.getImg()));
