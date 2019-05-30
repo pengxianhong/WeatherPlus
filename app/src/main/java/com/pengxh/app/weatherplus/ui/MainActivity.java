@@ -23,6 +23,7 @@ import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.widgets.DialProgress;
 import com.pengxh.app.weatherplus.widgets.FramedGridView;
 
 import java.util.List;
@@ -78,6 +79,8 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     @BindView(R.id.mTextView_air_aqi)
     TextView mTextViewAirAqi;
+    @BindView(R.id.mDialProgress_air_aqi)
+    DialProgress mDialProgressAirAqi;
     @BindView(R.id.mTextView_air_pm10)
     TextView mTextViewAirPM10;
     @BindView(R.id.mTextView_air_pm2_5)
@@ -202,6 +205,8 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
+        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
+        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
         mTextViewAirPM10.setText(aqiBean.getPm10());
         mTextViewAirPM2_5.setText(aqiBean.getPm2_5());
         mTextViewAirNO2.setText(aqiBean.getNo2());
