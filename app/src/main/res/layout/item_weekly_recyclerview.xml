@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sun="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardCornerRadius="10dp"
@@ -49,7 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/mll"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <View
                 android:layout_width="match_parent"
@@ -71,6 +73,26 @@
                 android:background="#fff" />
 
             <!--自定义控件显示日出日落-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:orientation="vertical">
+
+                <com.pengxh.app.weatherplus.widgets.SunTrailView
+                    android:id="@+id/mSunTrailView_weekly"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    sun:svMainColor="#FE8109"
+                    sun:svPadding="20dp"
+                    sun:svSunColor="#FED300"
+                    sun:svSunRadius="9dp"
+                    sun:svTextOffset="20dp"
+                    sun:svTextSize="10sp"
+                    sun:svTrackColor="#FE8109"
+                    sun:svTrackWidth="1dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

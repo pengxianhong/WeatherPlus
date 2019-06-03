@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.aihook.alertview.library.AlertView;
+import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
@@ -225,10 +227,40 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
         mFramedGridViewLife.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String iname = indexBeanList.get(position).getIname();
                 String detail = indexBeanList.get(position).getDetail();
-                ToastUtil.showBeautifulToast(detail, 3);
+                new AlertView(iname
+                        , detail
+                        , null
+                        , new String[]{"确定"}
+                        , null
+                        , MainActivity.this
+                        , AlertView.Style.Alert
+                        , new AlertViewItemClickListener()).show();
             }
         });
+    }
+
+    class AlertViewItemClickListener implements OnItemClickListener {
+
+        @Override
+        public void onItemClick(Object o, int position) {
+
+        }
+    }
+
+    @OnClick({R.id.mTextView_realtime_cityName})
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mTextView_realtime_cityName:
+
+                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void requirePermissions() {
@@ -248,19 +280,5 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     @Override
     public void onRequestPermissionsResult(int i, @NonNull String[] strings, @NonNull int[] ints) {
         Log.e("MainActivity", "onRequestPermissionsResult: " + strings);
-    }
-
-    @OnClick({R.id.mTextView_realtime_cityName})
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mTextView_realtime_cityName:
-
-                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
-                break;
-
-            default:
-                break;
-        }
     }
 }

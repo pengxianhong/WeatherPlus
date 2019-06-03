@@ -169,7 +169,6 @@ public class DialProgress extends View {
         mValuePaint.setAntiAlias(antiAlias);
         mValuePaint.setTextSize(mValueSize);
         mValuePaint.setColor(mValueColor);
-        mValuePaint.setTypeface(Typeface.DEFAULT_BOLD);
         mValuePaint.setTextAlign(Paint.Align.CENTER);
 
         mUnitPaint = new Paint();
