@@ -2,8 +2,10 @@ package com.pengxh.app.weatherplus.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,6 +41,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
         , IWeatherView, OnClickListener {
 
     private static final int permissionCode = 999;
+    private static final int requestCode = 9999;
     private static final String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE
             , Manifest.permission.WRITE_EXTERNAL_STORAGE
             , Manifest.permission.ACCESS_FINE_LOCATION};
@@ -249,18 +252,27 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
         }
     }
 
-    @OnClick({R.id.mTextView_realtime_cityName})
+    @OnClick({R.id.mTextView_realtime_cityName, R.id.mImageView_realtime_add})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mTextView_realtime_cityName:
-
-                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+                Intent intent = new Intent(this, SelectCityActivity.class);
+                startActivityForResult(intent, requestCode);
+//                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 3);
                 break;
-
+//            case R.id.mImageView_realtime_add:
+//
+//                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+//                break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void requirePermissions() {
