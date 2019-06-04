@@ -70,6 +70,8 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     TextView mTextViewRealtimeHumidity;
     @BindView(R.id.mTextView_realtime_purple)
     TextView mTextViewRealtimePurple;
+    @BindView(R.id.mTextView_realtime_sport)
+    TextView mTextViewRealtimeSport;
     @BindView(R.id.mTextView_realtime_dress)
     TextView mTextViewRealtimeDress;
     @BindView(R.id.mLayout_realtime)
@@ -188,6 +190,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
         mTextViewRealtimeHumidity.setText(resultBean.getHumidity() + "%");
         mTextViewRealtimePurple.setText(resultBean.getIndex().get(2).getDetail());
+        mTextViewRealtimeSport.setText(resultBean.getIndex().get(1).getDetail());
         mTextViewRealtimeDress.setText(resultBean.getIndex().get(6).getDetail());
 
         mLayoutRealtime.setBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));

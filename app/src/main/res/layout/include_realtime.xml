@@ -73,6 +73,8 @@
 
         <include layout="@layout/include_realtime_purple" />
 
+        <include layout="@layout/include_realtime_sport" />
+
         <include layout="@layout/include_realtime_dress" />
 
     </LinearLayout>
