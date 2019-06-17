@@ -38,11 +38,11 @@ public class OtherUtil {
     /**
      * 将城区存到sp
      */
-    public static void saveValues(Context mContext, String time, String district) {
-        if (!district.isEmpty()) {
-            SharedPreferences sp = mContext.getSharedPreferences(time + "_district", MODE_PRIVATE);
+    public static void saveValues(Context mContext, String value) {
+        if (!value.isEmpty()) {
+            SharedPreferences sp = mContext.getSharedPreferences("key", MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
-            editor.putString("District", district);
+            editor.putString("key", value);
             editor.apply();
         } else {
             throw new NullPointerException();
