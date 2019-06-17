@@ -2,11 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pengxh.app.weatherplus">
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 定位 -->
+    <!-- 用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".BaseApplication"
@@ -24,6 +31,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.SelectCityActivity" />
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="61046252ec36679c24db31b6b0a204bf" />
+        <!-- 定位需要的服务 -->
+        <service android:name="com.amap.api.location.APSService" />
+
     </application>
 
 </manifest>

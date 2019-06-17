@@ -94,14 +94,14 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             mSunTrailView_weekly.setCurrentTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
-            mIncludeImageView_day_img.setImageResource(OtherUtil.getImageResource(mContext, dayBean.getImg()));
+            mIncludeImageView_day_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
             mIncludeTextView_day_weather.setText(dayBean.getWeather());
             mIncludeTextView_day_temphigh.setText(dayBean.getTemphigh() + "℃");
             mIncludeTextView_day_winddirect.setText(dayBean.getWinddirect());
             mIncludeTextView_day_windpower.setText(dayBean.getWindpower());
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
-            mIncludeImageView_night_img.setImageResource(OtherUtil.getImageResource(mContext, nightBean.getImg()));
+            mIncludeImageView_night_img.setImageResource(OtherUtil.getImageResource(nightBean.getImg()));
             mIncludeTextView_night_weather.setText(nightBean.getWeather());
             mIncludeTextView_night_templow.setText(nightBean.getTemplow() + "℃");
             mIncludeTextView_night_winddirect.setText(nightBean.getWinddirect());

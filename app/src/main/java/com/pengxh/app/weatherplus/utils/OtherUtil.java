@@ -1,6 +1,7 @@
 package com.pengxh.app.weatherplus.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -8,6 +9,8 @@ import android.widget.ListAdapter;
 
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class OtherUtil {
     /**
@@ -32,7 +35,21 @@ public class OtherUtil {
         view.setLayoutParams(params);
     }
 
-    public static int getImageResource(Context mContext, String imgID) {
+    /**
+     * 将城区存到sp
+     */
+    public static void saveValues(Context mContext, String time, String district) {
+        if (!district.isEmpty()) {
+            SharedPreferences sp = mContext.getSharedPreferences(time + "_district", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("District", district);
+            editor.apply();
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    public static int getImageResource(String imgID) {
         switch (imgID) {
             case "0":
                 return R.mipmap.a0;

@@ -31,20 +31,26 @@ import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
 import com.pengxh.app.weatherplus.widgets.FramedGridView;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends BaseNormalActivity implements EasyPermissions.PermissionCallbacks
-        , IWeatherView, OnClickListener {
+public class MainActivity extends BaseNormalActivity
+        implements EasyPermissions.PermissionCallbacks, IWeatherView, OnClickListener {
 
     private static final int permissionCode = 999;
     private static final int requestCode = 9999;
-    private static final String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE
-            , Manifest.permission.WRITE_EXTERNAL_STORAGE
-            , Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final String[] perms = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @BindView(R.id.mTextView_realtime_cityName)
     TextView mTextViewRealtimeCityName;
@@ -114,7 +120,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     public void initView() {
         setContentView(R.layout.activity_main);
         requirePermissions();
-        //TODO 解决页面太长，ScrollView默认不能置顶的问题
+        // TODO 解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeCityName.setFocusable(true);
         mTextViewRealtimeCityName.setFocusableInTouchMode(true);
         mTextViewRealtimeCityName.requestFocus();
@@ -127,7 +133,12 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     @Override
     public void initEvent() {
-        weatherPresenter.onReadyRetrofitRequest("北京", 1, 101010100);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                weatherPresenter.onReadyRetrofitRequest("北京", 1, 101010100);
+            }
+        }, 0, 10 * 60 * 1000);
     }
 
     @Override
@@ -150,24 +161,27 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     @Override
     public void showNetWorkData(WeatherBean weatherBean) {
         if (weatherBean != null) {
-            //TODO 显示当天的详细天气情况
+            // TODO 显示当天的详细天气情况
             WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
             bindResultData(resultBean);
 
-            //TODO 显示当天24h的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult().getHourly();
+            // TODO 显示当天24h的天气情况
+            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
+                    .getHourly();
             bindHourlyData(hourlyBeanList);
 
-            //TODO 显示一周内的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult().getDaily();
+            // TODO 显示一周内的天气情况
+            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
+                    .getDaily();
             bindDailyData(dailyBeanList);
 
-            //TODO 显示详细空气质量
+            // TODO 显示详细空气质量
             WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
             bindAqiData(aqiBean);
 
-            //TODO 绑定GridView
-            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult().getIndex();
+            // TODO 绑定GridView
+            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
+                    .getIndex();
             bindIndexData(indexBeanList);
         } else {
             ToastUtil.showBeautifulToast("获取数据失败，请重试", 5);
@@ -180,7 +194,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
         mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
         mTextViewRealtimeWeek.setText(resultBean.getWeek());
 
-        mImageViewRealtimeImg.setImageResource(OtherUtil.getImageResource(this, resultBean.getImg()));
+        mImageViewRealtimeImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
         mTextViewRealtimeTemp.setText(resultBean.getTemp() + "°");
         mTextViewRealtimeWeather.setText(resultBean.getWeather());
         mTextViewRealtimeTemplow.setText(resultBean.getTemplow() + "℃~");
@@ -201,7 +215,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
         HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(this, hourlyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);//横向滚动
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
         mRecyclerViewHourly.setLayoutManager(layoutManager);
         mRecyclerViewHourly.setAdapter(adapter);
     }
@@ -209,7 +223,7 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     private void bindDailyData(List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(this, dailyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);//横向滚动
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
         mRecyclerViewWeekly.setLayoutManager(layoutManager);
         mRecyclerViewWeekly.setAdapter(adapter);
     }
@@ -229,20 +243,14 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
     private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(this, indexBeanList);
         mFramedGridViewLife.setAdapter(mGridViewAdapter);
-        OtherUtil.measureViewHeight(this, mFramedGridViewLife);//计算GridView的实际高度
+        OtherUtil.measureViewHeight(this, mFramedGridViewLife);// 计算GridView的实际高度
         mFramedGridViewLife.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String iname = indexBeanList.get(position).getIname();
                 String detail = indexBeanList.get(position).getDetail();
-                new AlertView(iname
-                        , detail
-                        , null
-                        , new String[]{"确定"}
-                        , null
-                        , MainActivity.this
-                        , AlertView.Style.Alert
-                        , new AlertViewItemClickListener()).show();
+                new AlertView(iname, detail, null, new String[]{"确定"}, null, MainActivity.this,
+                        AlertView.Style.Alert, new AlertViewItemClickListener()).show();
             }
         });
     }
@@ -262,12 +270,12 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
             case R.id.mTextView_realtime_cityName:
                 Intent intent = new Intent(this, SelectCityActivity.class);
                 startActivityForResult(intent, requestCode);
-//                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 3);
+                // ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 3);
                 break;
-//            case R.id.mImageView_realtime_add:
-//
-//                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
-//                break;
+            // case R.id.mImageView_realtime_add:
+            //
+            // ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+            // break;
             default:
                 break;
         }
@@ -294,6 +302,6 @@ public class MainActivity extends BaseNormalActivity implements EasyPermissions.
 
     @Override
     public void onRequestPermissionsResult(int i, @NonNull String[] strings, @NonNull int[] ints) {
-        Log.e("MainActivity", "onRequestPermissionsResult: " + strings);
+        Log.e("MainActivity", "onRequestPermissionsResult: " + Arrays.toString(strings));
     }
 }
