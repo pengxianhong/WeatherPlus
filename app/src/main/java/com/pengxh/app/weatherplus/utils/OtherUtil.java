@@ -10,7 +10,14 @@ import android.widget.ListAdapter;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
 
-import static android.content.Context.MODE_PRIVATE;
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class OtherUtil {
     /**
@@ -40,13 +47,47 @@ public class OtherUtil {
      */
     public static void saveValues(Context mContext, String value) {
         if (!value.isEmpty()) {
-            SharedPreferences sp = mContext.getSharedPreferences("key", MODE_PRIVATE);
+            SharedPreferences sp = mContext.getSharedPreferences("key", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
             editor.putString("key", value);
             editor.apply();
         } else {
             throw new NullPointerException();
         }
+    }
+
+    public static void sendHttpRequest(final String address,
+                                       final HttpCallbackListener listener) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                Request request = new Request
+                        .Builder()
+                        .url(address)
+                        .get()
+                        .build();
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        if (listener != null) {
+                            listener.onError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (listener != null) {
+                            /**
+                             * 不能用toString，否则返回的是地址字符串
+                             * */
+                            listener.onFinish(response.body().string());
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     public static int getImageResource(String imgID) {
