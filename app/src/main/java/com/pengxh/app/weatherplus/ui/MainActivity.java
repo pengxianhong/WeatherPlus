@@ -30,6 +30,7 @@ import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
+import com.pengxh.app.weatherplus.service.CityService;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
 import com.pengxh.app.weatherplus.widgets.FramedGridView;
@@ -178,7 +179,11 @@ public class MainActivity extends BaseNormalActivity
         //设置定位回调监听
         mLocationClient.setLocationListener(mLocationListener);
 
+        //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
+
+        //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
+        startBackgroundService();
     }
 
     @Override
@@ -371,5 +376,9 @@ public class MainActivity extends BaseNormalActivity
         super.onDestroy();
         mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
+    }
+
+    private void startBackgroundService() {
+        startService(new Intent(this, CityService.class));
     }
 }

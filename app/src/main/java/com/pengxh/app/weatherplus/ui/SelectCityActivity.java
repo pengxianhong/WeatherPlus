@@ -30,9 +30,15 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     }
 
-    @OnClick()
+    @OnClick(R.id.mImageView_title_back)
     @Override
     public void onClick(View v) {
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //在主线程销毁，直接出栈，返回键不会返回到前一个页面
+                finish();
+            }
+        });
     }
 }
