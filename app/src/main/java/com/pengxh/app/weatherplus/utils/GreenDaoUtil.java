@@ -5,7 +5,6 @@ import com.pengxh.app.weatherplus.bean.CityDaoBean;
 
 public class GreenDaoUtil {
 
-
     public static void saveCityToSQL(String cityid, String parentid, String citycode, String city) {
         CityDaoBean cityDaoBean = new CityDaoBean();
         cityDaoBean.setCityid(cityid);

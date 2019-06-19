@@ -37,8 +37,6 @@ import com.pengxh.app.weatherplus.widgets.FramedGridView;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -203,13 +201,8 @@ public class MainActivity extends BaseNormalActivity
             mLocationClient.startLocation();
         }
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //TODO cityid和citycode还未适配
-                weatherPresenter.onReadyRetrofitRequest(district, 500, 101011700);
-            }
-        }, 0, 10 * 60 * 1000);
+        //TODO cityid和citycode还未适配
+        weatherPresenter.onReadyRetrofitRequest(district, 500, 101011700);
     }
 
     @Override

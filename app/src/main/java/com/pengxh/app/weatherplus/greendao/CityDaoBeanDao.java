@@ -45,10 +45,10 @@ public class CityDaoBeanDao extends AbstractDao<CityDaoBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CITY_DAO_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"CITYID\" TEXT UNIQUE ," + // 1: cityid
-                "\"PARENTID\" TEXT UNIQUE ," + // 2: parentid
-                "\"CITYCODE\" TEXT UNIQUE ," + // 3: citycode
-                "\"CITY\" TEXT UNIQUE );"); // 4: city
+                "\"CITYID\" TEXT," + // 1: cityid
+                "\"PARENTID\" TEXT," + // 2: parentid
+                "\"CITYCODE\" TEXT," + // 3: citycode
+                "\"CITY\" TEXT);"); // 4: city
     }
 
     /** Drops the underlying database table. */
