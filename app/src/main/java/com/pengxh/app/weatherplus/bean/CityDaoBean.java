@@ -3,6 +3,7 @@ package com.pengxh.app.weatherplus.bean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class CityDaoBean {
@@ -10,10 +11,9 @@ public class CityDaoBean {
     @Id(autoincrement = true)
     private Long id;
 
-    /**
-     * @deprecated Unique 该属性值必须在数据库中是唯一值
-     */
+    @Unique
     private String cityid;
+
     private String parentid;
     private String citycode;
     private String city;

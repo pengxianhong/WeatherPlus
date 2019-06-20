@@ -367,6 +367,7 @@ public class MainActivity extends BaseNormalActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        weatherPresenter.onUnsubscribe();
         mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
     }

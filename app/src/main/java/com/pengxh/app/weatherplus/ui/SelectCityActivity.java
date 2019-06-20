@@ -1,5 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +11,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class SelectCityActivity extends BaseNormalActivity implements View.OnClickListener {
+
+    private static final String TAG = "SelectCityActivity";
 
     @BindView(R.id.mTextView_current_location)
     TextView mTextView_current_location;
@@ -22,7 +25,12 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     @Override
     public void init() {
         String district = getIntent().getStringExtra("district");
-        mTextView_current_location.setText(district);
+        Log.d(TAG, "定位点: " + district);
+        if (district.isEmpty()) {
+            mTextView_current_location.setText("定位失败");
+        } else {
+            mTextView_current_location.setText(district);
+        }
     }
 
     @Override
