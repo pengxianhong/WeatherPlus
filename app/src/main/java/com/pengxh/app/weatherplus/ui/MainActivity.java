@@ -2,7 +2,9 @@ package com.pengxh.app.weatherplus.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +47,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends BaseNormalActivity
         implements EasyPermissions.PermissionCallbacks, IWeatherView, OnClickListener {
 
+    private static final String TAG = "MainActivity";
     private static final int permissionCode = 999;
     private static final String[] perms = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -139,7 +142,7 @@ public class MainActivity extends BaseNormalActivity
                     district = aMapLocation.getDistrict();
                     String street = aMapLocation.getStreet();//街道信息
 
-                    Log.d("MainActivity", "当前定位点的详细信息[\r\n" +
+                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
                             "经度：" + longitude + "\r\n" +
                             "纬度：" + latitude + "\r\n" +
                             "地址：" + address + "\r\n" +
@@ -150,7 +153,7 @@ public class MainActivity extends BaseNormalActivity
                             "街道：" + street + "]");
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    Log.e("MainActivity",
+                    Log.e(TAG,
                             "location Error, ErrCode:" + aMapLocation.getErrorCode() +
                                     ", errInfo:" + aMapLocation.getErrorInfo());
                 }
@@ -182,6 +185,21 @@ public class MainActivity extends BaseNormalActivity
 
         //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
         startBackgroundService();
+    }
+
+    /**
+     * 由于数据量较大，所以只加载一次
+     */
+    private void startBackgroundService() {
+        SharedPreferences sp = this.getSharedPreferences("fisrtConfig", Context.MODE_PRIVATE);
+        boolean isFirstRun = sp.getBoolean("isFirstRun", true);
+        SharedPreferences.Editor editor = sp.edit();
+        Log.d(TAG, "startBackgroundService: =====> " + isFirstRun);
+        if (isFirstRun) {
+            editor.putBoolean("isFirstRun", false);
+            editor.apply();
+            startService(new Intent(this, CityService.class));
+        }
     }
 
     @Override
@@ -351,17 +369,17 @@ public class MainActivity extends BaseNormalActivity
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        Log.d("MainActivity", "onPermissionsGranted: " + perms);
+        Log.d(TAG, "onPermissionsGranted: " + perms);
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Log.e("MainActivity", "onPermissionsDenied: " + perms);
+        Log.e(TAG, "onPermissionsDenied: " + perms);
     }
 
     @Override
     public void onRequestPermissionsResult(int i, @NonNull String[] strings, @NonNull int[] ints) {
-        Log.e("MainActivity", "onRequestPermissionsResult: " + Arrays.toString(strings));
+        Log.e(TAG, "onRequestPermissionsResult: " + Arrays.toString(strings));
     }
 
     @Override
@@ -370,9 +388,5 @@ public class MainActivity extends BaseNormalActivity
         weatherPresenter.onUnsubscribe();
         mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
-    }
-
-    private void startBackgroundService() {
-        startService(new Intent(this, CityService.class));
     }
 }

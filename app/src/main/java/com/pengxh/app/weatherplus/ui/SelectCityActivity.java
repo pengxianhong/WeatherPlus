@@ -1,5 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -26,10 +27,10 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     public void init() {
         String district = getIntent().getStringExtra("district");
         Log.d(TAG, "定位点: " + district);
-        if (district.isEmpty()) {
-            mTextView_current_location.setText("定位失败");
-        } else {
+        if (!TextUtils.isEmpty(district)) {
             mTextView_current_location.setText(district);
+        } else {
+            mTextView_current_location.setText("定位失败");
         }
     }
 
