@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pengxh.app.weatherplus.bean.CityBean;
@@ -36,8 +35,11 @@ public class CityService extends Service {
                     String parentid = String.valueOf(result.get(i).getParentid());
                     String citycode = result.get(i).getCitycode();
                     String city = result.get(i).getCity();
-
-                    GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
+                    if (citycode != null) {
+                        if (!citycode.equals("")) {
+                            GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
+                        }
+                    }
                 }
             }
 

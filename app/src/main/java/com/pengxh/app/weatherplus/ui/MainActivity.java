@@ -33,6 +33,7 @@ import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.service.CityService;
+import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
 import com.pengxh.app.weatherplus.widgets.FramedGridView;
@@ -220,6 +221,7 @@ public class MainActivity extends BaseNormalActivity
         }
 
         //TODO cityid和citycode还未适配
+        GreenDaoUtil.queryCity(district);
         weatherPresenter.onReadyRetrofitRequest(district, 500, 101011700);
     }
 
