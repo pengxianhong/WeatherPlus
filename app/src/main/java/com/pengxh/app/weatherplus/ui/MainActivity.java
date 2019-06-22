@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,7 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
+import com.pengxh.app.weatherplus.bean.CityDaoBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
@@ -120,47 +122,11 @@ public class MainActivity extends BaseNormalActivity
 
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
-    private String district;
 
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
-    //声明定位回调监听器
-    public AMapLocationListener mLocationListener = new AMapLocationListener() {
-        @Override
-        public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    //可在其中解析amapLocation获取相应内容。
-                    double longitude = aMapLocation.getLongitude();//获取经度
-                    double latitude = aMapLocation.getLatitude();//获取纬度
-                    String address = aMapLocation.getAddress();//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
-                    String country = aMapLocation.getCountry();//国家信息
-                    String province = aMapLocation.getProvince();//省信息
-                    String city = aMapLocation.getCity();//城市信息
-                    //城区信息
-                    district = aMapLocation.getDistrict();
-                    String street = aMapLocation.getStreet();//街道信息
-
-                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
-                            "经度：" + longitude + "\r\n" +
-                            "纬度：" + latitude + "\r\n" +
-                            "地址：" + address + "\r\n" +
-                            "国家：" + country + "\r\n" +
-                            "省：" + province + "\r\n" +
-                            "城市：" + city + "\r\n" +
-                            "城区：" + district + "\r\n" +
-                            "街道：" + street + "]");
-                } else {
-                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    Log.e(TAG,
-                            "location Error, ErrCode:" + aMapLocation.getErrorCode() +
-                                    ", errInfo:" + aMapLocation.getErrorInfo());
-                }
-            }
-        }
-    };
 
     @Override
     public void initView() {
@@ -180,31 +146,6 @@ public class MainActivity extends BaseNormalActivity
         mLocationOption = new AMapLocationClientOption();
         //设置定位回调监听
         mLocationClient.setLocationListener(mLocationListener);
-
-        //获取天气数据
-        weatherPresenter = new WeatherPresenterImpl(this);
-
-        //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
-        startBackgroundService();
-    }
-
-    /**
-     * 由于数据量较大，所以只加载一次
-     */
-    private void startBackgroundService() {
-        SharedPreferences sp = this.getSharedPreferences("fisrtConfig", Context.MODE_PRIVATE);
-        boolean isFirstRun = sp.getBoolean("isFirstRun", true);
-        SharedPreferences.Editor editor = sp.edit();
-        Log.d(TAG, "startBackgroundService: =====> " + isFirstRun);
-        if (isFirstRun) {
-            editor.putBoolean("isFirstRun", false);
-            editor.apply();
-            startService(new Intent(this, CityService.class));
-        }
-    }
-
-    @Override
-    public void initEvent() {
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
@@ -220,16 +161,87 @@ public class MainActivity extends BaseNormalActivity
             mLocationClient.startLocation();
         }
 
-        //TODO cityid和citycode还未适配
-        GreenDaoUtil.queryCity(district);
-        weatherPresenter.onReadyRetrofitRequest(district, 500, 101011700);
+        //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
+        startBackgroundService();
+    }
+
+    private AMapLocationListener mLocationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (aMapLocation != null) {
+                if (aMapLocation.getErrorCode() == 0) {
+                    //可在其中解析amapLocation获取相应内容。
+                    double longitude = aMapLocation.getLongitude();//获取经度
+                    double latitude = aMapLocation.getLatitude();//获取纬度
+                    String address = aMapLocation.getAddress();//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
+                    String country = aMapLocation.getCountry();//国家信息
+                    String province = aMapLocation.getProvince();//省信息
+                    String city = aMapLocation.getCity();//城市信息
+                    String district = aMapLocation.getDistrict();//城区信息
+                    //由于定位和获取天气网络请求存在时间差，所以，此处需要先存到sp
+                    OtherUtil.saveValue(MainActivity.this, district);
+//                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
+//                            "经度：" + longitude + "\r\n" +
+//                            "纬度：" + latitude + "\r\n" +
+//                            "地址：" + address + "\r\n" +
+//                            "国家：" + country + "\r\n" +
+//                            "省：" + province + "\r\n" +
+//                            "城市：" + city + "\r\n" +
+//                            "城区：" + district + "]");
+                } else {
+                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                    Log.e(TAG,
+                            "location Error, ErrCode:" + aMapLocation.getErrorCode() +
+                                    ", errInfo:" + aMapLocation.getErrorInfo());
+                }
+            }
+        }
+    };
+
+    /**
+     * 由于数据量较大，所以只加载一次
+     */
+    private void startBackgroundService() {
+        SharedPreferences sp = this.getSharedPreferences("fisrtConfig", Context.MODE_PRIVATE);
+        boolean isFirstRun = sp.getBoolean("isFirstRun", true);
+        SharedPreferences.Editor editor = sp.edit();
+        Log.d(TAG, "startBackgroundService: isFirstRun =====> " + isFirstRun);
+        if (isFirstRun) {
+            editor.putBoolean("isFirstRun", false);
+            editor.apply();
+            startService(new Intent(this, CityService.class));
+        }
+    }
+
+    @Override
+    public void initEvent() {
+        //获取天气数据
+        weatherPresenter = new WeatherPresenterImpl(this);
+        String district = OtherUtil.getValue(this, "district");
+        Log.d(TAG, "从sp中获取到定位点: " + district);
+        if (TextUtils.isEmpty(district)) {
+            ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
+        } else {
+            List<CityDaoBean> cityInfoList = GreenDaoUtil.queryCity(district);
+            Log.d(TAG, "从数据库中获取cityInfoList: " + cityInfoList.size());
+            if (cityInfoList.size() > 0) {
+                Log.d(TAG, "cityInfoList.size(): " + cityInfoList.size());
+                weatherPresenter.onReadyRetrofitRequest(
+                        district,
+                        Integer.parseInt(cityInfoList.get(0).getCityid()),
+                        Integer.parseInt(cityInfoList.get(0).getCitycode())
+                );
+            } else {
+                ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
+            }
+        }
     }
 
     @Override
     public void showProgress() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("正在加载数据...");
+            progressDialog.setMessage("正在加载天气数据...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         }
@@ -353,7 +365,7 @@ public class MainActivity extends BaseNormalActivity
         switch (v.getId()) {
             case R.id.mTextView_realtime_cityName:
                 Intent intent = new Intent(this, SelectCityActivity.class);
-                intent.putExtra("district", district);
+                intent.putExtra("district", OtherUtil.getValue(this, "district"));
                 startActivity(intent);
                 break;
             // case R.id.mImageView_realtime_add:

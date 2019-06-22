@@ -45,15 +45,23 @@ public class OtherUtil {
     /**
      * 将城区存到sp
      */
-    public static void saveValues(Context mContext, String value) {
+    public static void saveValue(Context mContext, String value) {
         if (!value.isEmpty()) {
-            SharedPreferences sp = mContext.getSharedPreferences("key", Context.MODE_PRIVATE);
+            SharedPreferences sp = mContext.getSharedPreferences("district_info", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
-            editor.putString("key", value);
+            editor.putString("district", value);
             editor.apply();
         } else {
             throw new NullPointerException();
         }
+    }
+
+    /**
+     * 将sp取出来
+     */
+    public static String getValue(Context mContext, String key) {
+        SharedPreferences sp = mContext.getSharedPreferences("district_info", Context.MODE_PRIVATE);
+        return sp.getString(key, "");
     }
 
     public static void sendHttpRequest(final String address,
