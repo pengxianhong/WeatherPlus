@@ -15,11 +15,36 @@
             android:id="@+id/mTextView_realtime_cityName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:drawableStart="@drawable/location"
             android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="18sp" />
+            android:singleLine="true"
+            android:textColor="#fff" />
+
+        <RelativeLayout
+            android:id="@+id/rl2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/mTextView_realtime_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/TextView_realtime_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/mTextView_realtime_date"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
 
         <ImageView
             android:id="@+id/mImageView_realtime_add"
@@ -27,34 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:background="@drawable/add"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl"
-        android:layout_marginTop="10dp"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/mTextView_realtime_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/TextView_realtime_week"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/mTextView_realtime_date"
-            android:textColor="#fff"
-            android:textSize="18sp" />
+            android:background="@drawable/add" />
 
     </RelativeLayout>
 

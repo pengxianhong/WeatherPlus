@@ -368,10 +368,9 @@ public class MainActivity extends BaseNormalActivity
                 intent.putExtra("district", OtherUtil.getValue(this, "district"));
                 startActivity(intent);
                 break;
-            // case R.id.mImageView_realtime_add:
-            //
-            // ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
-            // break;
+             case R.id.mImageView_realtime_add:
+                 ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
+                 break;
             default:
                 break;
         }
