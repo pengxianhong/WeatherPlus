@@ -23,7 +23,7 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.SelectCityActivity" />
+        <activity android:name=".ui.MainActivity" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
