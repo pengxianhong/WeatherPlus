@@ -1,12 +1,21 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.bean.CityDaoBean;
+import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -17,6 +26,10 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     @BindView(R.id.mTextView_current_location)
     TextView mTextView_current_location;
+    @BindView(R.id.mAutoCompleteTextView)
+    AutoCompleteTextView mAutoCompleteTextView;
+    @BindView(R.id.mRecyclerView_hot_city)
+    RecyclerView mRecyclerViewHotCity;
 
     @Override
     public void initView() {
@@ -36,7 +49,24 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     @Override
     public void initEvent() {
+        List<CityDaoBean> allCityList = GreenDaoUtil.loadAllCity();
+        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newText = s.toString();
+
+            }
+        });
     }
 
     @OnClick(R.id.mImageView_title_back)
