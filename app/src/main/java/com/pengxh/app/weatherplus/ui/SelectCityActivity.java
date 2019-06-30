@@ -1,7 +1,9 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,10 +11,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
+import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,36 +53,41 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     @Override
     public void initEvent() {
         List<CityNameBean> allCityName = GreenDaoUtil.loadAllCityName();
-//        String[] cityArray = new String[allCityName.size()];
-//
-//        for (int i = 0; i < allCityName.size(); i++) {
-//            String city = allCityName.get(i).getCity();
-//
-//        }
-//        Log.d(TAG, "initEvent: " + Arrays.toString(cityArray));
-
-        String[] test = {"123", "234", "345", "456"};
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, test);
-        mAutoCompleteTextView.setThreshold(1); //设置输入一个字符 提示，默认为2
+        List<String> cities = new ArrayList<>();
+        for (int i = 0; i < allCityName.size(); i++) {
+            String city = allCityName.get(i).getCity();
+            cities.add(city);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                removeDuplicate(cities));
+        mAutoCompleteTextView.setThreshold(1); //设置输入一个字符提示，默认为2
         mAutoCompleteTextView.setAdapter(adapter);
+        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-//        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                String newText = s.toString();
-//
-//            }
-//        });
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newText = s.toString();
+                ToastUtil.showBeautifulToast(newText, ToastUtil.SUCCESS);
+            }
+        });
+    }
+
+    public static List<String> removeDuplicate(List<String> list) {
+        HashSet<String> h = new HashSet<>(list);
+        list.clear();
+        list.addAll(h);
+        return list;
     }
 
     @OnClick(R.id.mImageView_title_back)
