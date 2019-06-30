@@ -22,7 +22,7 @@ public class CityService extends Service {
     }
 
     @Override
-    public int onStartCommand(final Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         OtherUtil.sendHttpRequest(Constant.CITY_URL, new HttpCallbackListener() {
             @Override

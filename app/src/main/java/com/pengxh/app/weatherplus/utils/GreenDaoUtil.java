@@ -2,6 +2,7 @@ package com.pengxh.app.weatherplus.utils;
 
 import com.pengxh.app.weatherplus.BaseApplication;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
+import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.greendao.CityDaoBeanDao;
 
 import java.util.List;
@@ -35,5 +36,21 @@ public class GreenDaoUtil {
      */
     public static List<CityDaoBean> loadAllCity() {
         return BaseApplication.getDaoInstant().getCityDaoBeanDao().loadAll();
+    }
+
+    /**
+     * 从数据库分离出城市名称
+     */
+    public static void saveCityNameToSQL(String city) {
+        CityNameBean nameBean = new CityNameBean();
+        nameBean.setCity(city);
+        BaseApplication.getDaoInstant().getCityNameBeanDao().insert(nameBean);
+    }
+
+    /**
+     * 从数据库加载所有城市信息
+     */
+    public static List<CityNameBean> loadAllCityName() {
+        return BaseApplication.getDaoInstant().getCityNameBeanDao().loadAll();
     }
 }

@@ -1,9 +1,7 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +10,7 @@ import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.CityDaoBean;
+import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 
 import java.util.List;
@@ -49,24 +47,37 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     @Override
     public void initEvent() {
-        List<CityDaoBean> allCityList = GreenDaoUtil.loadAllCity();
-        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        List<CityNameBean> allCityName = GreenDaoUtil.loadAllCityName();
+//        String[] cityArray = new String[allCityName.size()];
+//
+//        for (int i = 0; i < allCityName.size(); i++) {
+//            String city = allCityName.get(i).getCity();
+//
+//        }
+//        Log.d(TAG, "initEvent: " + Arrays.toString(cityArray));
 
-            }
+        String[] test = {"123", "234", "345", "456"};
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, test);
+        mAutoCompleteTextView.setThreshold(1); //设置输入一个字符 提示，默认为2
+        mAutoCompleteTextView.setAdapter(adapter);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String newText = s.toString();
-
-            }
-        });
+//        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                String newText = s.toString();
+//
+//            }
+//        });
     }
 
     @OnClick(R.id.mImageView_title_back)

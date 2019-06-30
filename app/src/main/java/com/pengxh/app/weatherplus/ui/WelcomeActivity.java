@@ -86,20 +86,40 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
             //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
             startService(new Intent(this, CityService.class));
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 5; i >= 0; i--) {
-                    timePikerHandler.sendEmptyMessage(i);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 5; i >= 0; i--) {
+                        timePikerHandler.sendEmptyMessage(i);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            }).start();
+        } else {
+            startHome();
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler timePikerHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                startHome();
             }
-        }).start();
+        }
+    };
+
+    private void startHome() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private AMapLocationListener mLocationListener = new AMapLocationListener() {
@@ -117,33 +137,19 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
                     String district = aMapLocation.getDistrict();//城区信息
                     //由于定位和获取天气网络请求存在时间差，所以，此处需要先存到sp
                     OtherUtil.saveValue(WelcomeActivity.this, district);
-//                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
-//                            "经度：" + longitude + "\r\n" +
-//                            "纬度：" + latitude + "\r\n" +
-//                            "地址：" + address + "\r\n" +
-//                            "国家：" + country + "\r\n" +
-//                            "省：" + province + "\r\n" +
-//                            "城市：" + city + "\r\n" +
-//                            "城区：" + district + "]");
+                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
+                            "经度：" + longitude + "\r\n" +
+                            "纬度：" + latitude + "\r\n" +
+                            "地址：" + address + "\r\n" +
+                            "国家：" + country + "\r\n" +
+                            "省：" + province + "\r\n" +
+                            "城市：" + city + "\r\n" +
+                            "城区：" + district + "]");
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    Log.e(TAG,
-                            "location Error, ErrCode:" + aMapLocation.getErrorCode() +
-                                    ", errInfo:" + aMapLocation.getErrorInfo());
+                    Log.e(TAG, "location Error, ErrCode:" + aMapLocation.getErrorCode() +
+                            ", errInfo:" + aMapLocation.getErrorInfo());
                 }
-            }
-        }
-    };
-
-    @SuppressLint("HandlerLeak")
-    private Handler timePikerHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
             }
         }
     };

@@ -13,9 +13,7 @@ import android.widget.TextView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
-import com.pengxh.app.weatherplus.widgets.SunTrailView;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
@@ -42,7 +40,8 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,
+                                 @SuppressLint("RecyclerView") final int position) {
         WeeklyRecyclerViewHolder itemHolder = (WeeklyRecyclerViewHolder) holder;
         itemHolder.bindHolder(dailyBeanList.get(position));
     }
@@ -51,7 +50,7 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
         private TextView mTextView_weekly_date;
         private TextView mTextView_weekly_week;
-        private SunTrailView mSunTrailView_weekly;
+//        private SunTrailView mSunTrailView_weekly;
 
         private ImageView mIncludeImageView_day_img;
         private TextView mIncludeTextView_day_weather;
@@ -69,7 +68,7 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             super(itemView);
             mTextView_weekly_date = itemView.findViewById(R.id.mTextView_weekly_date);
             mTextView_weekly_week = itemView.findViewById(R.id.mTextView_weekly_week);
-            mSunTrailView_weekly = itemView.findViewById(R.id.mSunTrailView_weekly);
+//            mSunTrailView_weekly = itemView.findViewById(R.id.mSunTrailView_weekly);
             mIncludeImageView_day_img = itemView.findViewById(R.id.mIncludeImageView_day_img);
             mIncludeTextView_day_weather = itemView.findViewById(R.id.mIncludeTextView_day_weather);
             mIncludeTextView_day_temphigh = itemView.findViewById(R.id.mIncludeTextView_day_temphigh);
@@ -85,13 +84,13 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
         void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
             mTextView_weekly_date.setText(dailyBean.getDate());
             mTextView_weekly_week.setText(dailyBean.getWeek());
-            String sunrise = dailyBean.getSunrise();
-            String sunset = dailyBean.getSunset();
 
-            mSunTrailView_weekly.setSunrise(getHours(sunrise), getMinute(sunrise));
-            mSunTrailView_weekly.setSunset(getHours(sunset), getMinute(sunset));
-            Calendar calendar = Calendar.getInstance();
-            mSunTrailView_weekly.setCurrentTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+//            String sunrise = dailyBean.getSunrise();
+//            String sunset = dailyBean.getSunset();
+//            mSunTrailView_weekly.setSunrise(getHours(sunrise), getMinute(sunrise));
+//            mSunTrailView_weekly.setSunset(getHours(sunset), getMinute(sunset));
+//            Calendar calendar = Calendar.getInstance();
+//            mSunTrailView_weekly.setCurrentTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mIncludeImageView_day_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));

@@ -115,7 +115,17 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     @Override
     public void init() {
-
+        //分离城市表
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<CityDaoBean> allCityBeanList = GreenDaoUtil.loadAllCity();
+                for (int i = 0; i < allCityBeanList.size(); i++) {
+                    String city = allCityBeanList.get(i).getCity();
+                    GreenDaoUtil.saveCityNameToSQL(city);
+                }
+            }
+        }).start();
     }
 
     @Override
