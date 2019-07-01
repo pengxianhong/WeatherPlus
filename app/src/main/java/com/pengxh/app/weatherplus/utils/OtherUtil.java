@@ -9,9 +9,11 @@ import android.widget.ListAdapter;
 
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.bean.City;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -73,6 +75,21 @@ public class OtherUtil {
         HashSet<String> set = new HashSet<>(list);
         list.clear();
         list.addAll(set);
+        return list;
+    }
+
+    /**
+     * 保存热门城市信息
+     */
+    public static List<City> saveIntoList(String cityname, String cityid, String citycode) {
+        List<City> list = new LinkedList<>();
+        City city = new City();
+
+        city.setCity(cityname);
+        city.setCityid(cityid);
+        city.setCitycode(citycode);
+
+        list.add(city);
         return list;
     }
 

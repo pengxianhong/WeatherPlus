@@ -1,5 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,8 +12,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
-import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
@@ -78,22 +79,20 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-                final String city = s.toString();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<CityDaoBean> cityBeanList = GreenDaoUtil.queryCity(city);
-                        Log.d(TAG, "从数据库中获取cityBeanList: " + cityBeanList.size());
-                        if (cityBeanList.size() > 0) {
-                            CityDaoBean cityBean = cityBeanList.get(0);
-                            Log.d(TAG, "City: " + cityBean.getCity() +
-                                    "\r\nCitycode: " + cityBean.getCitycode() +
-                                    "\r\nCityid: " + cityBean.getCityid());
-                        } else {
-                            ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
-                        }
-                    }
-                }).start();
+                List<CityDaoBean> cityBeanList = GreenDaoUtil.queryCity(s.toString());
+                Log.d(TAG, "从数据库中获取cityBeanList: " + cityBeanList.size());
+                if (cityBeanList.size() > 0) {
+                    String cityname = cityBeanList.get(0).getCity();
+                    String citycode = cityBeanList.get(0).getCitycode();
+                    String cityid = cityBeanList.get(0).getCityid();
+                    Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
+
+                    HotCityAdapter hotCityAdapter = new HotCityAdapter(SelectCityActivity.this,
+                            OtherUtil.saveIntoList(cityname, cityid, citycode));
+                    hotCityAdapter.notifyDataSetChanged();
+                    mRecyclerViewHotCity.setLayoutManager(new LinearLayoutManager(SelectCityActivity.this));
+                    mRecyclerViewHotCity.setAdapter(hotCityAdapter);
+                }
             }
         });
     }
