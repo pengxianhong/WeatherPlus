@@ -132,23 +132,28 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     public void initEvent() {
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
-        String district = OtherUtil.getValue(this, "district");
+        final String district = OtherUtil.getValue(this, "district");
         Log.d(TAG, "从sp中获取到定位点: " + district);
         if (TextUtils.isEmpty(district)) {
             ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
         } else {
-            List<CityDaoBean> cityInfoList = GreenDaoUtil.queryCity(district);
-            Log.d(TAG, "从数据库中获取cityInfoList: " + cityInfoList.size());
-            if (cityInfoList.size() > 0) {
-                Log.d(TAG, "cityInfoList.size(): " + cityInfoList.size());
-                weatherPresenter.onReadyRetrofitRequest(
-                        district,
-                        Integer.parseInt(cityInfoList.get(0).getCityid()),
-                        Integer.parseInt(cityInfoList.get(0).getCitycode())
-                );
-            } else {
-                ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<CityDaoBean> cityInfoList = GreenDaoUtil.queryCity(district);
+                    Log.d(TAG, "从数据库中获取cityInfoList: " + cityInfoList.size());
+                    if (cityInfoList.size() > 0) {
+                        Log.d(TAG, "cityInfoList.size(): " + cityInfoList.size());
+                        weatherPresenter.onReadyRetrofitRequest(
+                                district,
+                                Integer.parseInt(cityInfoList.get(0).getCityid()),
+                                Integer.parseInt(cityInfoList.get(0).getCitycode())
+                        );
+                    } else {
+                        ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
+                    }
+                }
+            }).start();
         }
     }
 
@@ -274,17 +279,14 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         }
     }
 
-    @OnClick({R.id.mTextView_realtime_cityName, R.id.mImageView_realtime_add})
+    @OnClick(R.id.mImageView_realtime_add)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.mTextView_realtime_cityName:
+            case R.id.mImageView_realtime_add:
                 Intent intent = new Intent(this, SelectCityActivity.class);
                 intent.putExtra("district", OtherUtil.getValue(this, "district"));
                 startActivity(intent);
-                break;
-            case R.id.mImageView_realtime_add:
-                ToastUtil.showBeautifulToast("暂时不提供其他城市天气查询", 2);
                 break;
             default:
                 break;

@@ -13,11 +13,12 @@ import android.widget.TextView;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.bean.CityDaoBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
+import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -61,7 +62,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
-                removeDuplicate(cities));
+                OtherUtil.removeDuplicate(cities));
         mAutoCompleteTextView.setThreshold(1); //设置输入一个字符提示，默认为2
         mAutoCompleteTextView.setAdapter(adapter);
         mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
@@ -77,17 +78,24 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-                String newText = s.toString();
-                ToastUtil.showBeautifulToast(newText, ToastUtil.SUCCESS);
+                final String city = s.toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<CityDaoBean> cityBeanList = GreenDaoUtil.queryCity(city);
+                        Log.d(TAG, "从数据库中获取cityBeanList: " + cityBeanList.size());
+                        if (cityBeanList.size() > 0) {
+                            CityDaoBean cityBean = cityBeanList.get(0);
+                            Log.d(TAG, "City: " + cityBean.getCity() +
+                                    "\r\nCitycode: " + cityBean.getCitycode() +
+                                    "\r\nCityid: " + cityBean.getCityid());
+                        } else {
+                            ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", 5);
+                        }
+                    }
+                }).start();
             }
         });
-    }
-
-    public static List<String> removeDuplicate(List<String> list) {
-        HashSet<String> h = new HashSet<>(list);
-        list.clear();
-        list.addAll(h);
-        return list;
     }
 
     @OnClick(R.id.mImageView_title_back)

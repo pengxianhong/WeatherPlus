@@ -11,6 +11,8 @@ import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -62,6 +64,16 @@ public class OtherUtil {
     public static String getValue(Context mContext, String key) {
         SharedPreferences sp = mContext.getSharedPreferences("district_info", Context.MODE_PRIVATE);
         return sp.getString(key, "");
+    }
+
+    /**
+     * List去重
+     */
+    public static List<String> removeDuplicate(List<String> list) {
+        HashSet<String> set = new HashSet<>(list);
+        list.clear();
+        list.addAll(set);
+        return list;
     }
 
     public static void sendHttpRequest(final String address,
