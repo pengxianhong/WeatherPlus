@@ -23,7 +23,7 @@ import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
-import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
@@ -170,28 +170,28 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     }
 
     @Override
-    public void showNetWorkData(WeatherBean weatherBean) {
+    public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
             // TODO 显示当天的详细天气情况
-            WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
+            NetWeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
             bindResultData(resultBean);
 
             // TODO 显示当天24h的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
+            List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
                     .getHourly();
             bindHourlyData(hourlyBeanList);
 
             // TODO 显示一周内的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
+            List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
                     .getDaily();
             bindDailyData(dailyBeanList);
 
             // TODO 显示详细空气质量
-            WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
+            NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
             bindAqiData(aqiBean);
 
             // TODO 绑定GridView
-            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
+            List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
                     .getIndex();
             bindIndexData(indexBeanList);
         } else {
@@ -199,7 +199,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         }
     }
 
-    private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
+    private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {
         mTextViewRealtimeCityName.setText(resultBean.getCity());
 
         mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
@@ -223,7 +223,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
     }
 
-    private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
+    private void bindHourlyData(List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
         HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(this, hourlyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
@@ -231,7 +231,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         mRecyclerViewHourly.setAdapter(adapter);
     }
 
-    private void bindDailyData(List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
+    private void bindDailyData(List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(this, dailyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
@@ -239,7 +239,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         mRecyclerViewWeekly.setAdapter(adapter);
     }
 
-    private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
+    private void bindAqiData(NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
         mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
         mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
@@ -251,7 +251,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         mTextViewAirCO.setText(aqiBean.getCo());
     }
 
-    private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
+    private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(this, indexBeanList);
         mFramedGridViewLife.setAdapter(mGridViewAdapter);
         OtherUtil.measureViewHeight(this, mFramedGridViewLife);// 计算GridView的实际高度

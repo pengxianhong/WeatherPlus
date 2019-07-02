@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.List;
 public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
-    private List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList;
+    private List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList;
     private LayoutInflater inflater;
 
-    public WeeklyRecyclerViewAdapter(Context mContext, List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
+    public WeeklyRecyclerViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         this.mContext = mContext;
         this.dailyBeanList = dailyBeanList;
         inflater = LayoutInflater.from(mContext);
@@ -81,7 +81,7 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             mIncludeTextView_night_windpower = itemView.findViewById(R.id.mIncludeTextView_night_windpower);
         }
 
-        void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
+        void bindHolder(NetWeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
             mTextView_weekly_date.setText(dailyBean.getDate());
             mTextView_weekly_week.setText(dailyBean.getWeek());
 
@@ -92,14 +92,14 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 //            Calendar calendar = Calendar.getInstance();
 //            mSunTrailView_weekly.setCurrentTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
-            WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
+            NetWeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mIncludeImageView_day_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
             mIncludeTextView_day_weather.setText(dayBean.getWeather());
             mIncludeTextView_day_temphigh.setText(dayBean.getTemphigh() + "℃");
             mIncludeTextView_day_winddirect.setText(dayBean.getWinddirect());
             mIncludeTextView_day_windpower.setText(dayBean.getWindpower());
 
-            WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
+            NetWeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
             mIncludeImageView_night_img.setImageResource(OtherUtil.getImageResource(nightBean.getImg()));
             mIncludeTextView_night_weather.setText(nightBean.getWeather());
             mIncludeTextView_night_templow.setText(nightBean.getTemplow() + "℃");

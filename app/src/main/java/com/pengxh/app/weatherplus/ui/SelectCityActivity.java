@@ -15,7 +15,7 @@ import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
-import com.pengxh.app.weatherplus.bean.CityNameBean;
+import com.pengxh.app.weatherplus.bean.CityNameDaoBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
@@ -40,6 +40,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     AutoCompleteTextView mAutoCompleteTextView;
     @BindView(R.id.mRecyclerView_hot_city)
     RecyclerView mRecyclerViewHotCity;
+    private HotCityAdapter hotCityAdapter;
 
     @Override
     public void initView() {
@@ -62,7 +63,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<CityNameBean> allCityName = GreenDaoUtil.loadAllCityName();
+                List<CityNameDaoBean> allCityName = GreenDaoUtil.loadAllCityName();
                 List<String> cities = new ArrayList<>();
                 for (int i = 0; i < allCityName.size(); i++) {
                     String city = allCityName.get(i).getCity();
@@ -71,6 +72,10 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 EventBus.getDefault().postSticky(new AutoCompleteEvent(cities));
             }
         }).start();
+
+        hotCityAdapter = new HotCityAdapter(this, GreenDaoUtil.loadAllHotCity());
+        mRecyclerViewHotCity.setLayoutManager(new LinearLayoutManager(SelectCityActivity.this));
+        mRecyclerViewHotCity.setAdapter(hotCityAdapter);
     }
 
     @Override
@@ -112,13 +117,11 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                     String cityname = cityBeanList.get(0).getCity();
                     String citycode = cityBeanList.get(0).getCitycode();
                     String cityid = cityBeanList.get(0).getCityid();
-                    Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
+                    Log.d(TAG, "CityInfoDaoBean: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
 
-                    HotCityAdapter hotCityAdapter = new HotCityAdapter(SelectCityActivity.this,
-                            OtherUtil.saveIntoList(cityname, cityid, citycode));
+                    //将查询历史保存到数据库
+                    GreenDaoUtil.saveToSQL(cityname, cityid, citycode);
                     hotCityAdapter.notifyDataSetChanged();
-                    mRecyclerViewHotCity.setLayoutManager(new LinearLayoutManager(SelectCityActivity.this));
-                    mRecyclerViewHotCity.setAdapter(hotCityAdapter);
                 }
             }
         });

@@ -2,7 +2,7 @@ package com.pengxh.app.weatherplus.mvp.retrofit;
 
 import android.util.Log;
 
-import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -47,7 +47,7 @@ public class RetrofitServiceManager {
      * @param citycode
      * @return
      */
-    public static Observable<WeatherBean> getWeatherData(String baseUrl, String city, int cityid, int citycode) {
+    public static Observable<NetWeatherBean> getWeatherData(String baseUrl, String city, int cityid, int citycode) {
         Retrofit retrofit = createRetrofit(baseUrl);
         RetrofitService service = retrofit.create(RetrofitService.class);
         return service.getData(city, cityid, citycode);

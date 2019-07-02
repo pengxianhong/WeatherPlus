@@ -2,7 +2,7 @@ package com.pengxh.app.weatherplus.bean;
 
 import java.util.List;
 
-public class WeatherBean {
+public class NetWeatherBean {
 
     /**
      * code : 10000

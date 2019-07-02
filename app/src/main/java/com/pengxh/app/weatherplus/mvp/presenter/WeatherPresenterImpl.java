@@ -1,6 +1,6 @@
 package com.pengxh.app.weatherplus.mvp.presenter;
 
-import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.mvp.BasePresenter;
 import com.pengxh.app.weatherplus.mvp.model.WeatherModelImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
@@ -25,7 +25,7 @@ public class WeatherPresenterImpl extends BasePresenter implements IWeatherPrese
     }
 
     @Override
-    public void onSuccess(WeatherBean weatherBean) {
+    public void onSuccess(NetWeatherBean weatherBean) {
         iWeatherView.hideProgress();
         /**
          * 将返回的数据传递给View并显示在Activity/Fragment上面

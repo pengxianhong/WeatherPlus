@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pengxh.app.weatherplus.bean.CityBean;
+import com.pengxh.app.weatherplus.bean.NetCityBean;
 import com.pengxh.app.weatherplus.utils.Constant;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.HttpCallbackListener;
@@ -28,8 +28,8 @@ public class CityService extends Service {
             @Override
             public void onFinish(String response) {
                 //Gson解析效率太低，换fastJson
-                CityBean cityBean = JSONObject.parseObject(response, CityBean.class);
-                List<CityBean.ResultBeanX.ResultBean> result = cityBean.getResult().getResult();
+                NetCityBean cityBean = JSONObject.parseObject(response, NetCityBean.class);
+                List<NetCityBean.ResultBeanX.ResultBean> result = cityBean.getResult().getResult();
                 for (int i = 0; i < result.size(); i++) {
                     String cityid = String.valueOf(result.get(i).getCityid());
                     String parentid = String.valueOf(result.get(i).getParentid());

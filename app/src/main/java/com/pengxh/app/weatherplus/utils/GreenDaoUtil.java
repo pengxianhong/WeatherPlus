@@ -1,9 +1,13 @@
 package com.pengxh.app.weatherplus.utils;
 
+import android.util.Log;
+
 import com.pengxh.app.weatherplus.BaseApplication;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
-import com.pengxh.app.weatherplus.bean.CityNameBean;
+import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
+import com.pengxh.app.weatherplus.bean.CityNameDaoBean;
 import com.pengxh.app.weatherplus.greendao.CityDaoBeanDao;
+import com.pengxh.app.weatherplus.greendao.CityInfoDaoBeanDao;
 
 import java.util.List;
 
@@ -42,15 +46,38 @@ public class GreenDaoUtil {
      * 从数据库分离出城市名称
      */
     public static void saveCityNameToSQL(String city) {
-        CityNameBean nameBean = new CityNameBean();
+        CityNameDaoBean nameBean = new CityNameDaoBean();
         nameBean.setCity(city);
-        BaseApplication.getDaoInstant().getCityNameBeanDao().insert(nameBean);
+        BaseApplication.getDaoInstant().getCityNameDaoBeanDao().insert(nameBean);
     }
 
     /**
      * 从数据库加载所有城市信息
      */
-    public static List<CityNameBean> loadAllCityName() {
-        return BaseApplication.getDaoInstant().getCityNameBeanDao().loadAll();
+    public static List<CityNameDaoBean> loadAllCityName() {
+        return BaseApplication.getDaoInstant().getCityNameDaoBeanDao().loadAll();
+    }
+
+    /**
+     * 保存热门城市信息
+     */
+    public static void saveToSQL(String cityname, String cityid, String citycode) {
+        CityInfoDaoBeanDao cityInfoDaoBeanDao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
+        CityInfoDaoBean infoDaoBean = new CityInfoDaoBean();
+        infoDaoBean.setCity(cityname);
+        infoDaoBean.setCityid(cityid);
+        infoDaoBean.setCitycode(citycode);
+        if (!cityInfoDaoBeanDao.hasKey(infoDaoBean)) {
+            cityInfoDaoBeanDao.insert(infoDaoBean);
+        } else {
+            Log.d(TAG, "saveToSQL: 重复保存" + cityname);
+        }
+    }
+
+    /**
+     * 加载热门城市信息
+     */
+    public static List<CityInfoDaoBean> loadAllHotCity() {
+        return BaseApplication.getDaoInstant().getCityInfoDaoBeanDao().loadAll();
     }
 }

@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.City;
+import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
 
 import java.util.List;
 
 public class HotCityAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
-    private List<City> cityList;
+    private List<CityInfoDaoBean> cityList;
     private LayoutInflater inflater;
 
-    public HotCityAdapter(Context mContext, List<City> cityList) {
+    public HotCityAdapter(Context mContext, List<CityInfoDaoBean> cityList) {
         this.mContext = mContext;
         this.cityList = cityList;
         inflater = LayoutInflater.from(mContext);
@@ -51,7 +51,7 @@ public class HotCityAdapter extends RecyclerView.Adapter {
             mTextView_hot_city = itemView.findViewById(R.id.mTextView_hot_city);
         }
 
-        void bindHolder(City city) {
+        void bindHolder(CityInfoDaoBean city) {
             mTextView_hot_city.setText(city.getCity());
         }
     }
