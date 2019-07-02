@@ -13,6 +13,7 @@ import com.pengxh.app.weatherplus.R;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -74,6 +75,15 @@ public class OtherUtil {
         list.clear();
         list.addAll(set);
         return list;
+    }
+
+    /**
+     * 随机数
+     */
+    public static int getRandomNum() {
+        Random random = new Random();
+        int num = random.nextInt(4) + 2;//[2,5]
+        return num;
     }
 
     public static void sendHttpRequest(final String address,

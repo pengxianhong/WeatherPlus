@@ -139,12 +139,12 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         if (TextUtils.isEmpty(district)) {
             ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", ToastUtil.ERROR);
         } else {
-            List<CityDaoBean> cityInfoList = GreenDaoUtil.queryCity(district);
-            if (cityInfoList.size() > 0) {
+            CityDaoBean cityDaoBean = GreenDaoUtil.queryCity(district);
+            if (cityDaoBean != null) {
                 weatherPresenter.onReadyRetrofitRequest(
                         district,
-                        Integer.parseInt(cityInfoList.get(0).getCityid()),
-                        Integer.parseInt(cityInfoList.get(0).getCitycode())
+                        Integer.parseInt(cityDaoBean.getCityid()),
+                        Integer.parseInt(cityDaoBean.getCitycode())
                 );
             } else {
                 ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", ToastUtil.ERROR);

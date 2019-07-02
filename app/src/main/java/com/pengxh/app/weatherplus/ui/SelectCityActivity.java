@@ -1,7 +1,7 @@
 package com.pengxh.app.weatherplus.ui;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -9,12 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aihook.alertview.library.AlertView;
+import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
+import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
 import com.pengxh.app.weatherplus.bean.CityNameDaoBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
@@ -30,17 +34,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class SelectCityActivity extends BaseNormalActivity implements View.OnClickListener {
+public class SelectCityActivity extends BaseNormalActivity implements View.OnClickListener, OnItemClickListener {
 
     private static final String TAG = "SelectCityActivity";
 
     @BindView(R.id.mTextView_current_location)
     TextView mTextView_current_location;
+    @BindView(R.id.mImageView_hot_city)
+    ImageView mImageView_hot_city;
     @BindView(R.id.mAutoCompleteTextView)
     AutoCompleteTextView mAutoCompleteTextView;
     @BindView(R.id.mRecyclerView_hot_city)
     RecyclerView mRecyclerViewHotCity;
     private HotCityAdapter hotCityAdapter;
+    private AlertView alertView;
 
     @Override
     public void initView() {
@@ -73,9 +80,18 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
             }
         }).start();
 
-        hotCityAdapter = new HotCityAdapter(this, GreenDaoUtil.loadAllHotCity());
-        mRecyclerViewHotCity.setLayoutManager(new LinearLayoutManager(SelectCityActivity.this));
-        mRecyclerViewHotCity.setAdapter(hotCityAdapter);
+        //TODO BUG--->数据不能实时刷新
+        List<CityInfoDaoBean> hotCityList = GreenDaoUtil.loadAllHotCity();
+        if (hotCityList.size() > 0) {
+            mImageView_hot_city.setVisibility(View.VISIBLE);
+
+            hotCityAdapter = new HotCityAdapter(this, hotCityList);
+            mRecyclerViewHotCity.setLayoutManager(
+                    new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+            mRecyclerViewHotCity.setAdapter(hotCityAdapter);
+        } else {
+            mImageView_hot_city.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -111,32 +127,63 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-                List<CityDaoBean> cityBeanList = GreenDaoUtil.queryCity(s.toString());
-                Log.d(TAG, "从数据库中获取cityBeanList: " + cityBeanList.size());
-                if (cityBeanList.size() > 0) {
-                    String cityname = cityBeanList.get(0).getCity();
-                    String citycode = cityBeanList.get(0).getCitycode();
-                    String cityid = cityBeanList.get(0).getCityid();
-                    Log.d(TAG, "CityInfoDaoBean: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
-
+                CityDaoBean cityDaoBean = GreenDaoUtil.queryCity(s.toString());
+                Log.d(TAG, "从数据库中获取cityDaoBean: " + cityDaoBean);
+                if (cityDaoBean != null) {
+                    String cityname = cityDaoBean.getCity();
+                    String citycode = cityDaoBean.getCitycode();
+                    String cityid = cityDaoBean.getCityid();
+                    Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
                     //将查询历史保存到数据库
                     GreenDaoUtil.saveToSQL(cityname, cityid, citycode);
-                    hotCityAdapter.notifyDataSetChanged();
+//                    hotCityAdapter.notifyDataSetChanged();
                 }
             }
         });
         EventBus.getDefault().removeStickyEvent(event);
     }
 
-    @OnClick(R.id.mImageView_title_back)
+    @OnClick({R.id.mImageView_title_back, R.id.mImageView_hot_city})
     @Override
     public void onClick(View v) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //在主线程销毁，直接出栈，返回键不会返回到前一个页面
-                finish();
-            }
-        });
+        switch (v.getId()) {
+            case R.id.mImageView_title_back:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //在主线程销毁，直接出栈，返回键不会返回到前一个页面
+                        finish();
+                    }
+                });
+                break;
+            case R.id.mImageView_hot_city:
+                alertView = new AlertView(
+                        "标题",
+                        "内容",
+                        "取消",
+                        new String[]{"确定"},
+                        null,
+                        this,
+                        AlertView.Style.Alert,
+                        this).setCancelable(false);
+                alertView.show();
+                break;
+        }
+    }
+
+    @Override
+    public void onItemClick(Object o, int position) {
+        /**
+         * -1取消，0确定
+         * */
+        switch (position) {
+            case -1:
+                alertView.dismiss();
+                break;
+            case 0:
+                GreenDaoUtil.deleteHotCity();
+                hotCityAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 }

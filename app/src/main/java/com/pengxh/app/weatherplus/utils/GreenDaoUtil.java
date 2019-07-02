@@ -29,10 +29,11 @@ public class GreenDaoUtil {
 
     /**
      * 查询某个城市的具体信息
+     * 也可以返回List
      */
-    public static List<CityDaoBean> queryCity(String city) {
+    public static CityDaoBean queryCity(String city) {
         CityDaoBeanDao cityDaoBeanDao = BaseApplication.getDaoInstant().getCityDaoBeanDao();
-        return cityDaoBeanDao.queryBuilder().where(CityDaoBeanDao.Properties.City.eq(city)).list();
+        return cityDaoBeanDao.queryBuilder().where(CityDaoBeanDao.Properties.City.eq(city)).unique();
     }
 
     /**
@@ -67,10 +68,10 @@ public class GreenDaoUtil {
         infoDaoBean.setCity(cityname);
         infoDaoBean.setCityid(cityid);
         infoDaoBean.setCitycode(citycode);
-        if (!cityInfoDaoBeanDao.hasKey(infoDaoBean)) {
-            cityInfoDaoBeanDao.insert(infoDaoBean);
-        } else {
+        if (isExist(cityname)) {
             Log.d(TAG, "saveToSQL: 重复保存" + cityname);
+        } else {
+            cityInfoDaoBeanDao.insert(infoDaoBean);
         }
     }
 
@@ -79,5 +80,25 @@ public class GreenDaoUtil {
      */
     public static List<CityInfoDaoBean> loadAllHotCity() {
         return BaseApplication.getDaoInstant().getCityInfoDaoBeanDao().loadAll();
+    }
+
+    /**
+     * 判断字段是否存在
+     */
+    private static boolean isExist(String city) {
+        CityInfoDaoBeanDao dao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
+        CityInfoDaoBean cityInfoDaoBean = dao.queryBuilder().where(CityInfoDaoBeanDao.Properties.City.eq(city)).unique();
+        if (cityInfoDaoBean == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除热门城市
+     */
+    public static void deleteHotCity() {
+        CityInfoDaoBeanDao dao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
+        dao.deleteAll();
     }
 }
