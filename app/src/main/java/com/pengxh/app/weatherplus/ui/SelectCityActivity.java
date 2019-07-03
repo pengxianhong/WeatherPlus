@@ -48,6 +48,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     RecyclerView mRecyclerViewHotCity;
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
+    private List<CityInfoDaoBean> hotCityList;
 
     @Override
     public void initView() {
@@ -80,11 +81,9 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
             }
         }).start();
 
-        //TODO BUG--->数据不能实时刷新
-        List<CityInfoDaoBean> hotCityList = GreenDaoUtil.loadAllHotCity();
+        hotCityList = GreenDaoUtil.loadAllHotCity();
         if (hotCityList.size() > 0) {
             mImageView_hot_city.setVisibility(View.VISIBLE);
-
             hotCityAdapter = new HotCityAdapter(this, hotCityList);
             mRecyclerViewHotCity.setLayoutManager(
                     new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
@@ -136,7 +135,6 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                     Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
                     //将查询历史保存到数据库
                     GreenDaoUtil.saveToSQL(cityname, cityid, citycode);
-//                    hotCityAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -158,8 +156,8 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 break;
             case R.id.mImageView_hot_city:
                 alertView = new AlertView(
-                        "标题",
-                        "内容",
+                        "提示",
+                        "确认删除全部热门城市?",
                         "取消",
                         new String[]{"确定"},
                         null,
@@ -182,7 +180,9 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 break;
             case 0:
                 GreenDaoUtil.deleteHotCity();
+                hotCityList.clear();
                 hotCityAdapter.notifyDataSetChanged();
+                mImageView_hot_city.setVisibility(View.INVISIBLE);
                 break;
         }
     }
