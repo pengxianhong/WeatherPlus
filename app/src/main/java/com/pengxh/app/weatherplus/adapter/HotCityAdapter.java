@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
+import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class HotCityAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<CityInfoDaoBean> cityList;
     private LayoutInflater inflater;
+    private OnItemClickListener mOnItemClickListener;
 
     public HotCityAdapter(Context mContext, List<CityInfoDaoBean> cityList) {
         this.mContext = mContext;
@@ -32,9 +34,17 @@ public class HotCityAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         HotCityViewHolder itemHolder = (HotCityViewHolder) viewHolder;
         itemHolder.bindHolder(cityList.get(i));
+        if (mOnItemClickListener != null) {
+            itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onClick(i);
+                }
+            });
+        }
     }
 
     @Override
@@ -53,6 +63,18 @@ public class HotCityAdapter extends RecyclerView.Adapter {
 
         void bindHolder(CityInfoDaoBean city) {
             mTextView_hot_city.setText(city.getCity());
+            mTextView_hot_city.setBackgroundColor(OtherUtil.getRandomColor());
         }
+    }
+
+    /**
+     * RecyclerView item 无内置点击事件，自定义一个接口实现点击事件
+     */
+    public interface OnItemClickListener {
+        void onClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
     }
 }

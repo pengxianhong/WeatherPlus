@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
+import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityDaoBean;
@@ -88,6 +89,12 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
             mRecyclerViewHotCity.setLayoutManager(
                     new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
             mRecyclerViewHotCity.setAdapter(hotCityAdapter);
+            hotCityAdapter.setOnItemClickListener(new HotCityAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(int position) {
+                    ToastUtil.showBeautifulToast(hotCityList.get(position).getCity(), ToastUtil.SUCCESS);
+                }
+            });
         } else {
             mImageView_hot_city.setVisibility(View.INVISIBLE);
         }
@@ -157,7 +164,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
             case R.id.mImageView_hot_city:
                 alertView = new AlertView(
                         "提示",
-                        "确认删除全部热门城市?",
+                        "确认删除全部搜索历史?",
                         "取消",
                         new String[]{"确定"},
                         null,

@@ -2,6 +2,7 @@ package com.pengxh.app.weatherplus.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -84,6 +85,17 @@ public class OtherUtil {
         Random random = new Random();
         int num = random.nextInt(4) + 2;//[2,5]
         return num;
+    }
+
+    /**
+     * 随机颜色
+     */
+    public static int getRandomColor() {
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        return Color.rgb(red, green, blue);
     }
 
     public static void sendHttpRequest(final String address,
