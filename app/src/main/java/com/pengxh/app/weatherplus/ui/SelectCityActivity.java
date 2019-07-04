@@ -1,5 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
@@ -47,6 +48,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     AutoCompleteTextView mAutoCompleteTextView;
     @BindView(R.id.mRecyclerView_hot_city)
     RecyclerView mRecyclerViewHotCity;
+
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
     private List<CityInfoDaoBean> hotCityList;
@@ -142,6 +144,13 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                     Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
                     //将查询历史保存到数据库
                     GreenDaoUtil.saveToSQL(cityname, cityid, citycode);
+
+                    Intent intent = new Intent(SelectCityActivity.this, OtherCityWeather.class);
+                    intent.putExtra("cityname", cityname);
+                    intent.putExtra("cityid", cityid);
+                    intent.putExtra("citycode", citycode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });

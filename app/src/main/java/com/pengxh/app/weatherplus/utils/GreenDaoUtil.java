@@ -30,6 +30,8 @@ public class GreenDaoUtil {
     /**
      * 查询某个城市的具体信息
      * 也可以返回List
+     * <p>
+     * unique()返回一个或者零个结果
      */
     public static CityDaoBean queryCity(String city) {
         CityDaoBeanDao cityDaoBeanDao = BaseApplication.getDaoInstant().getCityDaoBeanDao();

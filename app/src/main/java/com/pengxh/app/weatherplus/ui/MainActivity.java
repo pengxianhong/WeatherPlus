@@ -117,23 +117,12 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     @Override
     public void init() {
-        //分离城市表
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<CityDaoBean> allCityBeanList = GreenDaoUtil.loadAllCity();
-                for (int i = 0; i < allCityBeanList.size(); i++) {
-                    String city = allCityBeanList.get(i).getCity();
-                    GreenDaoUtil.saveCityNameToSQL(city);
-                }
-            }
-        }).start();
+        //获取天气数据
+        weatherPresenter = new WeatherPresenterImpl(this);
     }
 
     @Override
     public void initEvent() {
-        //获取天气数据
-        weatherPresenter = new WeatherPresenterImpl(this);
         String district = OtherUtil.getValue(this, "district");
         Log.d(TAG, "从sp中获取到定位点: " + district);
         if (TextUtils.isEmpty(district)) {
@@ -155,10 +144,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     @Override
     public void showProgress() {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("正在加载天气数据...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
+            show("正在加载天气数据...");
         }
     }
 
@@ -167,6 +153,13 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    private void show(String msg) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(msg);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
     }
 
     @Override

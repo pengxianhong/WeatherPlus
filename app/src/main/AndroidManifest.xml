@@ -32,6 +32,7 @@
         </activity>
         <activity android:name=".ui.SelectCityActivity" />
         <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.OtherCityWeather" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"

@@ -37,7 +37,11 @@ public class CityService extends Service {
                     String city = result.get(i).getCity();
                     if (citycode != null) {
                         if (!citycode.equals("")) {
+                            //保存城市详细信息
                             GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
+
+                            //保存城市名字
+                            GreenDaoUtil.saveCityNameToSQL(city);
                         }
                     }
                 }
