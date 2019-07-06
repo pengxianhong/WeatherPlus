@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -135,9 +136,10 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-                CityDaoBean cityDaoBean = GreenDaoUtil.queryCity(s.toString());
-                Log.d(TAG, "从数据库中获取cityDaoBean: " + cityDaoBean);
-                if (cityDaoBean != null) {
+                List<CityDaoBean> beanList = GreenDaoUtil.queryCity(s.toString());
+                Log.d(TAG, "从数据库中获取cityDaoBean: " + Arrays.toString(beanList.toArray()));
+                if (beanList.size() > 0) {
+                    CityDaoBean cityDaoBean = beanList.get(0);
                     String cityname = cityDaoBean.getCity();
                     String citycode = cityDaoBean.getCitycode();
                     String cityid = cityDaoBean.getCityid();

@@ -33,9 +33,9 @@ public class GreenDaoUtil {
      * <p>
      * unique()返回一个或者零个结果
      */
-    public static CityDaoBean queryCity(String city) {
+    public static List<CityDaoBean> queryCity(String city) {
         CityDaoBeanDao cityDaoBeanDao = BaseApplication.getDaoInstant().getCityDaoBeanDao();
-        return cityDaoBeanDao.queryBuilder().where(CityDaoBeanDao.Properties.City.eq(city)).unique();
+        return cityDaoBeanDao.queryBuilder().where(CityDaoBeanDao.Properties.City.eq(city)).list();
     }
 
     /**
@@ -89,8 +89,8 @@ public class GreenDaoUtil {
      */
     private static boolean isExist(String city) {
         CityInfoDaoBeanDao dao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
-        CityInfoDaoBean cityInfoDaoBean = dao.queryBuilder().where(CityInfoDaoBeanDao.Properties.City.eq(city)).unique();
-        if (cityInfoDaoBean == null) {
+        List<CityInfoDaoBean> list = dao.queryBuilder().where(CityInfoDaoBeanDao.Properties.City.eq(city)).list();
+        if (list.size() == 0) {
             return false;
         }
         return true;
