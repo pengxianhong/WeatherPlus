@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
+            android:drawablePadding="5dp"
             android:drawableStart="@drawable/location"
             android:gravity="center"
             android:singleLine="true"
@@ -52,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:background="@drawable/add" />
+            android:background="@drawable/menu" />
 
     </RelativeLayout>
 
