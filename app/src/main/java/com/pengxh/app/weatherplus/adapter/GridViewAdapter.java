@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.utils.Constant;
 
 import java.util.List;
 
@@ -49,23 +51,27 @@ public class GridViewAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_life_gridview, null);
             holder = new MVPGridViewHolder();
-            holder.mTextView_life_tipsTitle = convertView.findViewById(R.id.mTextView_life_tipsTitle);
+            holder.mImageView_life_tipsIcon = convertView.findViewById(R.id.mImageView_life_tipsIcon);
             holder.mTextView_life_tipsValue = convertView.findViewById(R.id.mTextView_life_tipsValue);
+            holder.mTextView_life_tipsTitle = convertView.findViewById(R.id.mTextView_life_tipsTitle);
             convertView.setTag(holder);
         } else {
             holder = (MVPGridViewHolder) convertView.getTag();
         }
-        holder.bindData(indexBeanList.get(position));
+        holder.bindData(indexBeanList.get(position), position);
         return convertView;
     }
 
     private class MVPGridViewHolder {
-        private TextView mTextView_life_tipsTitle;
+        private ImageView mImageView_life_tipsIcon;
         private TextView mTextView_life_tipsValue;
+        private TextView mTextView_life_tipsTitle;
 
-        void bindData(NetWeatherBean.ResultBeanX.ResultBean.IndexBean indexBean) {
-            mTextView_life_tipsTitle.setText(indexBean.getIname());
+
+        void bindData(NetWeatherBean.ResultBeanX.ResultBean.IndexBean indexBean, int index) {
+            mImageView_life_tipsIcon.setImageResource(Constant.ICONS[index]);
             mTextView_life_tipsValue.setText(indexBean.getIvalue());
+            mTextView_life_tipsTitle.setText(indexBean.getIname());
         }
     }
 }

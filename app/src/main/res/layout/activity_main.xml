@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg_main"
     android:scrollbars="none">
 
     <LinearLayout
@@ -15,21 +16,21 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="1dp"
             android:background="#ccc" />
 
         <include layout="@layout/include_weekly" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="1dp"
             android:background="#ccc" />
 
         <include layout="@layout/include_air" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="1dp"
             android:background="#ccc" />
 
         <include layout="@layout/include_life" />

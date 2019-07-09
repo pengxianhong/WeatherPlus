@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,7 +30,6 @@ import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
-import com.pengxh.app.weatherplus.widgets.FramedGridView;
 
 import java.util.List;
 
@@ -98,8 +98,8 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     @BindView(R.id.mTextView_air_co)
     TextView mTextViewAirCO;
 
-    @BindView(R.id.mFramedGridView_life)
-    FramedGridView mFramedGridViewLife;
+    @BindView(R.id.mGridView_life)
+    GridView mGridView_life;
 
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
@@ -248,9 +248,9 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(this, indexBeanList);
-        mFramedGridViewLife.setAdapter(mGridViewAdapter);
-        OtherUtil.measureViewHeight(this, mFramedGridViewLife);// 计算GridView的实际高度
-        mFramedGridViewLife.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView_life.setAdapter(mGridViewAdapter);
+        OtherUtil.measureViewHeight(this, mGridView_life);// 计算GridView的实际高度
+        mGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String iname = indexBeanList.get(position).getIname();
