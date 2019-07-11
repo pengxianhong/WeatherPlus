@@ -49,6 +49,8 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     AutoCompleteTextView mAutoCompleteTextView;
     @BindView(R.id.mRecyclerView_hot_city)
     RecyclerView mRecyclerViewHotCity;
+    @BindView(R.id.mImageView_title_add)
+    ImageView mImageView_title_add;
 
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
@@ -61,6 +63,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     @Override
     public void init() {
+        mImageView_title_add.setVisibility(View.INVISIBLE);
         String district = getIntent().getStringExtra("district");
         Log.d(TAG, "定位点: " + district);
         if (!TextUtils.isEmpty(district)) {

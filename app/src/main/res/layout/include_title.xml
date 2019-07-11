@@ -6,14 +6,6 @@
     android:paddingEnd="10dp"
     android:paddingStart="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="添加城市"
-        android:textSize="18sp" />
-
     <ImageView
         android:id="@+id/mImageView_title_back"
         android:layout_width="wrap_content"
@@ -21,5 +13,21 @@
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
         android:background="@drawable/back" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="城市管理"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/mImageView_title_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/add_gray" />
 
 </RelativeLayout>

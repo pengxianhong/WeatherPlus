@@ -229,7 +229,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     private void bindDailyData(List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(this, dailyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);// 横向滚动
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewWeekly.setLayoutManager(layoutManager);
         mRecyclerViewWeekly.setAdapter(adapter);
     }
@@ -274,9 +274,6 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mImageView_realtime_add:
-//                Intent intent = new Intent(this, SelectCityActivity.class);
-//                intent.putExtra("district", OtherUtil.getValue(this, "district"));
-//                startActivity(intent);
                 startActivity(new Intent(this, CityListActivity.class));
                 break;
             default:
