@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <GridView
-            android:id="@+id/mGridView_life"
+        <com.pengxh.app.weatherplus.widgets.CustomGridView
+            android:id="@+id/mCustomGridView_life"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

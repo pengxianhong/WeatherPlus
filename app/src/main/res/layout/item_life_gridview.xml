@@ -19,6 +19,7 @@
         android:layout_below="@id/mImageView_life_tipsIcon"
         android:layout_marginTop="5dp"
         android:gravity="center"
+        android:singleLine="true"
         android:text="穿衣指数"
         android:textColor="#fff"
         android:textSize="18sp" />

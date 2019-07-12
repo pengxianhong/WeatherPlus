@@ -29,6 +29,7 @@ import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.widgets.CustomGridView;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
 
 import java.util.List;
@@ -98,8 +99,8 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     @BindView(R.id.mTextView_air_co)
     TextView mTextViewAirCO;
 
-    @BindView(R.id.mGridView_life)
-    GridView mGridView_life;
+    @BindView(R.id.mCustomGridView_life)
+    CustomGridView mCustomGridView_life;
 
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
@@ -248,9 +249,9 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(this, indexBeanList);
-        mGridView_life.setAdapter(mGridViewAdapter);
-        OtherUtil.measureViewHeight(this, mGridView_life);// 计算GridView的实际高度
-        mGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mCustomGridView_life.setAdapter(mGridViewAdapter);
+        OtherUtil.measureViewHeight(this, mCustomGridView_life);// 计算GridView的实际高度
+        mCustomGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String iname = indexBeanList.get(position).getIname();
