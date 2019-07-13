@@ -21,16 +21,18 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        CityDaoBeanDao.createTable(db, ifNotExists);
-        CityInfoDaoBeanDao.createTable(db, ifNotExists);
-        CityNameDaoBeanDao.createTable(db, ifNotExists);
+        AllCityBeanDao.createTable(db, ifNotExists);
+        CityManagerBeanDao.createTable(db, ifNotExists);
+        CityNameBeanDao.createTable(db, ifNotExists);
+        HotCityInfoBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        CityDaoBeanDao.dropTable(db, ifExists);
-        CityInfoDaoBeanDao.dropTable(db, ifExists);
-        CityNameDaoBeanDao.dropTable(db, ifExists);
+        AllCityBeanDao.dropTable(db, ifExists);
+        CityManagerBeanDao.dropTable(db, ifExists);
+        CityNameBeanDao.dropTable(db, ifExists);
+        HotCityInfoBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -49,9 +51,10 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(CityDaoBeanDao.class);
-        registerDaoClass(CityInfoDaoBeanDao.class);
-        registerDaoClass(CityNameDaoBeanDao.class);
+        registerDaoClass(AllCityBeanDao.class);
+        registerDaoClass(CityManagerBeanDao.class);
+        registerDaoClass(CityNameBeanDao.class);
+        registerDaoClass(HotCityInfoBeanDao.class);
     }
 
     public DaoSession newSession() {

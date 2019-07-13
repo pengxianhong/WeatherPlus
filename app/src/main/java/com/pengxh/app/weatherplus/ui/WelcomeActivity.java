@@ -125,31 +125,29 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     private AMapLocationListener mLocationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
-            if (aMapLocation != null) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    //可在其中解析amapLocation获取相应内容。
-                    double longitude = aMapLocation.getLongitude();//获取经度
-                    double latitude = aMapLocation.getLatitude();//获取纬度
-                    String address = aMapLocation.getAddress();//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
-                    String country = aMapLocation.getCountry();//国家信息
-                    String province = aMapLocation.getProvince();//省信息
-                    String city = aMapLocation.getCity();//城市信息
-                    String district = aMapLocation.getDistrict();//城区信息
-                    //由于定位和获取天气网络请求存在时间差，所以，此处需要先存到sp
-                    OtherUtil.saveValue(WelcomeActivity.this, district);
-                    Log.d(TAG, "当前定位点的详细信息[\r\n" +
-                            "经度：" + longitude + "\r\n" +
-                            "纬度：" + latitude + "\r\n" +
-                            "地址：" + address + "\r\n" +
-                            "国家：" + country + "\r\n" +
-                            "省：" + province + "\r\n" +
-                            "城市：" + city + "\r\n" +
-                            "城区：" + district + "]");
-                } else {
-                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                    Log.e(TAG, "location Error, ErrCode:" + aMapLocation.getErrorCode() +
-                            ", errInfo:" + aMapLocation.getErrorInfo());
-                }
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+                //可在其中解析amapLocation获取相应内容。
+                double longitude = aMapLocation.getLongitude();//获取经度
+                double latitude = aMapLocation.getLatitude();//获取纬度
+                String address = aMapLocation.getAddress();//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
+                String country = aMapLocation.getCountry();//国家信息
+                String province = aMapLocation.getProvince();//省信息
+                String city = aMapLocation.getCity();//城市信息
+                String district = aMapLocation.getDistrict();//城区信息
+                //由于定位和获取天气网络请求存在时间差，所以，此处需要先存到sp
+                OtherUtil.saveValue(WelcomeActivity.this, district);
+                Log.d(TAG, "当前定位点的详细信息[\r\n" +
+                        "经度：" + longitude + "\r\n" +
+                        "纬度：" + latitude + "\r\n" +
+                        "地址：" + address + "\r\n" +
+                        "国家：" + country + "\r\n" +
+                        "省：" + province + "\r\n" +
+                        "城市：" + city + "\r\n" +
+                        "城区：" + district + "]");
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e(TAG, "location Error, ErrCode:" + aMapLocation.getErrorCode() +
+                        ", errInfo:" + aMapLocation.getErrorInfo());
             }
         }
     };

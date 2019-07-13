@@ -2,13 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg_main"
     android:orientation="vertical">
 
     <include layout="@layout/include_title" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/mRecyclerViewCityList"
+    <com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView
+        android:id="@+id/mSwipeMenuListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@color/bgColor_divier"
+        android:scrollbars="none" />
 
 </LinearLayout>

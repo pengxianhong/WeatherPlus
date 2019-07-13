@@ -1,6 +1,5 @@
 package com.pengxh.app.weatherplus.ui;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
@@ -19,9 +18,9 @@ import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
-import com.pengxh.app.weatherplus.bean.CityDaoBean;
-import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
-import com.pengxh.app.weatherplus.bean.CityNameDaoBean;
+import com.pengxh.app.weatherplus.bean.AllCityBean;
+import com.pengxh.app.weatherplus.bean.CityNameBean;
+import com.pengxh.app.weatherplus.bean.HotCityInfoBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
@@ -31,7 +30,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,10 +49,12 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     RecyclerView mRecyclerViewHotCity;
     @BindView(R.id.mImageView_title_add)
     ImageView mImageView_title_add;
+    @BindView(R.id.mTextView_title)
+    TextView mTextView_title;
 
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
-    private List<CityInfoDaoBean> hotCityList;
+    private List<HotCityInfoBean> hotCityList;
 
     @Override
     public void initView() {
@@ -64,6 +64,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     @Override
     public void init() {
         mImageView_title_add.setVisibility(View.INVISIBLE);
+        mTextView_title.setText("添加城市");
         String district = getIntent().getStringExtra("district");
         Log.d(TAG, "定位点: " + district);
         if (!TextUtils.isEmpty(district)) {
@@ -78,7 +79,7 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<CityNameDaoBean> allCityName = GreenDaoUtil.loadAllCityName();
+                List<CityNameBean> allCityName = GreenDaoUtil.loadAllCityName();
                 List<String> cities = new ArrayList<>();
                 for (int i = 0; i < allCityName.size(); i++) {
                     String city = allCityName.get(i).getCity();
@@ -139,23 +140,17 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-                List<CityDaoBean> beanList = GreenDaoUtil.queryCity(s.toString());
-                Log.d(TAG, "从数据库中获取cityDaoBean: " + Arrays.toString(beanList.toArray()));
+                List<AllCityBean> beanList = GreenDaoUtil.queryCity(s.toString());
                 if (beanList.size() > 0) {
-                    CityDaoBean cityDaoBean = beanList.get(0);
-                    String cityname = cityDaoBean.getCity();
-                    String citycode = cityDaoBean.getCitycode();
-                    String cityid = cityDaoBean.getCityid();
-                    Log.d(TAG, "City: " + cityname + "\r\nCitycode: " + citycode + "\r\nCityid: " + cityid);
-                    //将查询历史保存到数据库
-                    GreenDaoUtil.saveToSQL(cityname, cityid, citycode);
+                    //将查询历史保存到[热门]表
+                    GreenDaoUtil.saveHotCityToSQL(beanList.get(0));
 
-                    Intent intent = new Intent(SelectCityActivity.this, OtherCityWeather.class);
-                    intent.putExtra("cityname", cityname);
-                    intent.putExtra("cityid", cityid);
-                    intent.putExtra("citycode", citycode);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent = new Intent(SelectCityActivity.this, OtherCityWeather.class);
+//                    intent.putExtra("cityname", cityname);
+//                    intent.putExtra("cityid", cityid);
+//                    intent.putExtra("citycode", citycode);
+//                    startActivity(intent);
+//                    finish();
                 }
             }
         });

@@ -30,19 +30,18 @@ public class CityService extends Service {
                 //Gson解析效率太低，换fastJson
                 NetCityBean cityBean = JSONObject.parseObject(response, NetCityBean.class);
                 List<NetCityBean.ResultBeanX.ResultBean> result = cityBean.getResult().getResult();
+
                 for (int i = 0; i < result.size(); i++) {
                     String cityid = String.valueOf(result.get(i).getCityid());
                     String parentid = String.valueOf(result.get(i).getParentid());
                     String citycode = result.get(i).getCitycode();
                     String city = result.get(i).getCity();
-                    if (citycode != null) {
-                        if (!citycode.equals("")) {
-                            //保存城市详细信息
-                            GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
+                    if (citycode != null && !citycode.equals("")) {
+                        //保存城市详细信息
+                        GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
 
-                            //保存城市名字
-                            GreenDaoUtil.saveCityNameToSQL(city);
-                        }
+                        //保存城市名字
+                        GreenDaoUtil.saveCityNameToSQL(city);
                     }
                 }
             }

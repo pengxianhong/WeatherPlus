@@ -22,7 +22,8 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.CityDaoBean;
+import com.pengxh.app.weatherplus.bean.AllCityBean;
+import com.pengxh.app.weatherplus.bean.CityManagerBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
@@ -128,15 +129,14 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         if (TextUtils.isEmpty(district)) {
             ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", ToastUtil.ERROR);
         } else {
-            List<CityDaoBean> beanList = GreenDaoUtil.queryCity(district);
+            List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
             Log.d(TAG, "从数据库中获取cityDaoBean: " + beanList);
             if (beanList.size() > 0) {
-                CityDaoBean cityDaoBean = beanList.get(0);
+                AllCityBean allCityBean = beanList.get(0);
                 weatherPresenter.onReadyRetrofitRequest(
                         district,
-                        Integer.parseInt(cityDaoBean.getCityid()),
-                        Integer.parseInt(cityDaoBean.getCitycode())
-                );
+                        Integer.parseInt(allCityBean.getCityid()),
+                        Integer.parseInt(allCityBean.getCitycode()));
             } else {
                 ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", ToastUtil.ERROR);
             }
@@ -190,7 +190,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
                     .getIndex();
             bindIndexData(indexBeanList);
 
-            //TODO
+            //TODO 保存简单的天气信息
             String city = resultBean.getCity();
             String quality = aqiBean.getQuality();
             String color = aqiBean.getAqiinfo().getColor();
@@ -199,6 +199,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
             String templow = resultBean.getTemplow();
             String temphigh = resultBean.getTemphigh();
 
+            GreenDaoUtil.saveSimpleWeather(city, quality, color, img, weather, templow, temphigh);
         } else {
             ToastUtil.showBeautifulToast("获取数据失败，请重试", ToastUtil.ERROR);
         }

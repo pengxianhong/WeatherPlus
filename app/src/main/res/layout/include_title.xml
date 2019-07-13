@@ -15,11 +15,13 @@
         android:background="@drawable/back" />
 
     <TextView
+        android:id="@+id/mTextView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:text="城市管理"
+        android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
     <ImageView
@@ -28,6 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:background="@drawable/add_gray" />
+        android:background="@drawable/add" />
 
 </RelativeLayout>

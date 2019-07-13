@@ -1,13 +1,13 @@
 package com.pengxh.app.weatherplus.utils;
 
-import android.util.Log;
-
 import com.pengxh.app.weatherplus.BaseApplication;
-import com.pengxh.app.weatherplus.bean.CityDaoBean;
-import com.pengxh.app.weatherplus.bean.CityInfoDaoBean;
-import com.pengxh.app.weatherplus.bean.CityNameDaoBean;
-import com.pengxh.app.weatherplus.greendao.CityDaoBeanDao;
-import com.pengxh.app.weatherplus.greendao.CityInfoDaoBeanDao;
+import com.pengxh.app.weatherplus.bean.AllCityBean;
+import com.pengxh.app.weatherplus.bean.CityManagerBean;
+import com.pengxh.app.weatherplus.bean.CityNameBean;
+import com.pengxh.app.weatherplus.bean.HotCityInfoBean;
+import com.pengxh.app.weatherplus.greendao.AllCityBeanDao;
+import com.pengxh.app.weatherplus.greendao.CityManagerBeanDao;
+import com.pengxh.app.weatherplus.greendao.HotCityInfoBeanDao;
 
 import java.util.List;
 
@@ -19,77 +19,59 @@ public class GreenDaoUtil {
      * 初次启动app，将全国城市存入本地数据库
      */
     public static void saveCityToSQL(String cityid, String parentid, String citycode, String city) {
-        CityDaoBean cityDaoBean = new CityDaoBean();
-        cityDaoBean.setCityid(cityid);
-        cityDaoBean.setParentid(parentid);
-        cityDaoBean.setCitycode(citycode);
-        cityDaoBean.setCity(city);
-        BaseApplication.getDaoInstant().getCityDaoBeanDao().insert(cityDaoBean);
+        AllCityBean allCityBean = new AllCityBean();
+        allCityBean.setCityid(cityid);
+        allCityBean.setParentid(parentid);
+        allCityBean.setCitycode(citycode);
+        allCityBean.setCity(city);
+        BaseApplication.getDaoInstant().getAllCityBeanDao().insert(allCityBean);
     }
 
     /**
      * 查询某个城市的具体信息
-     * 也可以返回List
-     * <p>
-     * unique()返回一个或者零个结果
+     * 返回List
      */
-    public static List<CityDaoBean> queryCity(String city) {
-        CityDaoBeanDao cityDaoBeanDao = BaseApplication.getDaoInstant().getCityDaoBeanDao();
-        return cityDaoBeanDao.queryBuilder().where(CityDaoBeanDao.Properties.City.eq(city)).list();
-    }
-
-    /**
-     * 从数据库加载所有城市信息
-     */
-    public static List<CityDaoBean> loadAllCity() {
-        return BaseApplication.getDaoInstant().getCityDaoBeanDao().loadAll();
+    public static List<AllCityBean> queryCity(String city) {
+        AllCityBeanDao allCityBeanDao = BaseApplication.getDaoInstant().getAllCityBeanDao();
+        return allCityBeanDao.queryBuilder().where(AllCityBeanDao.Properties.City.eq(city)).list();
     }
 
     /**
      * 从数据库分离出城市名称
      */
     public static void saveCityNameToSQL(String city) {
-        CityNameDaoBean nameBean = new CityNameDaoBean();
+        CityNameBean nameBean = new CityNameBean();
         nameBean.setCity(city);
-        BaseApplication.getDaoInstant().getCityNameDaoBeanDao().insert(nameBean);
+        BaseApplication.getDaoInstant().getCityNameBeanDao().insert(nameBean);
     }
 
     /**
      * 从数据库加载所有城市信息
      */
-    public static List<CityNameDaoBean> loadAllCityName() {
-        return BaseApplication.getDaoInstant().getCityNameDaoBeanDao().loadAll();
+    public static List<CityNameBean> loadAllCityName() {
+        return BaseApplication.getDaoInstant().getCityNameBeanDao().loadAll();
     }
 
     /**
      * 保存热门城市信息
      */
-    public static void saveToSQL(String cityname, String cityid, String citycode) {
-        CityInfoDaoBeanDao cityInfoDaoBeanDao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
-        CityInfoDaoBean infoDaoBean = new CityInfoDaoBean();
-        infoDaoBean.setCity(cityname);
-        infoDaoBean.setCityid(cityid);
-        infoDaoBean.setCitycode(citycode);
-        if (isExist(cityname)) {
-            Log.d(TAG, "saveToSQL: 重复保存" + cityname);
-        } else {
-            cityInfoDaoBeanDao.insert(infoDaoBean);
+    public static void saveHotCityToSQL(AllCityBean allCityBean) {
+        HotCityInfoBeanDao hotCityInfoBeanDao = BaseApplication.getDaoInstant().getHotCityInfoBeanDao();
+        HotCityInfoBean infoDaoBean = new HotCityInfoBean();
+        infoDaoBean.setCity(allCityBean.getCity());
+        infoDaoBean.setCityid(allCityBean.getCityid());
+        infoDaoBean.setCitycode(allCityBean.getCitycode());
+        if (!isExist(allCityBean.getCity())) {
+            hotCityInfoBeanDao.insert(infoDaoBean);
         }
-    }
-
-    /**
-     * 加载热门城市信息
-     */
-    public static List<CityInfoDaoBean> loadAllHotCity() {
-        return BaseApplication.getDaoInstant().getCityInfoDaoBeanDao().loadAll();
     }
 
     /**
      * 判断字段是否存在
      */
     private static boolean isExist(String city) {
-        CityInfoDaoBeanDao dao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
-        List<CityInfoDaoBean> list = dao.queryBuilder().where(CityInfoDaoBeanDao.Properties.City.eq(city)).list();
+        HotCityInfoBeanDao hotCityInfoBeanDao = BaseApplication.getDaoInstant().getHotCityInfoBeanDao();
+        List<HotCityInfoBean> list = hotCityInfoBeanDao.queryBuilder().where(HotCityInfoBeanDao.Properties.City.eq(city)).list();
         if (list.size() == 0) {
             return false;
         }
@@ -97,10 +79,60 @@ public class GreenDaoUtil {
     }
 
     /**
+     * 加载所有热门城市信息
+     */
+    public static List<HotCityInfoBean> loadAllHotCity() {
+        return BaseApplication.getDaoInstant().getHotCityInfoBeanDao().loadAll();
+    }
+
+    /**
      * 删除热门城市
      */
     public static void deleteHotCity() {
-        CityInfoDaoBeanDao dao = BaseApplication.getDaoInstant().getCityInfoDaoBeanDao();
-        dao.deleteAll();
+        BaseApplication.getDaoInstant().getHotCityInfoBeanDao().deleteAll();
+    }
+
+    /**
+     * 保存简单的天气信息
+     */
+    public static void saveSimpleWeather(String city, String quality, String color, String img, String weather, String templow, String temphigh) {
+        CityManagerBeanDao dao = BaseApplication.getDaoInstant().getCityManagerBeanDao();
+        CityManagerBean managerDaoBean = new CityManagerBean();
+        managerDaoBean.setCity(city);
+        managerDaoBean.setQuality(quality);
+        managerDaoBean.setColor(color);
+        managerDaoBean.setImg(img);
+        managerDaoBean.setWeather(weather);
+        managerDaoBean.setTemplow(templow);
+        managerDaoBean.setTemphigh(temphigh);
+        //插入数据，传入的对象主键如果存在于数据库中，有则更新，否则插入
+        if (isWeatherExist(city)) {
+            dao.update(managerDaoBean);
+        } else {
+            dao.insert(managerDaoBean);
+        }
+    }
+
+    private static boolean isWeatherExist(String city) {
+        CityManagerBeanDao dao = BaseApplication.getDaoInstant().getCityManagerBeanDao();
+        List<CityManagerBean> list = dao.queryBuilder().where(CityManagerBeanDao.Properties.City.eq(city)).list();
+        if (list.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 加载其他城市的天气信息
+     */
+    public static List<CityManagerBean> loadOtherCityWeather() {
+        return BaseApplication.getDaoInstant().getCityManagerBeanDao().loadAll();
+    }
+
+    /**
+     * 删除某一个城市天气
+     */
+    public static void deleteCity(CityManagerBean cityManagerBean) {
+        BaseApplication.getDaoInstant().getCityManagerBeanDao().delete(cityManagerBean);
     }
 }
