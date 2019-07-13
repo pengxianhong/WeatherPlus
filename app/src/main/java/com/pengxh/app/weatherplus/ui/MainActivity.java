@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -190,8 +189,18 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
             List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
                     .getIndex();
             bindIndexData(indexBeanList);
+
+            //TODO
+            String city = resultBean.getCity();
+            String quality = aqiBean.getQuality();
+            String color = aqiBean.getAqiinfo().getColor();
+            String img = resultBean.getImg();
+            String weather = resultBean.getWeather();
+            String templow = resultBean.getTemplow();
+            String temphigh = resultBean.getTemphigh();
+
         } else {
-            ToastUtil.showBeautifulToast("获取数据失败，请重试", 5);
+            ToastUtil.showBeautifulToast("获取数据失败，请重试", ToastUtil.ERROR);
         }
     }
 
