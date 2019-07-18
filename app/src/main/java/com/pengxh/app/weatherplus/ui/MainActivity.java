@@ -130,7 +130,24 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     @Override
     public void initEvent() {
-        getWeather();
+        //由于查询数据库需要花费4s左右，所以用线程控制，多次调用此方法获取数据，达到第一次请求数据不为空的效果
+        new Thread(new Runnable() {
+            int i = 0;
+
+            @Override
+            public void run() {
+                while (i < 10) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    getWeather();
+                    i++;
+                    Log.d(TAG, "run: " + i);
+                }
+            }
+        }).start();
     }
 
     private void getWeather() {
@@ -266,7 +283,6 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(this, indexBeanList);
         mCustomGridView_life.setAdapter(mGridViewAdapter);
-        OtherUtil.measureViewHeight(this, mCustomGridView_life);// 计算GridView的实际高度
         mCustomGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -295,6 +311,7 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
                 break;
             case R.id.mTextView_realtime_update:
                 getWeather();
+                ToastUtil.showBeautifulToast("已刷新", ToastUtil.SUCCESS);
                 break;
             default:
                 break;
