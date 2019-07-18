@@ -16,6 +16,10 @@ import android.widget.TextView;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
@@ -23,7 +27,6 @@ import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
-import com.pengxh.app.weatherplus.bean.CityManagerBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
@@ -102,6 +105,8 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     @BindView(R.id.mCustomGridView_life)
     CustomGridView mCustomGridView_life;
 
+    public AMapLocationClient mLocationClient = null;
+    public AMapLocationClientOption mLocationOption = null;
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
 
@@ -118,19 +123,24 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
 
     @Override
     public void init() {
+        getLocaltion();
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
     }
 
     @Override
     public void initEvent() {
+        getWeather();
+    }
+
+    private void getWeather() {
         String district = OtherUtil.getValue(this, "district");
-        Log.d(TAG, "从sp中获取到定位点: " + district);
+        Log.d(TAG, "getLocaltion: " + district);
         if (TextUtils.isEmpty(district)) {
-            ToastUtil.showBeautifulToast("获取天气失败，请稍后再试", ToastUtil.ERROR);
+            ToastUtil.showBeautifulToast("定位失败，请刷新重试下", ToastUtil.ERROR);
         } else {
             List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
-            Log.d(TAG, "从数据库中获取cityDaoBean: " + beanList);
+            Log.d(TAG, "beanList.size(): " + beanList.size());
             if (beanList.size() > 0) {
                 AllCityBean allCityBean = beanList.get(0);
                 weatherPresenter.onReadyRetrofitRequest(
@@ -146,7 +156,10 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     @Override
     public void showProgress() {
         if (progressDialog == null) {
-            show("正在加载天气数据...");
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在加载天气数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
         }
     }
 
@@ -155,13 +168,6 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-    }
-
-    private void show(String msg) {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(msg);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
     }
 
     @Override
@@ -280,21 +286,61 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
         }
     }
 
-    @OnClick(R.id.mImageView_realtime_add)
+    @OnClick({R.id.mImageView_realtime_add, R.id.mTextView_realtime_update})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mImageView_realtime_add:
                 startActivity(new Intent(this, CityListActivity.class));
                 break;
+            case R.id.mTextView_realtime_update:
+                getWeather();
+                break;
             default:
                 break;
         }
     }
 
+    private void getLocaltion() {
+        mLocationClient = new AMapLocationClient(this);
+        mLocationOption = new AMapLocationClientOption();
+        mLocationClient.setLocationListener(mLocationListener);
+        //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        //设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
+        mLocationOption.setInterval(60 * 1000);
+        //设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        //单位是毫秒，默认30000毫秒，建议超时时间不要低于8000毫秒。
+        mLocationOption.setHttpTimeOut(2000);
+        if (null != mLocationClient) {
+            mLocationClient.setLocationOption(mLocationOption);
+            //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
+            mLocationClient.stopLocation();
+            mLocationClient.startLocation();
+        }
+    }
+
+    private AMapLocationListener mLocationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+                //解析amapLocation获取相应内容。
+                String district = aMapLocation.getDistrict();//城区信息
+                OtherUtil.saveValue(MainActivity.this, district);
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e(TAG, "location Error, ErrCode:" + aMapLocation.getErrorCode() +
+                        ", errInfo:" + aMapLocation.getErrorInfo());
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         weatherPresenter.onUnsubscribe();
+        mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+        mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
     }
 }
