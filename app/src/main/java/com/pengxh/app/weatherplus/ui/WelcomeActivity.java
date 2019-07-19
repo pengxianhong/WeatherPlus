@@ -10,6 +10,7 @@ import android.util.Log;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.CityService;
+import com.pengxh.app.weatherplus.service.LocationService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
     @Override
     public void initEvent() {
-        SharedPreferences sp = this.getSharedPreferences("fisrtConfig", Context.MODE_PRIVATE);
+        SharedPreferences sp = this.getSharedPreferences("firstConfig", Context.MODE_PRIVATE);
         boolean isFirstRun = sp.getBoolean("isFirstRun", true);
         SharedPreferences.Editor editor = sp.edit();
         Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
@@ -52,9 +53,6 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
             editor.apply();
 
             requirePermissions();
-
-            //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
-            startService(new Intent(this, CityService.class));
         } else {
             startMainActivity();
         }
@@ -73,7 +71,23 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        startMainActivity();
+        //开启定位服务
+        startService(new Intent(this, LocationService.class));
+        //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
+        startService(new Intent(this, CityService.class));
+
+        //延时加载
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                    startMainActivity();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

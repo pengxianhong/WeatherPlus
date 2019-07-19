@@ -42,6 +42,7 @@
         <!-- 定位需要的服务 -->
         <service android:name="com.amap.api.location.APSService" />
         <service android:name=".service.CityService" />
+        <service android:name=".service.LocationService" />
 
     </application>
 

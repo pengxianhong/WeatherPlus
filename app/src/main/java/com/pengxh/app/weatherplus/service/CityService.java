@@ -17,11 +17,6 @@ import java.util.List;
 public class CityService extends Service {
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         OtherUtil.sendHttpRequest(Constant.CITY_URL, new HttpCallbackListener() {
@@ -58,10 +53,5 @@ public class CityService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }
