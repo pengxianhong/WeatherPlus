@@ -174,14 +174,13 @@ public class MainActivity extends BaseNormalActivity implements IWeatherView, On
     public void onEventMainThread(CityBeanEvent event) {
         AllCityBean allCityBean = event.getAllCityBean();
         Log.d(TAG, "onEventMainThread: " + allCityBean.getCity());
-        getWeather(allCityBean);
-        EventBus.getDefault().removeStickyEvent(event);
-    }
 
-    private void getWeather(AllCityBean allCityBean) {
         weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
                 Integer.parseInt(allCityBean.getCityid()),
                 Integer.parseInt(allCityBean.getCitycode()));
+        ToastUtil.showBeautifulToast("刷新成功", ToastUtil.SUCCESS);
+
+        EventBus.getDefault().removeStickyEvent(event);
     }
 
     @Override
