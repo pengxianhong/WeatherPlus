@@ -11,6 +11,7 @@ import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.CityService;
 import com.pengxh.app.weatherplus.service.LocationService;
+import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,14 +45,11 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
     @Override
     public void initEvent() {
-        SharedPreferences sp = this.getSharedPreferences("firstConfig", Context.MODE_PRIVATE);
-        boolean isFirstRun = sp.getBoolean("isFirstRun", true);
-        SharedPreferences.Editor editor = sp.edit();
+        SaveKeyValues firstConfig = new SaveKeyValues(this, "firstConfig");
+        boolean isFirstRun = (boolean) firstConfig.getValue("isFirstRun", true);
         Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
         if (isFirstRun) {
-            editor.putBoolean("isFirstRun", false);
-            editor.apply();
-
+            firstConfig.putValue("isFirstRun", false);
             requirePermissions();
         } else {
             startMainActivity();
