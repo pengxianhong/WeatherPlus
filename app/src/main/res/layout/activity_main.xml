@@ -1,47 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@mipmap/bg_main"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:scrollbars="none">
 
-    <include layout="@layout/include_realtime_title" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:background="@mipmap/bg_main"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include layout="@layout/include_realtime_title" />
+
+        <include layout="@layout/include_realtime" />
+
+        <include layout="@layout/include_daily" />
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="1dp"
+            android:background="#ccc" />
 
-            <include layout="@layout/include_realtime" />
+        <include layout="@layout/include_weekly" />
 
-            <include layout="@layout/include_daily" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccc" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
+        <include layout="@layout/include_air" />
 
-            <include layout="@layout/include_weekly" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccc" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
+        <include layout="@layout/include_life" />
 
-            <include layout="@layout/include_air" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
-
-            <include layout="@layout/include_life" />
-
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
