@@ -2,7 +2,6 @@ package com.pengxh.app.weatherplus.ui.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,12 +27,10 @@ import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
-import com.pengxh.app.weatherplus.bean.CityManagerBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.CityBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
-import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SaveKeyValues;
@@ -52,15 +49,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class WeatherFragment extends Fragment implements IWeatherView, View.OnClickListener {
+
     private static final String TAG = "WeatherFragment";
-
-    @BindView(R.id.mTextView_realtime_cityName)
-    TextView mTextViewRealtimeCityName;
-
-    @BindView(R.id.mTextView_realtime_date)
-    TextView mTextViewRealtimeDate;
-    @BindView(R.id.TextView_realtime_week)
-    TextView mTextViewRealtimeWeek;
 
     @BindView(R.id.mImageView_realtime_img)
     ImageView mImageViewRealtimeImg;
@@ -111,14 +101,12 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     TextView mTextViewAirO3;
     @BindView(R.id.mTextView_air_co)
     TextView mTextViewAirCO;
-
     @BindView(R.id.mCustomGridView_life)
     CustomGridView mCustomGridView_life;
 
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
     Unbinder unbinder;
-    private boolean isFirstGet;
 
     @Nullable
     @Override
@@ -130,9 +118,6 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     }
 
     private void initEvent() {
-        mTextViewRealtimeCityName.setFocusable(true);
-        mTextViewRealtimeCityName.setFocusableInTouchMode(true);
-        mTextViewRealtimeCityName.requestFocus();
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
 
@@ -142,11 +127,13 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
             ToastUtil.showBeautifulToast("定位失败，请刷新重试下", ToastUtil.ERROR);
         } else {
             SaveKeyValues firstConfig = new SaveKeyValues(getContext(), "firstGetWeather");
-            isFirstGet = (boolean) firstConfig.getValue("isFirstGet", true);
+            boolean isFirstGet = (boolean) firstConfig.getValue("isFirstGet", true);
             Log.d(TAG, "isFirstGet =====> " + isFirstGet);
             if (isFirstGet) {
                 firstConfig.putValue("isFirstGet", false);
-                //如果是第一次获取启动app并获取天气，就多延迟一会或者多请求几次
+                /**
+                 * 首次加载可能会加载不出数据，线程控制规避此问题
+                 * */
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -232,10 +219,10 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     }
 
     private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {
-        mTextViewRealtimeCityName.setText(resultBean.getCity());
-
-        mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
-        mTextViewRealtimeWeek.setText(resultBean.getWeek());
+        SaveKeyValues weatherTitle = new SaveKeyValues(getContext(), "weatherTitle");
+        weatherTitle.putValue("city", resultBean.getCity());
+        weatherTitle.putValue("date", resultBean.getDate());
+        weatherTitle.putValue("week", resultBean.getWeek());
 
         mImageViewRealtimeImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
         mTextViewRealtimeTemp.setText(resultBean.getTemp() + "°");
@@ -305,13 +292,10 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
         }
     }
 
-    @OnClick({R.id.mImageView_realtime_add, R.id.mTextView_realtime_update})
+    @OnClick({R.id.mTextView_realtime_update})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.mImageView_realtime_add:
-                startActivity(new Intent(getActivity(), CityListActivity.class));
-                break;
             case R.id.mTextView_realtime_update:
                 getCityBean(OtherUtil.getValue(getContext(), "district"));
                 break;

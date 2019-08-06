@@ -5,11 +5,12 @@
     android:background="@mipmap/bg_main"
     android:orientation="vertical">
 
-    <include layout="@layout/include_realtime_title" />
+    <!--<include layout="@layout/include_realtime_title" />-->
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:scrollbars="none">
 
         <LinearLayout
@@ -44,4 +45,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

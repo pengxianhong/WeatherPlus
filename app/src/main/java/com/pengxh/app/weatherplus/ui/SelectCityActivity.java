@@ -144,13 +144,6 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 if (beanList.size() > 0) {
                     //将查询历史保存到[热门]表
                     GreenDaoUtil.saveHotCityToSQL(beanList.get(0));
-
-//                    Intent intent = new Intent(SelectCityActivity.this, OtherCityWeather.class);
-//                    intent.putExtra("cityname", cityname);
-//                    intent.putExtra("cityid", cityid);
-//                    intent.putExtra("citycode", citycode);
-//                    startActivity(intent);
-//                    finish();
                 }
             }
         });

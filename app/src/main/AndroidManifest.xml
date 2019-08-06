@@ -32,7 +32,6 @@
         </activity>
         <activity android:name=".ui.SelectCityActivity" />
         <activity android:name=".ui.MainActivity" />
-        <activity android:name=".ui.OtherCityWeather" />
         <activity android:name=".ui.CityListActivity" />
         <activity android:name=".ui.TestActivity" />
 
