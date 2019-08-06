@@ -4,14 +4,20 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <ImageView
+        android:id="@+id/mImageView_realtime_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingEnd="5dp"
+        android:src="@drawable/location" />
+
     <TextView
         android:id="@+id/mTextView_realtime_cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerInParent="true"
-        android:drawablePadding="5dp"
-        android:drawableStart="@drawable/location"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/mImageView_realtime_location"
         android:gravity="center"
         android:singleLine="true"
         android:textColor="#fff" />

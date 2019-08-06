@@ -107,7 +107,7 @@ public class GreenDaoUtil {
         managerDaoBean.setTemphigh(temphigh);
         //插入数据，传入的对象主键如果存在于数据库中，有则更新，否则插入
         if (isWeatherExist(city)) {
-            dao.update(managerDaoBean);
+            //dao.update(managerDaoBean);
         } else {
             dao.insert(managerDaoBean);
         }

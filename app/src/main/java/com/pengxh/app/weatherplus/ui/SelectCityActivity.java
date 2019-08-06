@@ -1,5 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.app.ProgressDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
@@ -14,16 +15,21 @@ import android.widget.TextView;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
+import com.alibaba.fastjson.JSONObject;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
-import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.bean.HotCityInfoBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
+import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
+import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
+import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,7 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class SelectCityActivity extends BaseNormalActivity implements View.OnClickListener, OnItemClickListener {
+public class SelectCityActivity extends BaseNormalActivity implements IWeatherView, View.OnClickListener, OnItemClickListener {
 
     private static final String TAG = "SelectCityActivity";
 
@@ -52,6 +58,8 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     @BindView(R.id.mTextView_title)
     TextView mTextView_title;
 
+    private WeatherPresenterImpl weatherPresenter;
+    private ProgressDialog progressDialog;
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
     private List<HotCityInfoBean> hotCityList;
@@ -76,6 +84,8 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
 
     @Override
     public void initEvent() {
+        weatherPresenter = new WeatherPresenterImpl(this);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -99,7 +109,15 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
             hotCityAdapter.setOnItemClickListener(new HotCityAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position) {
-                    ToastUtil.showBeautifulToast(hotCityList.get(position).getCity(), ToastUtil.SUCCESS);
+                    String city = hotCityList.get(position).getCity();
+
+                    List<AllCityBean> beanList = GreenDaoUtil.queryCity(city);
+                    if (beanList.size() > 0) {
+                        //将查询历史保存到[热门]表
+                        AllCityBean cityBean = beanList.get(0);
+
+                        getCityWeather(cityBean);
+                    }
                 }
             });
         } else {
@@ -117,6 +135,12 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
     protected void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        weatherPresenter.onUnsubscribe();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -143,11 +167,20 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 List<AllCityBean> beanList = GreenDaoUtil.queryCity(s.toString());
                 if (beanList.size() > 0) {
                     //将查询历史保存到[热门]表
-                    GreenDaoUtil.saveHotCityToSQL(beanList.get(0));
+                    AllCityBean cityBean = beanList.get(0);
+                    GreenDaoUtil.saveHotCityToSQL(cityBean);
+
+                    getCityWeather(cityBean);
                 }
             }
         });
         EventBus.getDefault().removeStickyEvent(event);
+    }
+
+    private void getCityWeather(AllCityBean cityBean) {
+        weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(),
+                Integer.parseInt(cityBean.getCityid()),
+                Integer.parseInt(cityBean.getCitycode()));
     }
 
     @OnClick({R.id.mImageView_title_back, R.id.mImageView_hot_city})
@@ -193,6 +226,33 @@ public class SelectCityActivity extends BaseNormalActivity implements View.OnCli
                 hotCityAdapter.notifyDataSetChanged();
                 mImageView_hot_city.setVisibility(View.INVISIBLE);
                 break;
+        }
+    }
+
+    @Override
+    public void showProgress() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在加载天气数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showNetWorkData(NetWeatherBean weatherBean) {
+        if (weatherBean != null) {
+            EventBus.getDefault().postSticky(new NetWeatherBeanEvent(weatherBean));
+
+            SaveKeyValues values = new SaveKeyValues(this, "city_weather");
+            values.putValue("weather", JSONObject.toJSONString(weatherBean));
         }
     }
 }

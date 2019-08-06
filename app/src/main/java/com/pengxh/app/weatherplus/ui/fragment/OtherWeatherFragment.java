@@ -1,7 +1,6 @@
 package com.pengxh.app.weatherplus.ui.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +20,13 @@ import android.widget.TextView;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
-import com.pengxh.app.multilib.utils.ToastUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
-import com.pengxh.app.weatherplus.event.CityBeanEvent;
-import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
-import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
+import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
@@ -50,18 +45,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class WeatherFragment extends Fragment implements IWeatherView, View.OnClickListener {
+public class OtherWeatherFragment extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "WeatherFragment";
+    private static final String TAG = "OtherWeatherFragment";
 
+    @BindView(R.id.mImageView_realtime_location)
+    ImageView mImageView_realtime_location;
     @BindView(R.id.mTextView_realtime_cityName)
     TextView mTextViewRealtimeCityName;
     @BindView(R.id.mTextView_realtime_date)
     TextView mTextViewRealtimeDate;
     @BindView(R.id.TextView_realtime_week)
     TextView mTextViewRealtimeWeek;
-    @BindView(R.id.mImageView_realtime_add)
-    ImageView mImageView_realtime_add;
 
     @BindView(R.id.mImageView_realtime_img)
     ImageView mImageViewRealtimeImg;
@@ -115,8 +110,6 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     @BindView(R.id.mCustomGridView_life)
     CustomGridView mCustomGridView_life;
 
-    private WeatherPresenterImpl weatherPresenter;
-    private ProgressDialog progressDialog;
     Unbinder unbinder;
 
     @Nullable
@@ -129,104 +122,57 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     }
 
     private void initEvent() {
-        //获取天气数据
-        weatherPresenter = new WeatherPresenterImpl(this);
+        mImageView_realtime_location.setVisibility(View.GONE);
 
-        final String district = OtherUtil.getValue(getContext(), "district");
-        Log.d(TAG, "getLocaltion: " + district);
-        if (TextUtils.isEmpty(district)) {
-            ToastUtil.showBeautifulToast("定位失败，请刷新重试下", ToastUtil.ERROR);
-        } else {
-            SaveKeyValues firstConfig = new SaveKeyValues(getContext(), "firstGetWeather");
-            boolean isFirstGet = (boolean) firstConfig.getValue("isFirstGet", true);
-            Log.d(TAG, "isFirstGet =====> " + isFirstGet);
-            if (isFirstGet) {
-                firstConfig.putValue("isFirstGet", false);
-                /**
-                 * 首次加载可能会加载不出数据，线程控制规避此问题
-                 * */
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < 5; i++) {
-                            try {
-                                Thread.sleep(1000);
-                                getCityBean(district);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }).start();
-            } else {
-                //如果不是第一次获取启动app并获取天气，就直接请求一次
-                getCityBean(district);
-            }
-        }
-    }
-
-    private void getCityBean(String district) {
-        List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
-        Log.d(TAG, "beanList.size(): " + beanList.size());
-        if (beanList.size() > 0) {
-            AllCityBean allCityBean = beanList.get(0);
-            EventBus.getDefault().postSticky(new CityBeanEvent(allCityBean));
+        SaveKeyValues values = new SaveKeyValues(getContext(), "city_weather");
+        String weather = (String) values.getValue("weather", "");
+        if (!TextUtils.isEmpty(weather)) {
+            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
+            setWeather(weatherBean);
         }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(CityBeanEvent event) {
-        AllCityBean allCityBean = event.getAllCityBean();
-        Log.d(TAG, "onEventMainThread: " + allCityBean.getCity());
-
-        weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
-                Integer.parseInt(allCityBean.getCityid()),
-                Integer.parseInt(allCityBean.getCitycode()));
-        ToastUtil.showBeautifulToast("刷新成功", ToastUtil.SUCCESS);
+    public void onEventMainThread(NetWeatherBeanEvent event) {
+        setWeather(event.getWeatherBean());
 
         EventBus.getDefault().removeStickyEvent(event);
     }
 
-    @Override
-    public void showNetWorkData(NetWeatherBean weatherBean) {
-        if (weatherBean != null) {
-            // TODO 显示当天的详细天气情况
-            NetWeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
-            bindResultData(resultBean);
+    private void setWeather(NetWeatherBean weatherBean) {
+        // TODO 显示当天的详细天气情况
+        NetWeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
+        bindResultData(resultBean);
 
-            // TODO 显示当天24h的天气情况
-            List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
-                    .getHourly();
-            bindHourlyData(hourlyBeanList);
+        // TODO 显示当天24h的天气情况
+        List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
+                .getHourly();
+        bindHourlyData(hourlyBeanList);
 
-            // TODO 显示一周内的天气情况
-            List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
-                    .getDaily();
-            bindDailyData(dailyBeanList);
+        // TODO 显示一周内的天气情况
+        List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
+                .getDaily();
+        bindDailyData(dailyBeanList);
 
-            // TODO 显示详细空气质量
-            NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
-            bindAqiData(aqiBean);
+        // TODO 显示详细空气质量
+        NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
+        bindAqiData(aqiBean);
 
-            // TODO 绑定GridView
-            List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
-                    .getIndex();
-            bindIndexData(indexBeanList);
+        // TODO 绑定GridView
+        List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
+                .getIndex();
+        bindIndexData(indexBeanList);
 
-            //TODO 保存简单的天气信息
-            //TODO 保存简单的天气信息
-            String city = resultBean.getCity();
-            String quality = aqiBean.getQuality();
-            String color = aqiBean.getAqiinfo().getColor();
-            String img = resultBean.getImg();
-            String weather = resultBean.getWeather();
-            String templow = resultBean.getTemplow();
-            String temphigh = resultBean.getTemphigh();
+        //TODO 保存简单的天气信息
+        String city = resultBean.getCity();
+        String quality = aqiBean.getQuality();
+        String color = aqiBean.getAqiinfo().getColor();
+        String img = resultBean.getImg();
+        String weather = resultBean.getWeather();
+        String templow = resultBean.getTemplow();
+        String temphigh = resultBean.getTemphigh();
 
-            GreenDaoUtil.saveSimpleWeather(city, quality, color, img, weather, templow, temphigh);
-        } else {
-            ToastUtil.showBeautifulToast("获取数据失败，请重试", ToastUtil.ERROR);
-        }
+        GreenDaoUtil.saveSimpleWeather(city, quality, color, img, weather, templow, temphigh);
     }
 
     private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {
@@ -315,27 +261,9 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     }
 
     @Override
-    public void showProgress() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getContext());
-            progressDialog.setMessage("正在加载天气数据...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        }
-    }
-
-    @Override
-    public void hideProgress() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         EventBus.getDefault().register(this);
-
     }
 
     @Override
@@ -347,7 +275,6 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        weatherPresenter.onUnsubscribe();
         unbinder.unbind();
     }
 }

@@ -1,9 +1,7 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -57,8 +55,8 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, TestActivity.class);
-//        Intent intent = new Intent(this, MainActivity.class);
+//        Intent intent = new Intent(this, TestActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
