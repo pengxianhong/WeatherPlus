@@ -18,6 +18,8 @@ import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.CityListAdapter;
 import com.pengxh.app.weatherplus.bean.CityManagerBean;
+import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
+import com.pengxh.app.weatherplus.utils.FragmentListImpl;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
@@ -88,10 +90,16 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         mSwipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastUtil.showBeautifulToast(otherCityWeather.get(position).getCity(), ToastUtil.SUCCESS);
+                Log.d(TAG, "onItemClick: item位置" + position);
+                if (position != 0) {
+                    //第一个位置不新建fragment
+                    new FragmentListImpl().addFragment(new OtherWeatherFragment());
+                }
+                finish();
             }
         });
     }
+
 
     @OnClick({R.id.mImageView_title_back, R.id.mImageView_title_add})
     @Override

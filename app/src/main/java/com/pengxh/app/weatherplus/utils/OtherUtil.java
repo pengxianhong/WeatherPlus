@@ -3,6 +3,7 @@ package com.pengxh.app.weatherplus.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -13,6 +14,7 @@ import com.pengxh.app.weatherplus.R;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -76,6 +78,21 @@ public class OtherUtil {
         list.clear();
         list.addAll(set);
         return list;
+    }
+
+    /**
+     * 合并list
+     */
+    public static List<Fragment> combineList(List<Fragment> list1, List<Fragment> list2) {
+        List<Fragment> combineResult = new LinkedList<>();
+        combineResult.addAll(list1);
+        combineResult.addAll(list2);
+
+        //去重
+        HashSet<Fragment> set = new HashSet<>(combineResult);
+        combineResult.clear();
+        combineResult.addAll(set);
+        return combineResult;
     }
 
     /**

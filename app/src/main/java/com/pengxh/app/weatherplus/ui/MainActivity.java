@@ -5,14 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
+import com.pengxh.app.weatherplus.utils.FragmentListImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,12 +25,12 @@ public class MainActivity extends BaseNormalActivity {
 
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.mTestViewPager)
-    ViewPager mTestViewPager;
+    @BindView(R.id.mMainViewPager)
+    ViewPager mMainViewPager;
     @BindView(R.id.mLlIndicator)
     LinearLayout mLlIndicator;
+    private LinkedList<Fragment> fragmentLinkedList;
 
-    private List<Fragment> fragmentList = new LinkedList<>();
 
     @Override
     public void initView() {
@@ -38,15 +39,20 @@ public class MainActivity extends BaseNormalActivity {
 
     @Override
     public void init() {
-        fragmentList.add(new WeatherFragment());
-        fragmentList.add(new OtherWeatherFragment());
+        FragmentListImpl fragmentManager = new FragmentListImpl();
+        fragmentLinkedList = fragmentManager.getAllFragment();
+        if (fragmentLinkedList.size() == 0) {
+            fragmentManager.addFragment(new WeatherFragment());
+            fragmentLinkedList = fragmentManager.getAllFragment();
+        }
+        Log.d(TAG, "init: fragmentLinkedList.size ===> " + fragmentLinkedList.size());
     }
 
     @Override
     public void initEvent() {
-        FragmentPagerAdapter adapter = new WeatherPageAdapter(getSupportFragmentManager(), fragmentList);
-        mTestViewPager.setAdapter(adapter);
-        mTestViewPager.setOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentList.size()));
+        FragmentPagerAdapter adapter = new WeatherPageAdapter(getSupportFragmentManager(), fragmentLinkedList);
+        mMainViewPager.setAdapter(adapter);
+        mMainViewPager.setOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentLinkedList.size()));
     }
 
     class WeatherPageChangeListener implements ViewPager.OnPageChangeListener {

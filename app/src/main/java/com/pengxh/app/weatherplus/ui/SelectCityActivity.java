@@ -113,10 +113,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
                     List<AllCityBean> beanList = GreenDaoUtil.queryCity(city);
                     if (beanList.size() > 0) {
-                        //将查询历史保存到[热门]表
-                        AllCityBean cityBean = beanList.get(0);
-
-                        getCityWeather(cityBean);
+                        getCityWeather(beanList.get(0));
                     }
                 }
             });
@@ -243,6 +240,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void hideProgress() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
+            finish();
         }
     }
 
