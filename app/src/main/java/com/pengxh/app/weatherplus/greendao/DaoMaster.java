@@ -24,7 +24,6 @@ public class DaoMaster extends AbstractDaoMaster {
         AllCityBeanDao.createTable(db, ifNotExists);
         CityManagerBeanDao.createTable(db, ifNotExists);
         CityNameBeanDao.createTable(db, ifNotExists);
-        HotCityInfoBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -32,7 +31,6 @@ public class DaoMaster extends AbstractDaoMaster {
         AllCityBeanDao.dropTable(db, ifExists);
         CityManagerBeanDao.dropTable(db, ifExists);
         CityNameBeanDao.dropTable(db, ifExists);
-        HotCityInfoBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -54,7 +52,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(AllCityBeanDao.class);
         registerDaoClass(CityManagerBeanDao.class);
         registerDaoClass(CityNameBeanDao.class);
-        registerDaoClass(HotCityInfoBeanDao.class);
     }
 
     public DaoSession newSession() {

@@ -18,8 +18,8 @@ import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.CityListAdapter;
 import com.pengxh.app.weatherplus.bean.CityManagerBean;
+import com.pengxh.app.weatherplus.callback.impl.FragmentListImpl;
 import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
-import com.pengxh.app.weatherplus.utils.FragmentListImpl;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 

@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pengxh.app.weatherplus.bean.NetCityBean;
+import com.pengxh.app.weatherplus.callback.HttpCallbackListener;
 import com.pengxh.app.weatherplus.utils.Constant;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
-import com.pengxh.app.weatherplus.utils.HttpCallbackListener;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;

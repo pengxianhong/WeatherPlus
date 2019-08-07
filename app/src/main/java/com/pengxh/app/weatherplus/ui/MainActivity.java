@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.callback.impl.FragmentListImpl;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
-import com.pengxh.app.weatherplus.utils.FragmentListImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

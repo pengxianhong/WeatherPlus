@@ -4,10 +4,8 @@ import com.pengxh.app.weatherplus.BaseApplication;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityManagerBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
-import com.pengxh.app.weatherplus.bean.HotCityInfoBean;
 import com.pengxh.app.weatherplus.greendao.AllCityBeanDao;
 import com.pengxh.app.weatherplus.greendao.CityManagerBeanDao;
-import com.pengxh.app.weatherplus.greendao.HotCityInfoBeanDao;
 
 import java.util.List;
 
@@ -50,46 +48,6 @@ public class GreenDaoUtil {
      */
     public static List<CityNameBean> loadAllCityName() {
         return BaseApplication.getDaoInstant().getCityNameBeanDao().loadAll();
-    }
-
-    /**
-     * 保存热门城市信息
-     */
-    public static void saveHotCityToSQL(AllCityBean allCityBean) {
-        HotCityInfoBeanDao hotCityInfoBeanDao = BaseApplication.getDaoInstant().getHotCityInfoBeanDao();
-        HotCityInfoBean infoDaoBean = new HotCityInfoBean();
-        infoDaoBean.setCity(allCityBean.getCity());
-        infoDaoBean.setCityid(allCityBean.getCityid());
-        infoDaoBean.setCitycode(allCityBean.getCitycode());
-        if (!isExist(allCityBean.getCity())) {
-            hotCityInfoBeanDao.insert(infoDaoBean);
-        }
-    }
-
-    /**
-     * 判断字段是否存在
-     */
-    private static boolean isExist(String city) {
-        HotCityInfoBeanDao hotCityInfoBeanDao = BaseApplication.getDaoInstant().getHotCityInfoBeanDao();
-        List<HotCityInfoBean> list = hotCityInfoBeanDao.queryBuilder().where(HotCityInfoBeanDao.Properties.City.eq(city)).list();
-        if (list.size() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 加载所有热门城市信息
-     */
-    public static List<HotCityInfoBean> loadAllHotCity() {
-        return BaseApplication.getDaoInstant().getHotCityInfoBeanDao().loadAll();
-    }
-
-    /**
-     * 删除热门城市
-     */
-    public static void deleteHotCity() {
-        BaseApplication.getDaoInstant().getHotCityInfoBeanDao().deleteAll();
     }
 
     /**

@@ -11,6 +11,7 @@ import android.widget.ListAdapter;
 
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.callback.HttpCallbackListener;
 
 import java.io.IOException;
 import java.util.HashSet;

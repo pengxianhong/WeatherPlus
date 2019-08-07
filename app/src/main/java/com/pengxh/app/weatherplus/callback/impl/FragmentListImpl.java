@@ -1,7 +1,9 @@
-package com.pengxh.app.weatherplus.utils;
+package com.pengxh.app.weatherplus.callback.impl;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
+
+import com.pengxh.app.weatherplus.callback.FragmentListCallback;
 
 import java.util.LinkedList;
 

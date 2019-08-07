@@ -21,8 +21,8 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
-import com.pengxh.app.weatherplus.bean.HotCityInfoBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.callback.impl.HotCityListImpl;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
 import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
@@ -62,7 +62,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     private ProgressDialog progressDialog;
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
-    private List<HotCityInfoBean> hotCityList;
+    private HotCityListImpl mListManager;
+    private ArrayList<AllCityBean> allHotCity;
 
     @Override
     public void initView() {
@@ -84,6 +85,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
     @Override
     public void initEvent() {
+        mListManager = new HotCityListImpl();
         weatherPresenter = new WeatherPresenterImpl(this);
 
         new Thread(new Runnable() {
@@ -99,17 +101,17 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
             }
         }).start();
 
-        hotCityList = GreenDaoUtil.loadAllHotCity();
-        if (hotCityList.size() > 0) {
+        allHotCity = mListManager.getAllHotCity();
+        if (allHotCity.size() > 0) {
             mImageView_hot_city.setVisibility(View.VISIBLE);
-            hotCityAdapter = new HotCityAdapter(this, hotCityList);
+            hotCityAdapter = new HotCityAdapter(this, allHotCity);
             mRecyclerViewHotCity.setLayoutManager(
                     new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
             mRecyclerViewHotCity.setAdapter(hotCityAdapter);
             hotCityAdapter.setOnItemClickListener(new HotCityAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position) {
-                    String city = hotCityList.get(position).getCity();
+                    String city = allHotCity.get(position).getCity();
 
                     List<AllCityBean> beanList = GreenDaoUtil.queryCity(city);
                     if (beanList.size() > 0) {
@@ -143,9 +145,9 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(AutoCompleteEvent event) {
         List<String> cities = event.getCities();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line,
-                OtherUtil.removeDuplicate(cities));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this
+                , android.R.layout.simple_dropdown_item_1line
+                , OtherUtil.removeDuplicate(cities));
         mAutoCompleteTextView.setThreshold(1); //设置输入一个字符提示，默认为2
         mAutoCompleteTextView.setAdapter(adapter);
         mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
@@ -165,7 +167,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                 if (beanList.size() > 0) {
                     //将查询历史保存到[热门]表
                     AllCityBean cityBean = beanList.get(0);
-                    GreenDaoUtil.saveHotCityToSQL(cityBean);
+
+                    mListManager.addHotCity(cityBean);
 
                     getCityWeather(cityBean);
                 }
@@ -218,8 +221,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                 alertView.dismiss();
                 break;
             case 0:
-                GreenDaoUtil.deleteHotCity();
-                hotCityList.clear();
+                allHotCity.clear();
                 hotCityAdapter.notifyDataSetChanged();
                 mImageView_hot_city.setVisibility(View.INVISIBLE);
                 break;
