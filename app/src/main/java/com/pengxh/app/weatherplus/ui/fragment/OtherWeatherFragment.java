@@ -124,8 +124,7 @@ public class OtherWeatherFragment extends Fragment implements View.OnClickListen
     private void initEvent() {
         mImageView_realtime_location.setVisibility(View.GONE);
 
-        SaveKeyValues values = new SaveKeyValues(getContext(), "city_weather");
-        String weather = (String) values.getValue("weather", "");
+        String weather = (String) SaveKeyValues.getValue("city_weather", "weather", "");
         if (!TextUtils.isEmpty(weather)) {
             NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
             setWeather(weatherBean);

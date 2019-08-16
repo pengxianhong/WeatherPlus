@@ -1,21 +1,25 @@
 package com.pengxh.app.weatherplus.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SaveKeyValues {
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+    private static SharedPreferences sharedPreferences;
+    private static SharedPreferences.Editor editor;
+    @SuppressLint({"StaticFieldLeak"})
+    private static Context context;
 
-    public SaveKeyValues(Context context, String FILE_NAME) {
-        sharedPreferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+    public static void init(Context mContext) {
+        context = mContext.getApplicationContext();
     }
 
     /**
      * 存储
      */
-    public void putValue(String key, Object object) {
+    public static void putValue(String file, String key, Object object) {
+        sharedPreferences = context.getSharedPreferences(file, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         if (object instanceof String) {
             editor.putString(key, (String) object);
         } else if (object instanceof Integer) {
@@ -29,13 +33,14 @@ public class SaveKeyValues {
         } else {
             editor.putString(key, object.toString());
         }
-        editor.commit();
+        editor.apply();
     }
 
     /**
      * 获取保存的数据
      */
-    public Object getValue(String key, Object defaultObject) {
+    public static Object getValue(String file, String key, Object defaultObject) {
+        sharedPreferences = context.getSharedPreferences(file, Context.MODE_PRIVATE);
         if (defaultObject instanceof String) {
             return sharedPreferences.getString(key, (String) defaultObject);
         } else if (defaultObject instanceof Integer) {
@@ -54,7 +59,7 @@ public class SaveKeyValues {
     /**
      * 移除某个key值已经对应的值
      */
-    public void removeKey(String key) {
+    public static void removeKey(String key) {
         editor.remove(key);
         editor.commit();
     }
@@ -62,7 +67,7 @@ public class SaveKeyValues {
     /**
      * 清除所有数据
      */
-    public void clearAll() {
+    public static void clearAll() {
         editor.clear();
         editor.commit();
     }
@@ -70,7 +75,8 @@ public class SaveKeyValues {
     /**
      * 查询某个key是否存在
      */
-    public Boolean containsKey(String key) {
+    public static Boolean containsKey(String file, String key) {
+        sharedPreferences = context.getSharedPreferences(file, Context.MODE_PRIVATE);
         return sharedPreferences.contains(key);
     }
 }

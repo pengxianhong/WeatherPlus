@@ -43,11 +43,10 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
     @Override
     public void initEvent() {
-        SaveKeyValues firstConfig = new SaveKeyValues(this, "firstConfig");
-        boolean isFirstRun = (boolean) firstConfig.getValue("isFirstRun", true);
+        boolean isFirstRun = (boolean) SaveKeyValues.getValue("firstConfig", "isFirstRun", true);
         Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
         if (isFirstRun) {
-            firstConfig.putValue("isFirstRun", false);
+            SaveKeyValues.putValue("firstConfig", "isFirstRun", false);
             requirePermissions();
         } else {
             startMainActivity();

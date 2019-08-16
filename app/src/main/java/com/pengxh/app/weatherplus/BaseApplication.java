@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.greendao.DaoMaster;
 import com.pengxh.app.weatherplus.greendao.DaoSession;
+import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
 public class BaseApplication extends Application {
 
@@ -15,6 +16,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ToastUtil.init(this);
+        SaveKeyValues.init(this);
         setupDatabase();//配置greendao
     }
 

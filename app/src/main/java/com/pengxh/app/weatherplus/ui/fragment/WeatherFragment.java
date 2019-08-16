@@ -137,11 +137,10 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
         if (TextUtils.isEmpty(district)) {
             ToastUtil.showBeautifulToast("定位失败，请刷新重试下", ToastUtil.ERROR);
         } else {
-            SaveKeyValues firstConfig = new SaveKeyValues(getContext(), "firstGetWeather");
-            boolean isFirstGet = (boolean) firstConfig.getValue("isFirstGet", true);
+            boolean isFirstGet = (boolean) SaveKeyValues.getValue("firstGetWeather", "isFirstGet", true);
             Log.d(TAG, "isFirstGet =====> " + isFirstGet);
             if (isFirstGet) {
-                firstConfig.putValue("isFirstGet", false);
+                SaveKeyValues.putValue("firstGetWeather", "isFirstGet", false);
                 /**
                  * 首次加载可能会加载不出数据，线程控制规避此问题
                  * */
@@ -335,7 +334,6 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         EventBus.getDefault().register(this);
-
     }
 
     @Override
