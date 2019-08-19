@@ -2,15 +2,18 @@ package com.pengxh.app.weatherplus.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.pengxh.app.multilib.widget.swipemenu.BaseSwipListAdapter;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.CityManagerBean;
+import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
+import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
@@ -20,24 +23,27 @@ import java.util.List;
  */
 
 public class CityListAdapter extends BaseSwipListAdapter {
+
+    private static final String TAG = "CityListAdapter";
+
     private Context context;
-    private List<CityManagerBean> otherCityWeather;
+    private List<CityListWeatherBean> listWeatherBeans;
     private LayoutInflater inflater;
 
-    public CityListAdapter(Context context, List<CityManagerBean> otherCityWeather) {
+    public CityListAdapter(Context context, List<CityListWeatherBean> list) {
         this.context = context;
-        this.otherCityWeather = otherCityWeather;
+        this.listWeatherBeans = list;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return otherCityWeather == null ? 0 : otherCityWeather.size();
+        return listWeatherBeans == null ? 0 : listWeatherBeans.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return otherCityWeather.get(position);
+        return listWeatherBeans.get(position);
     }
 
     @Override
@@ -61,7 +67,7 @@ public class CityListAdapter extends BaseSwipListAdapter {
         } else {
             itemHolder = (CityListHolder) convertView.getTag();
         }
-        itemHolder.bindHolder(otherCityWeather.get(position));
+        itemHolder.bindHolder(listWeatherBeans.get(position).getWeather());
         return convertView;
     }
 
@@ -73,10 +79,14 @@ public class CityListAdapter extends BaseSwipListAdapter {
         private TextView mTextView_citylist_templow;
         private TextView mTextView_citylist_temphigh;
 
-        void bindHolder(CityManagerBean bean) {
+        void bindHolder(String weather) {
+            Log.d(TAG, "bindHolder: " + weather);
+            Gson gson = new Gson();
+            NetWeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, NetWeatherBean.class).getResult().getResult();
+
             mTextView_citylist_city.setText(bean.getCity());
-            mTextView_citylist_quality.setText(bean.getQuality());
-            mTextView_citylist_quality.setBackgroundColor(Color.parseColor(bean.getColor()));
+            mTextView_citylist_quality.setText(bean.getAqi().getQuality());
+            mTextView_citylist_quality.setBackgroundColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
             mImageView_citylist_img.setImageResource(OtherUtil.getImageResource(bean.getImg()));
             mTextView_citylist_weather.setText(bean.getWeather());
             mTextView_citylist_templow.setText(bean.getTemplow() + "℃~");

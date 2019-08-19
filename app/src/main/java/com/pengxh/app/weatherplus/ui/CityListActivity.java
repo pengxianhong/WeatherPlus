@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.DensityUtil;
@@ -17,11 +18,11 @@ import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuItem;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.CityListAdapter;
+import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.CityManagerBean;
-import com.pengxh.app.weatherplus.callback.impl.FragmentListImpl;
-import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 
 import java.util.List;
 
@@ -36,11 +37,27 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     ImageView mImageView_title_back;
     @BindView(R.id.mImageView_title_add)
     ImageView mImageView_title_add;
+
+    @BindView(R.id.mTextView_citylist_city)
+    TextView mTextViewCitylistCity;
+    @BindView(R.id.mTextView_citylist_quality)
+    TextView mTextViewCitylistQuality;
+    @BindView(R.id.mImageView_citylist_img)
+    ImageView mImageViewCitylistImg;
+    @BindView(R.id.mTextView_citylist_weather)
+    TextView mTextViewCitylistWeather;
+    @BindView(R.id.mTextView_citylist_templow)
+    TextView mTextViewCitylistTemplow;
+    @BindView(R.id.mTextView_citylist_temphigh)
+    TextView mTextViewCitylistTemphigh;
+
     @BindView(R.id.mSwipeMenuListView)
     SwipeMenuListView mSwipeMenuListView;
 
-    private List<CityManagerBean> otherCityWeather;
+
     private CityListAdapter cityAdapter;
+    private List<CityListWeatherBean> listWeatherBeans;
+    private SQLiteUtil sqLiteUtil;
 
     @Override
     public void initView() {
@@ -49,9 +66,23 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
 
     @Override
     public void init() {
-        otherCityWeather = GreenDaoUtil.loadOtherCityWeather();
+        //设置第一个item的城市天气。后续改为实时更新的效果
+        List<CityManagerBean> otherCityWeather = GreenDaoUtil.loadOtherCityWeather();
         if (otherCityWeather.size() > 0) {
-            cityAdapter = new CityListAdapter(this, otherCityWeather);
+            CityManagerBean cityManagerBean = otherCityWeather.get(0);
+            mTextViewCitylistCity.setText(cityManagerBean.getCity());
+            mTextViewCitylistQuality.setText(cityManagerBean.getQuality());
+            mTextViewCitylistQuality.setBackgroundColor(Color.parseColor(cityManagerBean.getColor()));
+            mImageViewCitylistImg.setImageResource(OtherUtil.getImageResource(cityManagerBean.getImg()));
+            mTextViewCitylistWeather.setText(cityManagerBean.getWeather());
+            mTextViewCitylistTemplow.setText(cityManagerBean.getTemplow() + "℃~");
+            mTextViewCitylistTemphigh.setText(cityManagerBean.getTemphigh() + "℃");
+        }
+        //设置其他城市的信息
+        sqLiteUtil = SQLiteUtil.getInstance();
+        listWeatherBeans = sqLiteUtil.loadCityList();
+        if (otherCityWeather.size() > 0) {
+            cityAdapter = new CityListAdapter(this, listWeatherBeans);
             mSwipeMenuListView.setAdapter(cityAdapter);
         }
     }
@@ -62,9 +93,9 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
             @Override
             public void create(SwipeMenu menu) {
                 SwipeMenuItem openItem = new SwipeMenuItem(getApplicationContext());
-                openItem.setBackground(new ColorDrawable(Color.rgb(255, 0, 0)));
-                openItem.setWidth(DensityUtil.dp2px(getApplicationContext(), 90.0f));
-                openItem.setTitle("Delete");
+                openItem.setBackground(new ColorDrawable(Color.rgb(255, 69, 0)));
+                openItem.setWidth(DensityUtil.dp2px(getApplicationContext(), 70.0f));
+                openItem.setTitle("删除");
                 openItem.setTitleSize(18);
                 openItem.setTitleColor(Color.WHITE);
                 menu.addMenuItem(openItem);
@@ -76,10 +107,8 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 switch (index) {
                     case 0:
                         //先删除数据库数据，再删除List，不然会出现角标越界
-                        GreenDaoUtil.deleteCity(otherCityWeather.get(position));
-                        otherCityWeather.remove(position);
-                        Log.d(TAG, "otherCityWeather.size(): " + otherCityWeather.size()
-                                + "\r\nposition: " + position);
+                        sqLiteUtil.deleteCityByName(listWeatherBeans.get(position).getCityName());
+                        listWeatherBeans.remove(position);
                         cityAdapter.notifyDataSetChanged();
                         ToastUtil.showBeautifulToast("删除成功", ToastUtil.SUCCESS);
                         break;
@@ -91,17 +120,14 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: item位置" + position);
-                if (position != 0) {
-                    //第一个位置不新建fragment
-                    new FragmentListImpl().addFragment(new OtherWeatherFragment());
-                }
+
                 finish();
             }
         });
     }
 
 
-    @OnClick({R.id.mImageView_title_back, R.id.mImageView_title_add})
+    @OnClick({R.id.mImageView_title_back, R.id.mRelativeLayout_citylist, R.id.mImageView_title_add})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -113,6 +139,9 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                         finish();
                     }
                 });
+                break;
+            case R.id.mRelativeLayout_citylist:
+                ToastUtil.showBeautifulToast("定位点城市不能删除", ToastUtil.WARNING);
                 break;
             case R.id.mImageView_title_add:
                 Intent intent = new Intent(this, SelectCityActivity.class);

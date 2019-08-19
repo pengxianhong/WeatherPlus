@@ -7,6 +7,8 @@
 
     <include layout="@layout/include_title" />
 
+    <include layout="@layout/item_citylist" />
+
     <com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView
         android:id="@+id/mSwipeMenuListView"
         android:layout_width="match_parent"

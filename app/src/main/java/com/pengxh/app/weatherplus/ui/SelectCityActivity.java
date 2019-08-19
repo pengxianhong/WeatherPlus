@@ -30,7 +30,6 @@ import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
-import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -251,8 +250,11 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
             EventBus.getDefault().postSticky(new NetWeatherBeanEvent(weatherBean));
-            //也存数据库吧，sp不太合适
-            SaveKeyValues.putValue("city_weather", "weather", JSONObject.toJSONString(weatherBean));
+            //也存数据库，sp不太合适
+            String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
+            String jsonString = JSONObject.toJSONString(weatherBean);
+            Log.d(TAG, "showNetWorkData: " + jsonString);
+            sqLiteUtil.saveCityListWeather(city, jsonString);
         }
     }
 }

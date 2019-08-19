@@ -5,8 +5,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.HotCityNameBean;
 
 import java.util.ArrayList;
@@ -52,9 +54,9 @@ public class SQLiteUtil {
      * 保存热门城市名
      */
     public void saveHotCity(String mCityName) {
-        if (mCityName != null) {
+        if (!TextUtils.isEmpty(mCityName)) {
             ContentValues values = new ContentValues();
-            if (isCityExist(mCityName)) {
+            if (isCityExist("HotCity", mCityName)) {
                 Log.d(TAG, mCityName + "已经存在了");
             } else {
                 values.put("cityName", mCityName);
@@ -89,12 +91,15 @@ public class SQLiteUtil {
 
     /**
      * 查询
+     *
+     * @param table         表名
+     * @param selectionArgs 需要查询的参数，所有涉及到城市的表尽量都用‘cityName’作为一列
      */
-    private boolean isCityExist(String cityName) {
+    private boolean isCityExist(String table, String selectionArgs) {
         boolean result = false;
         Cursor cursor = null;
         try {
-            cursor = db.query("HotCity", null, "cityName = ?", new String[]{cityName}, null, null, null);
+            cursor = db.query(table, null, "cityName = ?", new String[]{selectionArgs}, null, null, null);
             result = null != cursor && cursor.moveToFirst();
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,5 +109,49 @@ public class SQLiteUtil {
             }
         }
         return result;
+    }
+
+    /***********************************分割线**********************************************/
+
+    /**
+     * 保存城市列表天气
+     */
+    public void saveCityListWeather(String city, String weather) {
+        if (!TextUtils.isEmpty(city)) {
+            ContentValues values = new ContentValues();
+            values.put("cityName", city);
+            values.put("cityWeather", weather);
+            if (isCityExist("CityWeather", city)) {
+                db.update("CityWeather", values, "cityWeather = ?", new String[]{weather});
+                Log.d(TAG, "更新数据");
+            } else {
+                db.insert("CityWeather", null, values);
+            }
+        }
+    }
+
+    /**
+     * 加载所有城市天气
+     */
+    public List<CityListWeatherBean> loadCityList() {
+        List<CityListWeatherBean> list = new ArrayList<>();
+        Cursor cursor = db
+                .query("CityWeather", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                CityListWeatherBean resultBean = new CityListWeatherBean();
+                resultBean.setCityName(cursor.getString(cursor.getColumnIndex("cityName")));
+                resultBean.setWeather(cursor.getString(cursor.getColumnIndex("cityWeather")));
+                list.add(resultBean);
+            } while (cursor.moveToNext());
+        }
+        return list;
+    }
+
+    /**
+     * 删除城市
+     */
+    public void deleteCityByName(String city) {
+        db.delete("CityWeather", "cityWeather = ?", new String[]{city});
     }
 }

@@ -16,6 +16,7 @@ public class SQLiteUtilHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table HotCity(id integer primary key autoincrement,cityName text)");
+        db.execSQL("create table CityWeather(id integer primary key autoincrement,cityName text,cityWeather text)");
         Log.d(TAG, "数据库创建成功");
     }
 
