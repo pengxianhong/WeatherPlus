@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,6 +21,8 @@ import android.widget.TextView;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
+import com.gyf.immersionbar.ImmersionBar;
+import com.gyf.immersionbar.components.ImmersionFragment;
 import com.pengxh.app.multilib.utils.ToastUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
@@ -50,7 +51,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class WeatherFragment extends Fragment implements IWeatherView, View.OnClickListener {
+public class WeatherFragment extends ImmersionFragment implements IWeatherView, View.OnClickListener {
 
     private static final String TAG = "WeatherFragment";
 
@@ -126,6 +127,15 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
         unbinder = ButterKnife.bind(this, view);
         initEvent();
         return view;
+    }
+
+    //Fragment沉浸式状态栏
+    @Override
+    public void initImmersionBar() {
+        ImmersionBar.with(this)
+                .statusBarColor("#00BAFF")
+                .fitsSystemWindows(true)
+                .init();
     }
 
     private void initEvent() {

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.alibaba.fastjson.JSONObject;
+import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
@@ -68,6 +69,10 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Override
     public void initView() {
         setContentView(R.layout.activity_selectcity);
+        ImmersionBar.with(this)
+                .statusBarColor("#0094FF")
+                .fitsSystemWindows(true)
+                .init();
     }
 
     @Override

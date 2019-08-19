@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.ToastUtil;
@@ -62,6 +63,10 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     @Override
     public void initView() {
         setContentView(R.layout.activity_citylist);
+        ImmersionBar.with(this)
+                .statusBarColor("#00BAFF")
+                .fitsSystemWindows(true)
+                .init();
     }
 
     @Override

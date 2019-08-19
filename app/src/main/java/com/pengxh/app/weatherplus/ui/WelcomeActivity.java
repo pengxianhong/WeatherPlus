@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.CityService;
@@ -38,7 +39,10 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
     @Override
     public void init() {
-
+        ImmersionBar.with(this)
+                .statusBarColor(R.color.white)
+                .fitsSystemWindows(true)
+                .init();
     }
 
     @Override

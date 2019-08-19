@@ -56,5 +56,8 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.2'
     //高性能Json解析框架，阿里巴巴出品
     implementation 'com.alibaba:fastjson:1.2.58'
-	implementation 'com.gyf.immersionbar:immersionbar:2.3.1'
+	//沉浸式状态栏。基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0-beta05'
+    //fragment快速实现
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0-beta05'
 }
