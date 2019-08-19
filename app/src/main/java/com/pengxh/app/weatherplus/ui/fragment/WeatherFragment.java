@@ -226,7 +226,6 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
             bindIndexData(indexBeanList);
 
             //TODO 保存简单的天气信息
-            //TODO 保存简单的天气信息
             String city = resultBean.getCity();
             String quality = aqiBean.getQuality();
             String color = aqiBean.getAqiinfo().getColor();

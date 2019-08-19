@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,6 +20,8 @@ import android.widget.TextView;
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.alibaba.fastjson.JSONObject;
+import com.gyf.immersionbar.ImmersionBar;
+import com.gyf.immersionbar.components.ImmersionFragment;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
@@ -28,7 +29,6 @@ import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
-import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 import com.pengxh.app.weatherplus.widgets.CustomGridView;
@@ -45,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class OtherWeatherFragment extends Fragment implements View.OnClickListener {
+public class OtherWeatherFragment extends ImmersionFragment implements View.OnClickListener {
 
     private static final String TAG = "OtherWeatherFragment";
 
@@ -131,6 +131,15 @@ public class OtherWeatherFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    //Fragment沉浸式状态栏
+    @Override
+    public void initImmersionBar() {
+        ImmersionBar.with(this)
+                .statusBarColor("#00BAFF")
+                .fitsSystemWindows(true)
+                .init();
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(NetWeatherBeanEvent event) {
         setWeather(event.getWeatherBean());
@@ -161,17 +170,6 @@ public class OtherWeatherFragment extends Fragment implements View.OnClickListen
         List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
                 .getIndex();
         bindIndexData(indexBeanList);
-
-        //TODO 保存简单的天气信息
-        String city = resultBean.getCity();
-        String quality = aqiBean.getQuality();
-        String color = aqiBean.getAqiinfo().getColor();
-        String img = resultBean.getImg();
-        String weather = resultBean.getWeather();
-        String templow = resultBean.getTemplow();
-        String temphigh = resultBean.getTemphigh();
-
-        GreenDaoUtil.saveSimpleWeather(city, quality, color, img, weather, templow, temphigh);
     }
 
     private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {

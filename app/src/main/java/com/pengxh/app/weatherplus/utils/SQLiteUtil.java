@@ -152,6 +152,6 @@ public class SQLiteUtil {
      * 删除城市
      */
     public void deleteCityByName(String city) {
-        db.delete("CityWeather", "cityWeather = ?", new String[]{city});
+        db.delete("CityWeather", "cityName = ?", new String[]{city});
     }
 }
