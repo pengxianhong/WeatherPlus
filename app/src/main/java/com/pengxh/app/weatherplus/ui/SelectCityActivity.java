@@ -21,14 +21,15 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityNameBean;
+import com.pengxh.app.weatherplus.bean.HotCityNameBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
-import com.pengxh.app.weatherplus.callback.impl.HotCityListImpl;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
 import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,8 +63,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     private ProgressDialog progressDialog;
     private HotCityAdapter hotCityAdapter;
     private AlertView alertView;
-    private HotCityListImpl mListManager;
-    private ArrayList<AllCityBean> allHotCity;
+    private List<HotCityNameBean> allHotCity;
+    private SQLiteUtil sqLiteUtil;
 
     @Override
     public void initView() {
@@ -85,7 +86,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
     @Override
     public void initEvent() {
-        mListManager = new HotCityListImpl();
+        sqLiteUtil = SQLiteUtil.getInstance();
         weatherPresenter = new WeatherPresenterImpl(this);
 
         new Thread(new Runnable() {
@@ -101,7 +102,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
             }
         }).start();
 
-        allHotCity = mListManager.getAllHotCity();
+        allHotCity = sqLiteUtil.loadHotCity();
         if (allHotCity.size() > 0) {
             mImageView_hot_city.setVisibility(View.VISIBLE);
             hotCityAdapter = new HotCityAdapter(this, allHotCity);
@@ -111,7 +112,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
             hotCityAdapter.setOnItemClickListener(new HotCityAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position) {
-                    String city = allHotCity.get(position).getCity();
+                    String city = allHotCity.get(position).getCityName();
 
                     List<AllCityBean> beanList = GreenDaoUtil.queryCity(city);
                     if (beanList.size() > 0) {
@@ -168,8 +169,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                     //将查询历史保存到[热门]表
                     AllCityBean cityBean = beanList.get(0);
 
-                    mListManager.addHotCity(cityBean);
-
+                    sqLiteUtil.saveHotCity(cityBean.getCity());
                     getCityWeather(cityBean);
                 }
             }
@@ -222,6 +222,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                 break;
             case 0:
                 allHotCity.clear();
+                sqLiteUtil.deleteAll();
                 hotCityAdapter.notifyDataSetChanged();
                 mImageView_hot_city.setVisibility(View.INVISIBLE);
                 break;
@@ -250,9 +251,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
             EventBus.getDefault().postSticky(new NetWeatherBeanEvent(weatherBean));
-
-            SaveKeyValues values = new SaveKeyValues(this, "city_weather");
-            values.putValue("weather", JSONObject.toJSONString(weatherBean));
+            //也存数据库吧，sp不太合适
+            SaveKeyValues.putValue("city_weather", "weather", JSONObject.toJSONString(weatherBean));
         }
     }
 }

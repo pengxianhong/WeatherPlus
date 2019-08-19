@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class FragmentListImpl implements FragmentListCallback {
 
     private static final String TAG = "FragmentListImpl";
-    private static volatile LinkedList<Fragment> fragmentList;
+    private volatile LinkedList<Fragment> fragmentList;
 
     public FragmentListImpl() {
         if (fragmentList == null) {

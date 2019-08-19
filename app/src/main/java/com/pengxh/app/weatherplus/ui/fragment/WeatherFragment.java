@@ -131,6 +131,10 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
     private void initEvent() {
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
+        // TODO 解决页面太长，ScrollView默认不能置顶的问题
+        mTextViewRealtimeQuality.setFocusable(true);
+        mTextViewRealtimeQuality.setFocusableInTouchMode(true);
+        mTextViewRealtimeQuality.requestFocus();
 
         final String district = OtherUtil.getValue(getContext(), "district");
         Log.d(TAG, "getLocaltion: " + district);
@@ -181,7 +185,6 @@ public class WeatherFragment extends Fragment implements IWeatherView, View.OnCl
         weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
                 Integer.parseInt(allCityBean.getCityid()),
                 Integer.parseInt(allCityBean.getCitycode()));
-        ToastUtil.showBeautifulToast("刷新成功", ToastUtil.SUCCESS);
 
         EventBus.getDefault().removeStickyEvent(event);
     }
