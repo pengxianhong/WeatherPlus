@@ -25,7 +25,6 @@ import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.bean.HotCityNameBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
-import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
@@ -254,7 +253,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Override
     public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
-            EventBus.getDefault().postSticky(new NetWeatherBeanEvent(weatherBean));
             //也存数据库，sp不太合适
             String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
             String jsonString = JSONObject.toJSONString(weatherBean);

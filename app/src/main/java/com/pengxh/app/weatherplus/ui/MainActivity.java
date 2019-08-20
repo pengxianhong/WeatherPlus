@@ -12,8 +12,12 @@ import android.widget.LinearLayout;
 
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.callback.impl.FragmentListImpl;
+import com.pengxh.app.weatherplus.event.PagePositionEvent;
+import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
+import com.pengxh.app.weatherplus.utils.SQLiteUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +33,7 @@ public class MainActivity extends BaseNormalActivity {
     ViewPager mMainViewPager;
     @BindView(R.id.mLlIndicator)
     LinearLayout mLlIndicator;
-    private LinkedList<Fragment> fragmentLinkedList;
+    private List<Fragment> fragmentLinkedList = new LinkedList<>();
 
 
     @Override
@@ -39,18 +43,17 @@ public class MainActivity extends BaseNormalActivity {
 
     @Override
     public void init() {
-        FragmentListImpl fragmentManager = new FragmentListImpl();
-        fragmentLinkedList = fragmentManager.getAllFragment();
-        if (fragmentLinkedList.size() == 0) {
-            fragmentManager.addFragment(new WeatherFragment());
-            fragmentLinkedList = fragmentManager.getAllFragment();
+        fragmentLinkedList.add(new WeatherFragment());
+        int pageNumber = SQLiteUtil.getInstance().loadCityList().size();
+        for (int i = 0; i < pageNumber; i++) {
+            fragmentLinkedList.add(new OtherWeatherFragment());
         }
-        Log.d(TAG, "init: fragmentLinkedList.size ===> " + fragmentLinkedList.size());
     }
 
     @Override
     public void initEvent() {
         FragmentPagerAdapter adapter = new WeatherPageAdapter(getSupportFragmentManager(), fragmentLinkedList);
+        mMainViewPager.setOffscreenPageLimit(3);
         mMainViewPager.setAdapter(adapter);
         mMainViewPager.setOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentLinkedList.size()));
     }
@@ -69,15 +72,15 @@ public class MainActivity extends BaseNormalActivity {
             img_select = R.drawable.dot_enable;
             img_unSelect = R.drawable.dot_disable;
 
-            final int imgSize = 15;
+            final int imgSize = 30;
 
             for (int i = 0; i < mPageCount; i++) {
                 ImageView imageView = new ImageView(context);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 //为小圆点左右添加间距
-                params.leftMargin = 8;
-                params.rightMargin = 8;
+                params.leftMargin = 10;
+                params.rightMargin = 10;
                 //给小圆点一个默认大小
                 params.height = imgSize;
                 params.width = imgSize;
@@ -106,6 +109,15 @@ public class MainActivity extends BaseNormalActivity {
                 } else {
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
+            }
+            Log.d(TAG, "onPageSelected: => " + position);
+            /**
+             * position=0不能传过去
+             * */
+            if (position == 0) {
+                Log.w(TAG, "onPageSelected: 定位点位置不传", new Throwable());
+            } else {
+                EventBus.getDefault().postSticky(new PagePositionEvent(position - 1));
             }
         }
 

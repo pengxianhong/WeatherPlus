@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +26,12 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
+import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
-import com.pengxh.app.weatherplus.event.NetWeatherBeanEvent;
+import com.pengxh.app.weatherplus.event.PagePositionEvent;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
-import com.pengxh.app.weatherplus.utils.SaveKeyValues;
+import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.CustomGridView;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
 
@@ -123,12 +124,10 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
 
     private void initEvent() {
         mImageView_realtime_location.setVisibility(View.GONE);
-
-        String weather = (String) SaveKeyValues.getValue("city_weather", "weather", "");
-        if (!TextUtils.isEmpty(weather)) {
-            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
-            setWeather(weatherBean);
-        }
+        //TODO 解决页面太长，ScrollView默认不能置顶的问题
+        mTextViewRealtimeQuality.setFocusable(true);
+        mTextViewRealtimeQuality.setFocusableInTouchMode(true);
+        mTextViewRealtimeQuality.requestFocus();
     }
 
     //Fragment沉浸式状态栏
@@ -141,9 +140,18 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(NetWeatherBeanEvent event) {
-        setWeather(event.getWeatherBean());
-
+    public void onEventMainThread(PagePositionEvent event) {
+        int position = event.getPosition();
+        Log.d(TAG, "onEventMainThread: " + position);
+        List<CityListWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityList();
+        String weather = weatherBeans.get(position).getWeather();
+        Log.d(TAG, "onEventMainThread: " + weather);
+        if (weather.equals("")) {
+            Log.w(TAG, "onEventMainThread: ", new Throwable());
+        } else {
+            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
+            setWeather(weatherBean);
+        }
         EventBus.getDefault().removeStickyEvent(event);
     }
 

@@ -58,7 +58,6 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     }
 
     private void startMainActivity() {
-//        Intent intent = new Intent(this, TestActivity.class);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
