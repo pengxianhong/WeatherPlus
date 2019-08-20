@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
+import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.ImmersionFragment;
 import com.pengxh.app.multilib.utils.ToastUtil;
@@ -44,7 +45,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -226,15 +229,15 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
             bindIndexData(indexBeanList);
 
             //TODO 保存简单的天气信息
-            String city = resultBean.getCity();
-            String quality = aqiBean.getQuality();
-            String color = aqiBean.getAqiinfo().getColor();
-            String img = resultBean.getImg();
-            String weather = resultBean.getWeather();
-            String templow = resultBean.getTemplow();
-            String temphigh = resultBean.getTemphigh();
-
-            GreenDaoUtil.saveSimpleWeather(city, quality, color, img, weather, templow, temphigh);
+            Map<String, String> weatherMap = new HashMap<>();
+            weatherMap.put("city", resultBean.getCity());
+            weatherMap.put("quality", aqiBean.getQuality());
+            weatherMap.put("color", aqiBean.getAqiinfo().getColor());
+            weatherMap.put("img", resultBean.getImg());
+            weatherMap.put("weather", resultBean.getWeather());
+            weatherMap.put("templow", resultBean.getTemplow());
+            weatherMap.put("temphigh", resultBean.getTemphigh());
+            SaveKeyValues.putValue("location_weather", "weatherMap", new Gson().toJson(weatherMap));
         } else {
             ToastUtil.showBeautifulToast("获取数据失败，请重试", ToastUtil.ERROR);
         }

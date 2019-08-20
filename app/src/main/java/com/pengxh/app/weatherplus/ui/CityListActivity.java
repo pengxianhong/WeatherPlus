@@ -20,10 +20,12 @@ import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.CityListAdapter;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
-import com.pengxh.app.weatherplus.bean.CityManagerBean;
-import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
+import com.pengxh.app.weatherplus.utils.SaveKeyValues;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -72,21 +74,29 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     @Override
     public void init() {
         //设置第一个item的城市天气。后续改为实时更新的效果
-        List<CityManagerBean> otherCityWeather = GreenDaoUtil.loadOtherCityWeather();
-        if (otherCityWeather.size() > 0) {
-            CityManagerBean cityManagerBean = otherCityWeather.get(0);
-            mTextViewCitylistCity.setText(cityManagerBean.getCity());
-            mTextViewCitylistQuality.setText(cityManagerBean.getQuality());
-            mTextViewCitylistQuality.setBackgroundColor(Color.parseColor(cityManagerBean.getColor()));
-            mImageViewCitylistImg.setImageResource(OtherUtil.getImageResource(cityManagerBean.getImg()));
-            mTextViewCitylistWeather.setText(cityManagerBean.getWeather());
-            mTextViewCitylistTemplow.setText(cityManagerBean.getTemplow() + "℃~");
-            mTextViewCitylistTemphigh.setText(cityManagerBean.getTemphigh() + "℃");
+        String weatherJson = (String) SaveKeyValues.getValue("location_weather", "weatherMap", "");
+        Log.d(TAG, "weatherJson => " + weatherJson);
+        if (!weatherJson.equals("")) {
+            /**
+             * {"templow":"19","img":"301","color":"#FFFF00","city":"西城区","weather":"雨","quality":"良","temphigh":"28"}
+             * */
+            try {
+                JSONObject jsonObject = new JSONObject(weatherJson);
+                mTextViewCitylistCity.setText(jsonObject.getString("city"));
+                mTextViewCitylistQuality.setText(jsonObject.getString("quality"));
+                mTextViewCitylistQuality.setBackgroundColor(Color.parseColor(jsonObject.getString("color")));
+                mImageViewCitylistImg.setImageResource(OtherUtil.getImageResource(jsonObject.getString("img")));
+                mTextViewCitylistWeather.setText(jsonObject.getString("weather"));
+                mTextViewCitylistTemplow.setText(jsonObject.getString("templow") + "℃~");
+                mTextViewCitylistTemphigh.setText(jsonObject.getString("temphigh") + "℃");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         //设置其他城市的信息
         sqLiteUtil = SQLiteUtil.getInstance();
         listWeatherBeans = sqLiteUtil.loadCityList();
-        if (otherCityWeather.size() > 0) {
+        if (listWeatherBeans.size() > 0) {
             cityAdapter = new CityListAdapter(this, listWeatherBeans);
             mSwipeMenuListView.setAdapter(cityAdapter);
         }

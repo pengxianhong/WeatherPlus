@@ -55,15 +55,4 @@
         <!-- 刻度线颜色 -->
         <attr name="dialColor" format="color|reference" />
     </declare-styleable>
-
-    <declare-styleable name="SunTrailView">
-        <attr name="svTrackColor" format="color" /><!--太阳运动轨迹颜色-->
-        <attr name="svSunColor" format="color" /><!--太阳颜色-->
-        <attr name="svMainColor" format="color" /><!--背景渐变颜色-->
-        <attr name="svSunRadius" format="dimension" /><!--太阳半径-->
-        <attr name="svTrackWidth" format="dimension" /><!--太阳运动轨迹宽度-->
-        <attr name="svTextSize" format="dimension" /><!--文字大小-->
-        <attr name="svTextOffset" format="dimension" /><!--// 文字与端点的偏移量-->
-        <attr name="svPadding" format="dimension" /><!--view的内边距-->
-    </declare-styleable>
 </resources>
