@@ -8,9 +8,6 @@ import com.pengxh.app.weatherplus.greendao.AllCityBeanDao;
 import java.util.List;
 
 public class GreenDaoUtil {
-
-    private static final String TAG = "GreenDaoUtil";
-
     /**
      * 初次启动app，将全国城市存入本地数据库
      */

@@ -142,10 +142,10 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PagePositionEvent event) {
         int position = event.getPosition();
-        Log.d(TAG, "onEventMainThread: " + position);
+//        Log.d(TAG, "onEventMainThread: " + position);
         List<CityListWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityList();
         String weather = weatherBeans.get(position).getWeather();
-        Log.d(TAG, "onEventMainThread: " + weather);
+//        Log.d(TAG, "onEventMainThread: " + weather);
         if (weather.equals("")) {
             Log.w(TAG, "onEventMainThread: ", new Throwable());
         } else {

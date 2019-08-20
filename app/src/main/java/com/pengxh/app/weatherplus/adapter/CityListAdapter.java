@@ -2,7 +2,6 @@ package com.pengxh.app.weatherplus.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +79,7 @@ public class CityListAdapter extends BaseSwipListAdapter {
         private TextView mTextView_citylist_temphigh;
 
         void bindHolder(String weather) {
-            Log.d(TAG, "bindHolder: " + weather);
+//            Log.d(TAG, "bindHolder: " + weather);
             Gson gson = new Gson();
             NetWeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, NetWeatherBean.class).getResult().getResult();
 

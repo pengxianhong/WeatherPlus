@@ -57,7 +57,6 @@ public class WeatherModelImpl implements IWeatherModel {
                     public void onNext(NetWeatherBean weatherBean) {
                         if (weatherListener != null) {
                             weatherListener.onSuccess(weatherBean);
-                            Log.d(TAG, "onNext ===============> " + weatherBean.getResult().getResult().getCity());
                         }
                     }
                 });

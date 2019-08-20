@@ -3,7 +3,6 @@ package com.pengxh.app.weatherplus.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -75,7 +74,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     public void init() {
         //设置第一个item的城市天气。后续改为实时更新的效果
         String weatherJson = (String) SaveKeyValues.getValue("location_weather", "weatherMap", "");
-        Log.d(TAG, "weatherJson => " + weatherJson);
+//        Log.d(TAG, "weatherJson => " + weatherJson);
         if (!weatherJson.equals("")) {
             /**
              * {"templow":"19","img":"301","color":"#FFFF00","city":"西城区","weather":"雨","quality":"良","temphigh":"28"}
@@ -134,7 +133,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         mSwipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: item位置" + position);
+//                Log.d(TAG, "onItemClick: item位置" + position);
                 finish();
             }
         });

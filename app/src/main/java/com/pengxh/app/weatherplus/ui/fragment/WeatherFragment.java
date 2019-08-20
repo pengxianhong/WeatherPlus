@@ -183,7 +183,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
     private void getCityBean(String district) {
         List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
-        Log.d(TAG, "beanList.size(): " + beanList.size());
+//        Log.d(TAG, "beanList.size(): " + beanList.size());
         if (beanList.size() > 0) {
             AllCityBean allCityBean = beanList.get(0);
             EventBus.getDefault().postSticky(new CityBeanEvent(allCityBean));
@@ -193,7 +193,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(CityBeanEvent event) {
         AllCityBean allCityBean = event.getAllCityBean();
-        Log.d(TAG, "onEventMainThread: " + allCityBean.getCity());
+//        Log.d(TAG, "onEventMainThread: " + allCityBean.getCity());
 
         weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
                 Integer.parseInt(allCityBean.getCityid()),

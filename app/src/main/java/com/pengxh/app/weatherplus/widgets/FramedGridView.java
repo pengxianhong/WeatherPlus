@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.GridView;
@@ -59,7 +58,6 @@ public class FramedGridView extends GridView {
      * @param mBorderWidth
      */
     private void initPaint(int mBorderColor, float mBorderWidth) {
-        Log.d(TAG, "mBorderColor: " + mBorderColor);
         mLinePaint = new Paint();
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeWidth(mBorderWidth);
@@ -71,9 +69,7 @@ public class FramedGridView extends GridView {
         super.onDraw(canvas);
         int column = 3;
         //计算九宫格每行有几个item，俗称“列”
-        int width = getWidth();
         int childCount = getChildCount();//获取整个九宫格所有子布局item的个数
-        Log.d(TAG, "屏幕宽度：" + width + "\r\n九宫格数目：" + childCount);
 
         //轮流画每个item的边框
         for (int i = 0; i < childCount; i++) {

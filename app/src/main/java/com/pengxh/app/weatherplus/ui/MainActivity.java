@@ -110,7 +110,7 @@ public class MainActivity extends BaseNormalActivity {
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
             }
-            Log.d(TAG, "onPageSelected: => " + position);
+//            Log.d(TAG, "onPageSelected: => " + position);
             /**
              * position=0不能传过去
              * */

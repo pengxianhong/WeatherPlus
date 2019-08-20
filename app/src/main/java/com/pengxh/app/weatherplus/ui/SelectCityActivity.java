@@ -6,7 +6,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -79,7 +78,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         mImageView_title_add.setVisibility(View.INVISIBLE);
         mTextView_title.setText("添加城市");
         String district = getIntent().getStringExtra("district");
-        Log.d(TAG, "定位点: " + district);
+//        Log.d(TAG, "定位点: " + district);
         if (!TextUtils.isEmpty(district)) {
             mTextView_current_location.setText(district);
         } else {
@@ -253,10 +252,10 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Override
     public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
-            //也存数据库，sp不太合适
+            //存数据库，sp不合适
             String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
             String jsonString = JSONObject.toJSONString(weatherBean);
-            Log.d(TAG, "showNetWorkData: " + jsonString);
+//            Log.d(TAG, "showNetWorkData: " + jsonString);
             sqLiteUtil.saveCityListWeather(city, jsonString);
         }
     }

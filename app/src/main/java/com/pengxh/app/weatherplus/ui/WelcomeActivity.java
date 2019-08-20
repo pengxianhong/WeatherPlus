@@ -12,7 +12,6 @@ import com.pengxh.app.weatherplus.service.CityService;
 import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
-import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -48,7 +47,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     @Override
     public void initEvent() {
         boolean isFirstRun = (boolean) SaveKeyValues.getValue("firstConfig", "isFirstRun", true);
-        Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
+//        Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
         if (isFirstRun) {
             SaveKeyValues.putValue("firstConfig", "isFirstRun", false);
             requirePermissions();
@@ -98,6 +97,6 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //授权回调，必须，不然不走回调
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-        Log.d(TAG, "onRequestPermissionsResult: " + Arrays.toString(permissions));
+//        Log.d(TAG, "onRequestPermissionsResult: " + Arrays.toString(permissions));
     }
 }
