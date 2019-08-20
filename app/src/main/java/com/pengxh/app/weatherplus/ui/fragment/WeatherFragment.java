@@ -144,7 +144,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     private void initEvent() {
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
-        // TODO 解决页面太长，ScrollView默认不能置顶的问题
+        //TODO 解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();

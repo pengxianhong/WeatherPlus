@@ -135,7 +135,6 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: item位置" + position);
-
                 finish();
             }
         });
