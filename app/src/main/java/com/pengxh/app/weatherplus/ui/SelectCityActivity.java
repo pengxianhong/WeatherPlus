@@ -174,8 +174,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
                     sqLiteUtil.saveHotCity(cityBean.getCity());
                     getCityWeather(cityBean);
-                    //通知CityListActivity刷新UI
-                    EventBus.getDefault().postSticky(new TagEvent(1));
                 }
             }
         });
@@ -186,6 +184,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(),
                 Integer.parseInt(cityBean.getCityid()),
                 Integer.parseInt(cityBean.getCitycode()));
+        //通知CityListActivity刷新UI
+        EventBus.getDefault().postSticky(new TagEvent(1));
     }
 
     @OnClick({R.id.mImageView_title_back, R.id.mImageView_hot_city})
