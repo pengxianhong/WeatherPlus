@@ -34,6 +34,7 @@ import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.CityBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
+import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
@@ -128,6 +129,8 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_weather, null);
         unbinder = ButterKnife.bind(this, view);
+        String simpleName = LocationService.class.getSimpleName();
+        Log.d(TAG, simpleName + " isServiceRunning: " + OtherUtil.isServiceRunning(getContext(), simpleName));
         initEvent();
         return view;
     }
@@ -149,13 +152,11 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
 
-        final String district = OtherUtil.getValue(getContext(), "district");
-        Log.d(TAG, "getLocaltion: " + district);
+        final String district = (String) SaveKeyValues.getValue("location", "district", "");
         if (TextUtils.isEmpty(district)) {
-            ToastUtil.showBeautifulToast("定位失败，请刷新重试下", ToastUtil.ERROR);
+            ToastUtil.showBeautifulToast("定位失败，请退出稍后重试", ToastUtil.ERROR);
         } else {
             boolean isFirstGet = (boolean) SaveKeyValues.getValue("firstGetWeather", "isFirstGet", true);
-            Log.d(TAG, "isFirstGet =====> " + isFirstGet);
             if (isFirstGet) {
                 SaveKeyValues.putValue("firstGetWeather", "isFirstGet", false);
                 /**
@@ -183,7 +184,6 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
     private void getCityBean(String district) {
         List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
-//        Log.d(TAG, "beanList.size(): " + beanList.size());
         if (beanList.size() > 0) {
             AllCityBean allCityBean = beanList.get(0);
             EventBus.getDefault().postSticky(new CityBeanEvent(allCityBean));
@@ -193,8 +193,6 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(CityBeanEvent event) {
         AllCityBean allCityBean = event.getAllCityBean();
-//        Log.d(TAG, "onEventMainThread: " + allCityBean.getCity());
-
         weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
                 Integer.parseInt(allCityBean.getCityid()),
                 Integer.parseInt(allCityBean.getCitycode()));

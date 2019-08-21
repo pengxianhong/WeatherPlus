@@ -158,7 +158,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 break;
             case R.id.mImageView_title_add:
                 Intent intent = new Intent(this, SelectCityActivity.class);
-                intent.putExtra("district", OtherUtil.getValue(this, "district"));
+                intent.putExtra("district", (String) SaveKeyValues.getValue("location", "district", ""));
                 startActivity(intent);
                 break;
         }

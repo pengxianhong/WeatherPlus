@@ -1,6 +1,7 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.event.PagePositionEvent;
+import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -39,6 +41,8 @@ public class MainActivity extends BaseNormalActivity {
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
+        //防止定位不准备
+        startService(new Intent(this, LocationService.class));
     }
 
     @Override

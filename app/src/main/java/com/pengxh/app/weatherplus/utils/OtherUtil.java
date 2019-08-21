@@ -1,9 +1,8 @@
 package com.pengxh.app.weatherplus.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -15,7 +14,6 @@ import com.pengxh.app.weatherplus.callback.HttpCallbackListener;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -50,28 +48,6 @@ public class OtherUtil {
     }
 
     /**
-     * 将城区存到sp
-     */
-    public static void saveValue(Context mContext, String value) {
-        if (!value.isEmpty()) {
-            SharedPreferences sp = mContext.getSharedPreferences("district_info", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("district", value);
-            editor.apply();
-        } else {
-            throw new NullPointerException();
-        }
-    }
-
-    /**
-     * 将sp取出来
-     */
-    public static String getValue(Context mContext, String key) {
-        SharedPreferences sp = mContext.getSharedPreferences("district_info", Context.MODE_PRIVATE);
-        return sp.getString(key, "");
-    }
-
-    /**
      * List去重
      */
     public static List<String> removeDuplicate(List<String> list) {
@@ -82,27 +58,22 @@ public class OtherUtil {
     }
 
     /**
-     * 合并list
+     * 判断服务是否在运行
+     *
+     * @param mContext  上下文
+     * @param className 　　Service.class.getName();
+     * @return
      */
-    public static List<Fragment> combineList(List<Fragment> list1, List<Fragment> list2) {
-        List<Fragment> combineResult = new LinkedList<>();
-        combineResult.addAll(list1);
-        combineResult.addAll(list2);
-
-        //去重
-        HashSet<Fragment> set = new HashSet<>(combineResult);
-        combineResult.clear();
-        combineResult.addAll(set);
-        return combineResult;
-    }
-
-    /**
-     * 随机数
-     */
-    public static int getRandomNum() {
-        Random random = new Random();
-        int num = random.nextInt(4) + 2;//[2,5]
-        return num;
+    public static boolean isServiceRunning(Context mContext, String className) {
+        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> serviceList = am.getRunningServices(Integer.MAX_VALUE);
+        int myUid = android.os.Process.myUid();
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : serviceList) {
+            if (runningServiceInfo.uid == myUid && runningServiceInfo.service.getClassName().equals(className)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

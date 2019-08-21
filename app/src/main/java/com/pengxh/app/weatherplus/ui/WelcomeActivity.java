@@ -27,9 +27,10 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     private static final String[] perms = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+            Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private Intent intent;
 
     @Override
     public void initView() {
@@ -42,12 +43,12 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
                 .statusBarColor(R.color.white)
                 .fitsSystemWindows(true)
                 .init();
+        intent = new Intent(this, LocationService.class);
     }
 
     @Override
     public void initEvent() {
         boolean isFirstRun = (boolean) SaveKeyValues.getValue("firstConfig", "isFirstRun", true);
-//        Log.d(TAG, "APP: isFirstRun =====> " + isFirstRun);
         if (isFirstRun) {
             SaveKeyValues.putValue("firstConfig", "isFirstRun", false);
             requirePermissions();
@@ -69,7 +70,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         //开启定位服务
-        startService(new Intent(this, LocationService.class));
+        startService(intent);
         //开启后台服务将本地数据存到数据库里面，提高查询效率。不能用网络请求，数据量太大，网络请求会卡死
         startService(new Intent(this, CityService.class));
 
@@ -97,6 +98,11 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //授权回调，必须，不然不走回调
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-//        Log.d(TAG, "onRequestPermissionsResult: " + Arrays.toString(permissions));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(intent);
     }
 }
