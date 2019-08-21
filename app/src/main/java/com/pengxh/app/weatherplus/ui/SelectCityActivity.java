@@ -24,6 +24,7 @@ import com.pengxh.app.weatherplus.bean.CityNameBean;
 import com.pengxh.app.weatherplus.bean.HotCityNameBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.event.AutoCompleteEvent;
+import com.pengxh.app.weatherplus.event.TagEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
@@ -173,6 +174,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
                     sqLiteUtil.saveHotCity(cityBean.getCity());
                     getCityWeather(cityBean);
+                    //通知CityListActivity刷新UI
+                    EventBus.getDefault().postSticky(new TagEvent(1));
                 }
             }
         });

@@ -19,10 +19,14 @@ import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.CityListAdapter;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
+import com.pengxh.app.weatherplus.event.TagEvent;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.utils.SaveKeyValues;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,9 +36,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class CityListActivity extends BaseNormalActivity implements View.OnClickListener {
-
-    private static final String TAG = "CityListActivity";
-
     @BindView(R.id.mImageView_title_back)
     ImageView mImageView_title_back;
     @BindView(R.id.mImageView_title_add)
@@ -74,7 +75,6 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     public void init() {
         //设置第一个item的城市天气。后续改为实时更新的效果
         String weatherJson = (String) SaveKeyValues.getValue("location_weather", "weatherMap", "");
-//        Log.d(TAG, "weatherJson => " + weatherJson);
         if (!weatherJson.equals("")) {
             /**
              * {"templow":"19","img":"301","color":"#FFFF00","city":"西城区","weather":"雨","quality":"良","temphigh":"28"}
@@ -133,7 +133,6 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         mSwipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(TAG, "onItemClick: item位置" + position);
                 finish();
             }
         });
@@ -162,5 +161,32 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(TagEvent event) {
+        int tag = event.getTag();
+        if (tag == 1) {
+            //刷新UI
+            sqLiteUtil = SQLiteUtil.getInstance();
+            listWeatherBeans = sqLiteUtil.loadCityList();
+            if (listWeatherBeans.size() > 0) {
+                cityAdapter = new CityListAdapter(this, listWeatherBeans);
+                mSwipeMenuListView.setAdapter(cityAdapter);
+            }
+        }
+        EventBus.getDefault().removeStickyEvent(event);
     }
 }
