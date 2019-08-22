@@ -1,9 +1,14 @@
 package com.pengxh.app.weatherplus.ui.fragment;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,16 +33,11 @@ import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
-import com.pengxh.app.weatherplus.event.PagePositionEvent;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.CustomGridView;
 import com.pengxh.app.weatherplus.widgets.DialProgress;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -112,17 +112,18 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     CustomGridView mCustomGridView_life;
 
     Unbinder unbinder;
+    private PagePositionBroadcast broadcast = null;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_weather, null);
         unbinder = ButterKnife.bind(this, view);
-        initEvent();
+        init();
         return view;
     }
 
-    private void initEvent() {
+    private void init() {
         mImageView_realtime_location.setVisibility(View.GONE);
         //TODO 解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
@@ -139,21 +140,44 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
                 .init();
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(PagePositionEvent event) {
-        int position = event.getPosition();
-//        Log.d(TAG, "onEventMainThread: " + position);
-        List<CityListWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityList();
-        String weather = weatherBeans.get(position).getWeather();
-//        Log.d(TAG, "onEventMainThread: " + weather);
-        if (weather.equals("")) {
-            Log.w(TAG, "onEventMainThread: ", new Throwable());
-        } else {
-            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
-            setWeather(weatherBean);
+    class PagePositionBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null && action.equals("action.changePosition")) {
+                int position = Integer.parseInt(intent.getStringExtra("position"));
+                List<CityListWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityList();
+                final String weather = weatherBeans.get(position).getWeather();
+                if (weather.equals("")) {
+                    Log.w(TAG, "onEventMainThread: ", new Throwable());
+                } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
+                            Message message = mHandler.obtainMessage();
+                            message.obj = weatherBean;
+                            message.what = 100;
+                            mHandler.sendMessageDelayed(message, 1000);
+                        }
+                    }).start();
+                }
+            }
         }
-        EventBus.getDefault().removeStickyEvent(event);
     }
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(TAG, "handleMessage: " + msg.what);
+            if (msg.what == 100) {
+                NetWeatherBean weatherBean = (NetWeatherBean) msg.obj;
+                setWeather(weatherBean);
+            }
+        }
+    };
 
     private void setWeather(NetWeatherBean weatherBean) {
         // TODO 显示当天的详细天气情况
@@ -266,15 +290,22 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        EventBus.getDefault().register(this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (broadcast == null) {
+            broadcast = new PagePositionBroadcast();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("action.changePosition");
+            context.registerReceiver(broadcast, intentFilter);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        EventBus.getDefault().unregister(this);
+        if (broadcast != null) {
+            getActivity().unregisterReceiver(broadcast);
+        }
     }
 
     @Override

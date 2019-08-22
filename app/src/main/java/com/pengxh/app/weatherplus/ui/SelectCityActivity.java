@@ -1,6 +1,9 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
@@ -185,7 +188,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                 Integer.parseInt(cityBean.getCityid()),
                 Integer.parseInt(cityBean.getCitycode()));
         //通知CityListActivity刷新UI
-        EventBus.getDefault().postSticky(new TagEvent(1));
+        EventBus.getDefault().postSticky(new TagEvent(SelectCityActivity.class.getSimpleName(), 1));
     }
 
     @OnClick({R.id.mImageView_title_back, R.id.mImageView_hot_city})
@@ -248,9 +251,20 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void hideProgress() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
-            finish();
+            //延时关闭页面，确保CityListActivity页面能基本收到消息
+            mHandler.sendEmptyMessageDelayed(10, 500);
         }
     }
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 10) {
+                finish();
+            }
+        }
+    };
 
     @Override
     public void showNetWorkData(NetWeatherBean weatherBean) {

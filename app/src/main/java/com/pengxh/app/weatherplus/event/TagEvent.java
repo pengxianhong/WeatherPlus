@@ -5,17 +5,28 @@ package com.pengxh.app.weatherplus.event;
  */
 
 public class TagEvent {
-    private int tag;
 
-    public TagEvent(int tag) {
-        this.tag = tag;
+    private String className;
+    private int msg;
+
+    public TagEvent(String className, int msg) {
+        this.className = className;
+        this.msg = msg;
     }
 
-    public int getTag() {
-        return tag;
+    public String getClassName() {
+        return className;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public int getMsg() {
+        return msg;
+    }
+
+    public void setMsg(int msg) {
+        this.msg = msg;
     }
 }

@@ -138,7 +138,6 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         });
     }
 
-
     @OnClick({R.id.mImageView_title_back, R.id.mRelativeLayout_citylist, R.id.mImageView_title_add})
     @Override
     public void onClick(View v) {
@@ -171,14 +170,15 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
 
     @Override
     protected void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventMainThread(TagEvent event) {
-        int tag = event.getTag();
-        if (tag == 1) {
+        String className = event.getClassName();
+        int msg = event.getMsg();
+        if (SelectCityActivity.class.getSimpleName().equals(className) && msg == 1) {
             //刷新UI
             sqLiteUtil = SQLiteUtil.getInstance();
             listWeatherBeans = sqLiteUtil.loadCityList();

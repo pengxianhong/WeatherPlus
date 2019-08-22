@@ -18,13 +18,10 @@ import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.event.PagePositionEvent;
 import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,6 +38,7 @@ public class MainActivity extends BaseNormalActivity {
     @BindView(R.id.mLlIndicator)
     LinearLayout mLlIndicator;
     private List<Fragment> fragmentLinkedList = new LinkedList<>();
+    private SQLiteUtil sqLiteUtil;
 
 
     @Override
@@ -50,15 +48,17 @@ public class MainActivity extends BaseNormalActivity {
 
     @Override
     public void init() {
-        fragmentLinkedList.add(new WeatherFragment());
-        int pageNumber = SQLiteUtil.getInstance().loadCityList().size();
-        for (int i = 0; i < pageNumber; i++) {
-            fragmentLinkedList.add(new OtherWeatherFragment());
-        }
+        sqLiteUtil = SQLiteUtil.getInstance();
     }
 
     @Override
     public void initEvent() {
+        fragmentLinkedList.add(new WeatherFragment());
+        //pageNumber需要即时刷新
+        int pageNumber = sqLiteUtil.loadCityList().size();
+        for (int i = 1; i <= pageNumber; i++) {
+            fragmentLinkedList.add(new OtherWeatherFragment());
+        }
         FragmentPagerAdapter adapter = new WeatherPageAdapter(getSupportFragmentManager(), fragmentLinkedList);
         mMainViewPager.setOffscreenPageLimit(3);
         mMainViewPager.setAdapter(adapter);
@@ -117,14 +117,16 @@ public class MainActivity extends BaseNormalActivity {
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
             }
-//            Log.d(TAG, "onPageSelected: => " + position);
             /**
              * position=0不能传过去
              * */
             if (position == 0) {
                 Log.w(TAG, "onPageSelected: 定位点位置不传", new Throwable());
             } else {
-                EventBus.getDefault().postSticky(new PagePositionEvent(position - 1));
+                Intent intent = new Intent();
+                intent.setAction("action.changePosition");
+                intent.putExtra("position", String.valueOf((position - 1)));//不能发int型
+                sendBroadcast(intent);
             }
         }
 
