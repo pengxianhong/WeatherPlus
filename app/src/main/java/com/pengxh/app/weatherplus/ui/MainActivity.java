@@ -1,16 +1,21 @@
 package com.pengxh.app.weatherplus.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.aihook.alertview.library.AlertView;
+import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.event.PagePositionEvent;
@@ -41,8 +46,6 @@ public class MainActivity extends BaseNormalActivity {
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
-        //防止定位不准备
-        startService(new Intent(this, LocationService.class));
     }
 
     @Override
@@ -147,6 +150,27 @@ public class MainActivity extends BaseNormalActivity {
         @Override
         public int getCount() {
             return pageList.size();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+        //防止定位不准确
+        int p1 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int p2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int p3 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        if (PackageManager.PERMISSION_GRANTED != p1 || PackageManager.PERMISSION_GRANTED != p2 || PackageManager.PERMISSION_GRANTED != p3) {
+            new AlertView("友情提示", "缺少定位权限，请在设置里面打开相关权限", null, new String[]{"确定"}, null, MainActivity.this,
+                    AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    MainActivity.this.finish();
+                }
+            }).show();
+        } else {
+            startService(new Intent(this, LocationService.class));
         }
     }
 }
