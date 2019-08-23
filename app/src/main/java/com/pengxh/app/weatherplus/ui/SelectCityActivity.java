@@ -82,7 +82,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         mImageView_title_add.setVisibility(View.INVISIBLE);
         mTextView_title.setText("添加城市");
         String district = getIntent().getStringExtra("district");
-//        Log.d(TAG, "定位点: " + district);
         if (!TextUtils.isEmpty(district)) {
             mTextView_current_location.setText(district);
         } else {
@@ -129,24 +128,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         } else {
             mImageView_hot_city.setVisibility(View.INVISIBLE);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        weatherPresenter.onUnsubscribe();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -272,8 +253,25 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
             //存数据库，sp不合适
             String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
             String jsonString = JSONObject.toJSONString(weatherBean);
-//            Log.d(TAG, "showNetWorkData: " + jsonString);
             sqLiteUtil.saveCityListWeather(city, jsonString);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        weatherPresenter.onUnsubscribe();
     }
 }

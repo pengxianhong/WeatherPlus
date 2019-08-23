@@ -253,6 +253,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mTextViewRealtimeTemphigh.setText(resultBean.getTemphigh() + "℃");
         String updatetime = resultBean.getUpdatetime();
         mTextViewRealtimeUpdate.setText(updatetime.substring(5, 16) + "\r\r更新");
+        mTextViewRealtimeUpdate.setCompoundDrawables(null, null, null, null);//定位点隐藏刷新按钮
 
         mTextViewRealtimeHumidity.setText(resultBean.getHumidity() + "%");
         mTextViewRealtimePurple.setText(resultBean.getIndex().get(2).getDetail());

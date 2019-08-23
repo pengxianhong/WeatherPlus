@@ -13,9 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl3"
-        android:layout_marginTop="10dp"
         android:orientation="vertical"
-        android:padding="40dp">
+        android:padding="30dp">
 
         <include layout="@layout/include_realtime_humidity" />
 

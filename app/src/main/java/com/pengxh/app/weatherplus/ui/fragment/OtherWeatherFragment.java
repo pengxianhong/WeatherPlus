@@ -1,6 +1,7 @@
 package com.pengxh.app.weatherplus.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,9 +32,13 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
+import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
+import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
+import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.CustomGridView;
@@ -46,7 +51,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class OtherWeatherFragment extends ImmersionFragment implements View.OnClickListener {
+public class OtherWeatherFragment extends ImmersionFragment
+        implements View.OnClickListener, IWeatherView {
 
     private static final String TAG = "OtherWeatherFragment";
 
@@ -113,6 +119,10 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
 
     Unbinder unbinder;
     private PagePositionBroadcast broadcast = null;
+    private WeatherPresenterImpl weatherPresenter;
+    private ProgressDialog progressDialog;
+    private String cityName;
+    private SQLiteUtil sqLiteUtil;
 
     @Nullable
     @Override
@@ -124,6 +134,9 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     }
 
     private void init() {
+        sqLiteUtil = SQLiteUtil.getInstance();
+        weatherPresenter = new WeatherPresenterImpl(this);
+
         mImageView_realtime_location.setVisibility(View.GONE);
         //TODO 解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
@@ -146,9 +159,10 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action != null && action.equals("action.changePosition")) {
-                int position = Integer.parseInt(intent.getStringExtra("position"));
-                List<CityListWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityList();
-                final String weather = weatherBeans.get(position).getWeather();
+                int index = Integer.parseInt(intent.getStringExtra("position"));
+                List<CityListWeatherBean> weatherBeans = sqLiteUtil.loadCityList();
+                cityName = weatherBeans.get(index).getCityName();
+                final String weather = weatherBeans.get(index).getWeather();
                 if (weather.equals("")) {
                     Log.w(TAG, "onEventMainThread: ", new Throwable());
                 } else {
@@ -172,9 +186,11 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         @Override
         public void handleMessage(Message msg) {
             Log.d(TAG, "handleMessage: " + msg.what);
-            if (msg.what == 100) {
+            if (msg.what == 100 || msg.what == 101) {
                 NetWeatherBean weatherBean = (NetWeatherBean) msg.obj;
                 setWeather(weatherBean);
+            } else {
+                Log.w(TAG, "handleMessage: error msg", new Throwable());
             }
         }
     };
@@ -277,12 +293,22 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         }
     }
 
-    @OnClick({R.id.mImageView_realtime_add})
+    @OnClick({R.id.mImageView_realtime_add, R.id.mTextView_realtime_update})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mImageView_realtime_add:
                 startActivity(new Intent(getActivity(), CityListActivity.class));
+                break;
+            case R.id.mTextView_realtime_update:
+                //手动更新天气
+                List<AllCityBean> beanList = GreenDaoUtil.queryCity(cityName);
+                if (beanList.size() > 0) {
+                    AllCityBean cityBean = beanList.get(0);
+                    weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(),
+                            Integer.parseInt(cityBean.getCityid()),
+                            Integer.parseInt(cityBean.getCitycode()));
+                }
                 break;
             default:
                 break;
@@ -311,6 +337,40 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        weatherPresenter.onUnsubscribe();
         unbinder.unbind();
+    }
+
+    @Override
+    public void showProgress() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("正在加载天气数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showNetWorkData(NetWeatherBean weatherBean) {
+        if (weatherBean != null) {
+            String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
+            String jsonString = JSONObject.toJSONString(weatherBean);
+            sqLiteUtil.saveCityListWeather(city, jsonString);
+
+            //手动获取天气
+            Message message = mHandler.obtainMessage();
+            message.obj = weatherBean;
+            message.what = 101;
+            mHandler.sendMessageDelayed(message, 1000);
+            Log.d(TAG, "showNetWorkData: 手动获取天气");
+        }
     }
 }

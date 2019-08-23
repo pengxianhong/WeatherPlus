@@ -119,12 +119,14 @@ public class SQLiteUtil {
     public void saveCityListWeather(String city, String weather) {
         if (!TextUtils.isEmpty(city)) {
             ContentValues values = new ContentValues();
-            values.put("cityName", city);
-            values.put("cityWeather", weather);
             if (isCityExist("CityWeather", city)) {
+                //update方法有问题
+                values.put("cityWeather", weather);
                 db.update("CityWeather", values, "cityWeather = ?", new String[]{weather});
                 Log.d(TAG, "更新数据");
             } else {
+                values.put("cityName", city);
+                values.put("cityWeather", weather);
                 db.insert("CityWeather", null, values);
             }
         }
