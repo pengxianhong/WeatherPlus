@@ -117,13 +117,13 @@ public class SQLiteUtil {
      * 保存城市列表天气
      */
     public void saveCityListWeather(String city, String weather) {
-        if (!TextUtils.isEmpty(city)) {
+        if (!TextUtils.isEmpty(city) && !TextUtils.isEmpty(weather)) {
             ContentValues values = new ContentValues();
             if (isCityExist("CityWeather", city)) {
-                //update方法有问题
-                values.put("cityWeather", weather);
-                db.update("CityWeather", values, "cityWeather = ?", new String[]{weather});
-                Log.d(TAG, "更新数据");
+                values.put("cityWeather", weather);//value为将要替换更改的值
+                //将CityWeather里面cityName = city的cityWeather更新
+                db.update("CityWeather", values, "cityName = ?", new String[]{city});
+                Log.d(TAG, city + "天气数据更新成功");
             } else {
                 values.put("cityName", city);
                 values.put("cityWeather", weather);
