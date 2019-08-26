@@ -46,8 +46,6 @@ import butterknife.OnClick;
 
 public class SelectCityActivity extends BaseNormalActivity implements IWeatherView, View.OnClickListener, OnItemClickListener {
 
-    private static final String TAG = "SelectCityActivity";
-
     @BindView(R.id.mTextView_current_location)
     TextView mTextView_current_location;
     @BindView(R.id.mImageView_hot_city)
@@ -151,7 +149,8 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
             @Override
             public void afterTextChanged(Editable s) {
-                List<AllCityBean> beanList = GreenDaoUtil.queryCity(s.toString());
+                String inputString = s.toString();
+                List<AllCityBean> beanList = GreenDaoUtil.queryCity(inputString);
                 if (beanList.size() > 0) {
                     //将查询历史保存到[热门]表
                     AllCityBean cityBean = beanList.get(0);

@@ -124,7 +124,8 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                         sqLiteUtil.deleteCityByName(listWeatherBeans.get(position).getCityName());
                         listWeatherBeans.remove(position);
                         cityAdapter.notifyDataSetChanged();
-                        ToastUtil.showBeautifulToast("删除成功", ToastUtil.SUCCESS);
+                        //TODO 发送del广播
+                        sendUpdateBroadcast("del");
                         break;
                 }
                 return true;
@@ -133,9 +134,18 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         mSwipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO 发送add广播
+                sendUpdateBroadcast("add");
                 finish();
             }
         });
+    }
+
+    private void sendUpdateBroadcast(String tag) {
+        Intent intent = new Intent();
+        intent.setAction("action.updatePageNumber");
+        intent.putExtra("TAG", tag);//不能发int型
+        sendBroadcast(intent);
     }
 
     @OnClick({R.id.mImageView_title_back, R.id.mRelativeLayout_citylist, R.id.mImageView_title_add})

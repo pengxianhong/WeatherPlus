@@ -1,12 +1,15 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -18,6 +21,7 @@ import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.adapter.WeatherPageAdapter;
 import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.fragment.OtherWeatherFragment;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
@@ -37,9 +41,8 @@ public class MainActivity extends BaseNormalActivity {
     ViewPager mMainViewPager;
     @BindView(R.id.mLlIndicator)
     LinearLayout mLlIndicator;
-    private List<Fragment> fragmentLinkedList = new LinkedList<>();
     private SQLiteUtil sqLiteUtil;
-
+    private PageNumberUpdateBroadcast updateBroadcast = null;
 
     @Override
     public void initView() {
@@ -53,16 +56,108 @@ public class MainActivity extends BaseNormalActivity {
 
     @Override
     public void initEvent() {
-        fragmentLinkedList.add(new WeatherFragment());
-        //pageNumber需要即时刷新
-        int pageNumber = sqLiteUtil.loadCityList().size();
-        for (int i = 1; i <= pageNumber; i++) {
-            fragmentLinkedList.add(new OtherWeatherFragment());
+        mHandler.sendEmptyMessage(20);
+    }
+
+    class PageNumberUpdateBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null && action.equals("action.updatePageNumber")) {
+                String tag = intent.getStringExtra("TAG");
+                Log.d(TAG, "onReceive: => " + tag);
+                switch (tag) {
+                    case "add":
+                        sengMsg(sqLiteUtil.loadCityList().size());
+                        break;
+                    case "del":
+                        sengMsg(sqLiteUtil.loadCityList().size());
+                        break;
+                    default:
+                        Log.w(TAG, "onReceive: error tag", new Throwable());
+                        break;
+                }
+            }
         }
-        FragmentPagerAdapter adapter = new WeatherPageAdapter(getSupportFragmentManager(), fragmentLinkedList);
-        mMainViewPager.setOffscreenPageLimit(3);
-        mMainViewPager.setAdapter(adapter);
-        mMainViewPager.setOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentLinkedList.size()));
+    }
+
+    private void sengMsg(int number) {
+        Message message = mHandler.obtainMessage();
+        message.what = 30;
+        message.obj = number;
+        mHandler.sendMessage(message);
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 30:
+                    //刷新UI
+                    int number = (int) msg.obj;
+                    updatePage(number, true);
+                    break;
+                default:
+                    //默认加载
+                    updatePage(sqLiteUtil.loadCityList().size(), false);
+                    break;
+            }
+        }
+    };
+
+    private void updatePage(int pageNum, boolean isUpdateNumer) {
+        Log.d(TAG, "isUpdate => " + isUpdateNumer);
+        List<Fragment> fragments = new LinkedList<>();
+        if (!isUpdateNumer) {
+            fragments.add(new WeatherFragment());
+            for (int i = 1; i <= pageNum; i++) {
+                fragments.add(new OtherWeatherFragment());
+            }
+            WeatherPageAdapter pageAdapter = new WeatherPageAdapter(getSupportFragmentManager(), fragments);
+            mMainViewPager.setOffscreenPageLimit(2 * pageNum + 1);
+            mMainViewPager.setAdapter(pageAdapter);
+            mMainViewPager.setOnPageChangeListener(
+                    //page+1是因为需要将定位点页面计算在内
+                    new WeatherPageChangeListener(this, mLlIndicator, (pageNum + 1)));
+        } else {
+            Log.d(TAG, "pageNumber => " + (pageNum + 1));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //防止定位不准确
+        int p1 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int p2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int p3 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        if (PackageManager.PERMISSION_GRANTED != p1 || PackageManager.PERMISSION_GRANTED != p2 || PackageManager.PERMISSION_GRANTED != p3) {
+            new AlertView("友情提示", "缺少定位权限，请在设置里面打开相关权限", null, new String[]{"确定"}, null, MainActivity.this,
+                    AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    MainActivity.this.finish();
+                }
+            }).show();
+        } else {
+            startService(new Intent(this, LocationService.class));
+        }
+        if (updateBroadcast == null) {
+            updateBroadcast = new PageNumberUpdateBroadcast();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("action.updatePageNumber");
+            this.registerReceiver(updateBroadcast, intentFilter);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (updateBroadcast != null) {
+            this.unregisterReceiver(updateBroadcast);
+        }
     }
 
     class WeatherPageChangeListener implements ViewPager.OnPageChangeListener {
@@ -133,46 +228,6 @@ public class MainActivity extends BaseNormalActivity {
         @Override
         public void onPageScrollStateChanged(int position) {
 
-        }
-    }
-
-    class WeatherPageAdapter extends FragmentPagerAdapter {
-        private List<Fragment> pageList;
-
-        WeatherPageAdapter(FragmentManager fm, List<Fragment> pageList) {
-            super(fm);
-            this.pageList = pageList;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return pageList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return pageList.size();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: ");
-        //防止定位不准确
-        int p1 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        int p2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-        int p3 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if (PackageManager.PERMISSION_GRANTED != p1 || PackageManager.PERMISSION_GRANTED != p2 || PackageManager.PERMISSION_GRANTED != p3) {
-            new AlertView("友情提示", "缺少定位权限，请在设置里面打开相关权限", null, new String[]{"确定"}, null, MainActivity.this,
-                    AlertView.Style.Alert, new OnItemClickListener() {
-                @Override
-                public void onItemClick(Object o, int position) {
-                    MainActivity.this.finish();
-                }
-            }).show();
-        } else {
-            startService(new Intent(this, LocationService.class));
         }
     }
 }
