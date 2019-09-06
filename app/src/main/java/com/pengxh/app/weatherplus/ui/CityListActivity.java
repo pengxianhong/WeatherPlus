@@ -72,7 +72,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     }
 
     @Override
-    public void init() {
+    public void initData() {
         //设置第一个item的城市天气。后续改为实时更新的效果
         String weatherJson = (String) SaveKeyValues.getValue("location_weather", "weatherMap", "");
         if (!weatherJson.equals("")) {
@@ -162,7 +162,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 });
                 break;
             case R.id.mRelativeLayout_citylist:
-                ToastUtil.showBeautifulToast("定位点城市不能删除", ToastUtil.WARNING);
+                ToastUtil.showToast("定位点城市不能删除", ToastUtil.WARING);
                 break;
             case R.id.mImageView_title_add:
                 Intent intent = new Intent(this, SelectCityActivity.class);

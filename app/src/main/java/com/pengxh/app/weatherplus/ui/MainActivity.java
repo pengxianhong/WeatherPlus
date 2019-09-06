@@ -50,7 +50,7 @@ public class MainActivity extends BaseNormalActivity {
     }
 
     @Override
-    public void init() {
+    public void initData() {
         sqLiteUtil = SQLiteUtil.getInstance();
     }
 

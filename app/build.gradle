@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao' // 2.apply plugin
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 28
@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    //3.greendao配置
+
     greendao {
         //版本号，升级时可配置
         schemaVersion 1
@@ -33,9 +33,7 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
-    //新版butterknife必须加上如下依赖包
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    //动态权限申请工具.https://blog.csdn.net/sxk874890728/article/details/73554740?utm_source=blogxgwz1
     implementation 'pub.devrel:easypermissions:1.0.1'
     //retrofit2+rxjava
     implementation 'io.reactivex:rxjava:1.2.4'
@@ -48,11 +46,10 @@ dependencies {
     //对话框
     implementation 'com.aihook:alertview:1.0.0'
     //基础依赖库
-    implementation 'com.github.pengxianhong:Android-library:1.3.2'
+    implementation 'com.github.pengxianhong:Android-library:1.4'
     //高德定位服务
     implementation 'com.amap.api:location:4.6.0'
     //greenDao数据库框架
-	//4.add library
     implementation 'org.greenrobot:greendao:3.2.2'
     //高性能Json解析框架，阿里巴巴出品
     implementation 'com.alibaba:fastjson:1.2.58'

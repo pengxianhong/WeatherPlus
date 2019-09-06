@@ -38,7 +38,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     }
 
     @Override
-    public void init() {
+    public void initData() {
         ImmersionBar.with(this)
                 .statusBarColor(R.color.white)
                 .fitsSystemWindows(true)

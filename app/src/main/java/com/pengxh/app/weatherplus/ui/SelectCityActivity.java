@@ -76,7 +76,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     }
 
     @Override
-    public void init() {
+    public void initData() {
         mImageView_title_add.setVisibility(View.INVISIBLE);
         mTextView_title.setText("添加城市");
         String district = getIntent().getStringExtra("district");

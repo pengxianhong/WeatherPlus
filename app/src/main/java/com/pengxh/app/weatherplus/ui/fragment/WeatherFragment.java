@@ -154,7 +154,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
         final String district = (String) SaveKeyValues.getValue("location", "district", "");
         if (TextUtils.isEmpty(district)) {
-            ToastUtil.showBeautifulToast("定位失败，请退出稍后重试", ToastUtil.ERROR);
+            ToastUtil.showToast("定位失败，请退出稍后重试", ToastUtil.ERROR);
         } else {
             boolean isFirstGet = (boolean) SaveKeyValues.getValue("firstGetWeather", "isFirstGet", true);
             if (isFirstGet) {
@@ -237,7 +237,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
             weatherMap.put("temphigh", resultBean.getTemphigh());
             SaveKeyValues.putValue("location_weather", "weatherMap", new Gson().toJson(weatherMap));
         } else {
-            ToastUtil.showBeautifulToast("获取数据失败，请重试", ToastUtil.ERROR);
+            ToastUtil.showToast("获取数据失败，请重试", ToastUtil.ERROR);
         }
     }
 
