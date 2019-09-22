@@ -3,7 +3,7 @@ package com.pengxh.app.weatherplus;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.pengxh.app.multilib.utils.ToastUtil;
+import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.weatherplus.greendao.DaoMaster;
 import com.pengxh.app.weatherplus.greendao.DaoSession;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -16,7 +16,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ToastUtil.init(this);
+        EasyToast.init(this);
         SaveKeyValues.init(this);
         SQLiteUtil.initDataBase(this);
         setupDatabase();//配置greendao

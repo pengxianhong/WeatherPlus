@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.DensityUtil;
-import com.pengxh.app.multilib.utils.ToastUtil;
+import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenu;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuCreator;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuItem;
@@ -162,7 +162,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 });
                 break;
             case R.id.mRelativeLayout_citylist:
-                ToastUtil.showToast("定位点城市不能删除", ToastUtil.WARING);
+                EasyToast.showToast("定位点城市不能删除", EasyToast.WARING);
                 break;
             case R.id.mImageView_title_add:
                 Intent intent = new Intent(this, SelectCityActivity.class);

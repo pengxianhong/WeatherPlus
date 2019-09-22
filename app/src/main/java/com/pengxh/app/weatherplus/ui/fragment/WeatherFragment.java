@@ -24,7 +24,7 @@ import com.aihook.alertview.library.OnItemClickListener;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.ImmersionFragment;
-import com.pengxh.app.multilib.utils.ToastUtil;
+import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
@@ -154,7 +154,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
         final String district = (String) SaveKeyValues.getValue("location", "district", "");
         if (TextUtils.isEmpty(district)) {
-            ToastUtil.showToast("定位失败，请退出稍后重试", ToastUtil.ERROR);
+            EasyToast.showToast("定位失败，请退出稍后重试", EasyToast.ERROR);
         } else {
             boolean isFirstGet = (boolean) SaveKeyValues.getValue("firstGetWeather", "isFirstGet", true);
             if (isFirstGet) {
@@ -237,7 +237,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
             weatherMap.put("temphigh", resultBean.getTemphigh());
             SaveKeyValues.putValue("location_weather", "weatherMap", new Gson().toJson(weatherMap));
         } else {
-            ToastUtil.showToast("获取数据失败，请重试", ToastUtil.ERROR);
+            EasyToast.showToast("获取数据失败，请重试", EasyToast.ERROR);
         }
     }
 

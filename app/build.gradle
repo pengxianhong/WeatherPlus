@@ -46,7 +46,7 @@ dependencies {
     //对话框
     implementation 'com.aihook:alertview:1.0.0'
     //基础依赖库
-    implementation 'com.github.pengxianhong:Android-library:1.4'
+    implementation 'com.github.pengxianhong:Android-library:1.4.1'
     //高德定位服务
     implementation 'com.amap.api:location:4.6.0'
     //greenDao数据库框架
