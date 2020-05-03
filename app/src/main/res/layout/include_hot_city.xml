@@ -20,7 +20,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/mImageView_hot_city"
+            android:id="@+id/mHotCityImageView"
             android:layout_width="72px"
             android:layout_height="72px"
             android:layout_alignParentEnd="true"
@@ -31,7 +31,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mRecyclerView_hot_city"
+        android:id="@+id/mHotCityRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" />

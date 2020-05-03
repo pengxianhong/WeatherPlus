@@ -13,7 +13,7 @@
             android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/dot_blue" />
+            android:background="@drawable/dot_purple" />
 
         <View
             android:layout_width="1dp"

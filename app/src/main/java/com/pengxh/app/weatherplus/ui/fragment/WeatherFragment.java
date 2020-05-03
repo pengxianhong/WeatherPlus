@@ -47,18 +47,8 @@ import butterknife.OnClick;
 public class WeatherFragment extends BaseFragment implements IWeatherView, View.OnClickListener {
 
     private static final String TAG = "WeatherFragment";
-
     @BindView(R.id.layoutView)
     LinearLayout layoutView;
-//    @BindView(R.id.mTextView_realtime_cityName)
-//    TextView mTextViewRealtimeCityName;
-//    @BindView(R.id.mTextView_realtime_date)
-//    TextView mTextViewRealtimeDate;
-//    @BindView(R.id.TextView_realtime_week)
-//    TextView mTextViewRealtimeWeek;
-//    @BindView(R.id.mImageView_realtime_add)
-//    ImageView mImageView_realtime_add;
-
     @BindView(R.id.mImageView_realtime_img)
     ImageView mImageViewRealtimeImg;
     @BindView(R.id.mTextView_realtime_temp)
@@ -160,18 +150,16 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
             bindResultData(resultBean);
 
             //显示当天24h的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
-                    .getHourly();
+            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult().getHourly();
             bindHourlyData(hourlyBeanList);
 
             //显示一周内的天气情况
-            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
-                    .getDaily();
+            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult().getDaily();
             bindDailyData(dailyBeanList);
 
             //显示详细空气质量
             WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
-            bindAqiData(aqiBean);
+            bindAqiData(resultBean.getAqi().getAqiinfo().getColor(), aqiBean);
 
             //绑定GridView
             List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
@@ -233,8 +221,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         mRecyclerViewWeekly.setAdapter(adapter);
     }
 
-    private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
-        mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
+    private void bindAqiData(String color, WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
+        mTextViewAirAqi.setText(aqiBean.getQuality());
+        mTextViewAirAqi.setTextColor(Color.parseColor(color));
 //        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
 //        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
         mTextViewAirPM10.setText(aqiBean.getPm10());

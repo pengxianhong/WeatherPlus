@@ -10,7 +10,7 @@
     android:paddingBottom="10dp">
 
     <TextView
-        android:id="@+id/mTextView_citylist_city"
+        android:id="@+id/mCityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -24,13 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/mTextView_citylist_city"
+        android:layout_toEndOf="@+id/mCityName"
         android:gravity="center"
         app:cardCornerRadius="5dp"
         app:cardPreventCornerOverlap="true">
 
         <TextView
-            android:id="@+id/mTextView_citylist_quality"
+            android:id="@+id/mCityQuality"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -41,19 +41,19 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
-        android:id="@+id/mImageView_citylist_img"
+        android:id="@+id/mCityImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         app:srcCompat="@mipmap/a0" />
 
     <TextView
-        android:id="@+id/mTextView_citylist_weather"
+        android:id="@+id/mCityWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/mImageView_citylist_img"
+        android:layout_toEndOf="@+id/mCityImage"
         android:textColor="#fff"
         android:textSize="16sp" />
 
@@ -64,15 +64,15 @@
         android:layout_centerVertical="true">
 
         <TextView
-            android:id="@+id/mTextView_citylist_templow"
+            android:id="@+id/mCityLowTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/mTextView_citylist_temphigh"
+            android:layout_toStartOf="@+id/mCityHighTemp"
             android:textColor="#fff" />
 
         <TextView
-            android:id="@+id/mTextView_citylist_temphigh"
+            android:id="@+id/mCityHighTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

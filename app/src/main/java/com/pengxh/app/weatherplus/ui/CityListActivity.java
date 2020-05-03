@@ -28,35 +28,30 @@ import butterknife.OnClick;
 
 @SuppressLint("SetTextI18n")
 public class CityListActivity extends BaseNormalActivity implements View.OnClickListener {
-    @BindView(R.id.mImageView_title_back)
-    ImageView mImageView_title_back;
-    @BindView(R.id.mImageView_title_add)
-    ImageView mImageView_title_add;
-    @BindView(R.id.mTextView_citylist_city)
-    TextView mTextViewCitylistCity;
-    @BindView(R.id.mTextView_citylist_quality)
-    TextView mTextViewCitylistQuality;
-    @BindView(R.id.mImageView_citylist_img)
-    ImageView mImageViewCitylistImg;
-    @BindView(R.id.mTextView_citylist_weather)
-    TextView mTextViewCitylistWeather;
-    @BindView(R.id.mTextView_citylist_templow)
-    TextView mTextViewCitylistTemplow;
-    @BindView(R.id.mTextView_citylist_temphigh)
-    TextView mTextViewCitylistTemphigh;
+    @BindView(R.id.mCityName)
+    TextView mCityName;
+    @BindView(R.id.mCityQuality)
+    TextView mCityQuality;
+    @BindView(R.id.mCityImage)
+    ImageView mCityImage;
+    @BindView(R.id.mCityWeather)
+    TextView mCityWeather;
+    @BindView(R.id.mCityLowTemp)
+    TextView mCityLowTemp;
+    @BindView(R.id.mCityHighTemp)
+    TextView mCityHighTemp;
     @BindView(R.id.mSwipeMenuListView)
     SwipeMenuListView mSwipeMenuListView;
 
     private static final String TAG = "CityListActivity";
     private String currentLocation = "";
-    private SQLiteUtil sqLiteUtil;
 
     private CityListAdapter cityAdapter;
     private List<CityWeatherBean> weatherBeans;
 
     @Override
     public int initLayoutView() {
-        return R.layout.activity_citylist;
+        return R.layout.activity_city_list;
     }
 
     @Override
@@ -64,7 +59,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
         currentLocation = (String) SaveKeyValues.getValue("location", "");
         //设置第一个item的城市天气。后续改为实时更新的效果
-        sqLiteUtil = SQLiteUtil.getInstance();
+        SQLiteUtil sqLiteUtil = SQLiteUtil.getInstance();
         String weatherJson = sqLiteUtil.loadCityWeather(currentLocation).getWeather();
         if (weatherJson == null || weatherJson.equals("")) {
             Log.d(TAG, "initData: 加载当前位置天气失败");
@@ -73,13 +68,13 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         //解析weather
         WeatherBean weatherBean = JSONObject.parseObject(weatherJson, WeatherBean.class);
         WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
-        mTextViewCitylistCity.setText(resultBean.getCity());
-        mTextViewCitylistQuality.setText(resultBean.getAqi().getQuality());
-        mTextViewCitylistQuality.setBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));
-        mImageViewCitylistImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
-        mTextViewCitylistWeather.setText(resultBean.getWeather());
-        mTextViewCitylistTemplow.setText(resultBean.getTemplow() + "℃~");
-        mTextViewCitylistTemphigh.setText(resultBean.getTemphigh() + "℃");
+        mCityName.setText(resultBean.getCity());
+        mCityQuality.setText(resultBean.getAqi().getQuality());
+        mCityQuality.setBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));
+        mCityImage.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
+        mCityWeather.setText(resultBean.getWeather());
+        mCityLowTemp.setText(resultBean.getTemplow() + "℃~");
+        mCityHighTemp.setText(resultBean.getTemphigh() + "℃");
         //设置其他城市的信息
 //        listWeatherBeans = sqLiteUtil.loadCityList();
 //        if (listWeatherBeans.size() > 0) {
@@ -132,17 +127,17 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         sendBroadcast(intent);
     }
 
-    @OnClick({R.id.mImageView_title_back, R.id.mRelativeLayout_citylist, R.id.mImageView_title_add})
+    @OnClick({R.id.mTitleBackView, R.id.mRelativeLayout_citylist, R.id.mTitleAddView})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.mImageView_title_back:
+            case R.id.mTitleBackView:
                 finish();
                 break;
             case R.id.mRelativeLayout_citylist:
                 EasyToast.showToast("定位点城市不能删除", EasyToast.WARING);
                 break;
-            case R.id.mImageView_title_add:
+            case R.id.mTitleAddView:
                 Intent intent = new Intent(this, SelectCityActivity.class);
                 intent.putExtra("currentLocation", currentLocation);
                 startActivity(intent);

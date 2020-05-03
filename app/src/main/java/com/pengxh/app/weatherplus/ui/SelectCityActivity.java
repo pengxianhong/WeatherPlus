@@ -37,17 +37,17 @@ import butterknife.OnClick;
 public class SelectCityActivity extends BaseNormalActivity implements IWeatherView, View.OnClickListener {
 
     private static final String TAG = "SelectCityActivity";
-    @BindView(R.id.mTextView_title)
-    TextView mTextView_title;
-    @BindView(R.id.mImageView_title_add)
-    ImageView mImageView_title_add;
-    @BindView(R.id.mTextView_current_location)
-    TextView mTextView_current_location;
-    @BindView(R.id.mImageView_hot_city)
-    ImageView mImageView_hot_city;
+    @BindView(R.id.mTitleView)
+    TextView mTitleView;
+    @BindView(R.id.mTitleAddView)
+    ImageView mTitleAddView;
+    @BindView(R.id.mCurrentLocation)
+    TextView mCurrentLocation;
+    @BindView(R.id.mHotCityImageView)
+    ImageView mHotCityImageView;
     @BindView(R.id.mAutoCompleteTextView)
     AutoCompleteTextView mAutoCompleteTextView;
-    @BindView(R.id.mRecyclerView_hot_city)
+    @BindView(R.id.mHotCityRecyclerView)
     RecyclerView mRecyclerViewHotCity;
 
     private SQLiteUtil sqLiteUtil;
@@ -58,20 +58,20 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
 
     @Override
     public int initLayoutView() {
-        return R.layout.activity_selectcity;
+        return R.layout.activity_select_city;
     }
 
     @Override
     public void initData() {
-        ImmersionBar.with(this).statusBarColor("#0094FF").fitsSystemWindows(true).init();
-        mImageView_title_add.setVisibility(View.INVISIBLE);
-        mTextView_title.setText("添加城市");
+        ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
+        mTitleAddView.setVisibility(View.INVISIBLE);
+        mTitleView.setText("添加城市");
 
         String district = getIntent().getStringExtra("currentLocation");
         if (!TextUtils.isEmpty(district)) {
-            mTextView_current_location.setText(district);
+            mCurrentLocation.setText(district);
         } else {
-            mTextView_current_location.setText("定位失败");
+            mCurrentLocation.setText("定位失败");
         }
 
         weatherPresenter = new WeatherPresenterImpl(this);
@@ -91,21 +91,18 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void initEvent() {
         hotCityList = sqLiteUtil.loadHotCity();
         if (hotCityList != null) {
-            mImageView_hot_city.setVisibility(View.VISIBLE);
+            mHotCityImageView.setVisibility(View.VISIBLE);
         } else {
-            mImageView_hot_city.setVisibility(View.INVISIBLE);
+            mHotCityImageView.setVisibility(View.INVISIBLE);
         }
         hotCityAdapter = new HotCityAdapter(SelectCityActivity.this, hotCityList);
         mRecyclerViewHotCity.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
         mRecyclerViewHotCity.setAdapter(hotCityAdapter);
-        hotCityAdapter.setOnItemClickListener(new HotCityAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(int position) {
-                String city = hotCityList.get(position).getCity();
-                CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(city);
-                if (cityBean != null) {
-                    getCityWeather(cityBean);
-                }
+        hotCityAdapter.setOnItemClickListener(position -> {
+            String city = hotCityList.get(position).getCity();
+            CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(city);
+            if (cityBean != null) {
+                getCityWeather(cityBean);
             }
         });
     }
@@ -149,7 +146,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                             hotCityNameBean.setCity(city);
                             hotCityList.add(hotCityNameBean);
                             hotCityAdapter.notifyDataSetChanged();
-                            mImageView_hot_city.setVisibility(View.VISIBLE);
+                            mHotCityImageView.setVisibility(View.VISIBLE);
                         }
                     });
                     break;
@@ -159,20 +156,20 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         }
     };
 
-    @OnClick({R.id.mImageView_title_back, R.id.mImageView_hot_city})
+    @OnClick({R.id.mTitleBackView, R.id.mHotCityImageView})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.mImageView_title_back:
+            case R.id.mTitleBackView:
                 finish();
                 break;
-            case R.id.mImageView_hot_city:
+            case R.id.mHotCityImageView:
                 new AlertView("提示", "确认删除全部搜索历史?", "取消", new String[]{"确定"}, null, this, AlertView.Style.Alert, (o, position) -> {
                     if (position == 0) {
                         hotCityList.clear();
                         sqLiteUtil.deleteAll();
                         hotCityAdapter.notifyDataSetChanged();
-                        mImageView_hot_city.setVisibility(View.INVISIBLE);
+                        mHotCityImageView.setVisibility(View.INVISIBLE);
                     }
                 }).setCancelable(false).show();
                 break;

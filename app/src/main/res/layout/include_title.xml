@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="46dp"
     android:orientation="vertical"
-    android:paddingEnd="10dp"
-    android:paddingStart="10dp">
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
     <ImageView
-        android:id="@+id/mImageView_title_back"
+        android:id="@+id/mTitleBackView"
         android:layout_width="80px"
         android:layout_height="80px"
         android:layout_alignParentStart="true"
@@ -15,7 +15,7 @@
         android:background="@drawable/back" />
 
     <TextView
-        android:id="@+id/mTextView_title"
+        android:id="@+id/mTitleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -25,7 +25,7 @@
         android:textSize="18sp" />
 
     <ImageView
-        android:id="@+id/mImageView_title_add"
+        android:id="@+id/mTitleAddView"
         android:layout_width="80px"
         android:layout_height="80px"
         android:layout_alignParentEnd="true"
