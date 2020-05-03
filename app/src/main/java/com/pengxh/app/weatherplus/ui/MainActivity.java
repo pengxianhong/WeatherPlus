@@ -14,7 +14,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.DensityUtil;
-import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -39,7 +38,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
     LinearLayout mLlIndicator;
     private List<String> items = Arrays.asList("管理城市", "更新间隔");
     private Intent locationIntent = null;
-    private String currentLocation = "";
+
     private SQLiteUtil sqLiteUtil;
     private PageNumberUpdateBroadcast updateBroadcast = null;
 
@@ -58,7 +57,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
 
     @Override
     public void initEvent() {
-        currentLocation = (String) SaveKeyValues.getValue("location", "");
+
     }
 
     @OnClick(R.id.manageCity)
@@ -67,9 +66,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
         EasyPopupWindow easyPopupWindow = new EasyPopupWindow(this, items);
         easyPopupWindow.setPopupWindowClickListener(position -> {
             if (position == 0) {
-                Intent intent = new Intent(this, SelectCityActivity.class);
-                intent.putExtra("currentLocation", currentLocation);
-                startActivity(intent);
+                startActivity(new Intent(this, CityListActivity.class));
             } else if (position == 1) {
 
             }

@@ -1,7 +1,7 @@
 package com.pengxh.app.weatherplus.mvp.view;
 
 
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 
 public interface IWeatherView {
 
@@ -12,5 +12,5 @@ public interface IWeatherView {
     /**
      * 显示从后台服务器获取到的数据
      */
-    void showNetWorkData(NetWeatherBean weatherBean);
+    void showNetWorkData(WeatherBean weatherBean);
 }

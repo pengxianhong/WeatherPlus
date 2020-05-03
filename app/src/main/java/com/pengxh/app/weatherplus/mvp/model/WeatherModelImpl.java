@@ -2,7 +2,7 @@ package com.pengxh.app.weatherplus.mvp.model;
 
 import android.util.Log;
 
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.retrofit.RetrofitServiceManager;
 import com.pengxh.app.weatherplus.utils.Constant;
 
@@ -26,7 +26,7 @@ public class WeatherModelImpl implements IWeatherModel {
      * 数据回调接口
      */
     public interface OnWeatherListener {
-        void onSuccess(NetWeatherBean weatherBean);
+        void onSuccess(WeatherBean weatherBean);
 
         void onFailure(Throwable throwable);
     }
@@ -36,11 +36,11 @@ public class WeatherModelImpl implements IWeatherModel {
         /**
          * 实体类写父类，一定不能详细到子类
          * */
-        Observable<NetWeatherBean> observable = RetrofitServiceManager.getWeatherData(Constant.BASE_URL, city, cityid, citycode);
+        Observable<WeatherBean> observable = RetrofitServiceManager.getWeatherData(Constant.BASE_URL, city, cityid, citycode);
         Subscription subscribe = observable
                 .subscribeOn(Schedulers.io())//在io线程获取数据
                 .observeOn(AndroidSchedulers.mainThread())//回调给主线程，异步;
-                .subscribe(new Observer<NetWeatherBean>() {
+                .subscribe(new Observer<WeatherBean>() {
                     @Override
                     public void onCompleted() {
                         Log.d(TAG, "onCompleted ===============> 数据请求完毕");
@@ -54,7 +54,7 @@ public class WeatherModelImpl implements IWeatherModel {
                     }
 
                     @Override
-                    public void onNext(NetWeatherBean weatherBean) {
+                    public void onNext(WeatherBean weatherBean) {
                         if (weatherListener != null) {
                             weatherListener.onSuccess(weatherBean);
                         }

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.pengxh.app.weatherplus.bean.CityInfoBean;
-import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
+import com.pengxh.app.weatherplus.bean.CityWeatherBean;
 import com.pengxh.app.weatherplus.bean.HotCityBean;
 
 import java.util.ArrayList;
@@ -201,14 +201,32 @@ public class SQLiteUtil {
     }
 
     /**
+     * 加载指定城市天气
+     */
+    public CityWeatherBean loadCityWeather(String city) {
+        CityWeatherBean resultBean = null;
+        Cursor cursor = db.query(WEATHER_TABLE, null, "city = ?", new String[]{city}, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            resultBean = new CityWeatherBean();
+            resultBean.setCity(cursor.getString(cursor.getColumnIndex("city")));
+            resultBean.setWeather(cursor.getString(cursor.getColumnIndex("weather")));
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return resultBean;
+    }
+
+    /**
      * 加载所有城市天气
      */
-    public List<CityListWeatherBean> loadCityList() {
-        List<CityListWeatherBean> list = new ArrayList<>();
+    public List<CityWeatherBean> loadCityWeatherList() {
+        List<CityWeatherBean> list = new ArrayList<>();
         Cursor cursor = db.query(WEATHER_TABLE, null, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            CityListWeatherBean resultBean = new CityListWeatherBean();
+            CityWeatherBean resultBean = new CityWeatherBean();
             resultBean.setCity(cursor.getString(cursor.getColumnIndex("city")));
             resultBean.setWeather(cursor.getString(cursor.getColumnIndex("weather")));
             list.add(resultBean);

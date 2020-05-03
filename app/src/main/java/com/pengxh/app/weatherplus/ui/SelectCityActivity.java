@@ -23,7 +23,7 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityInfoBean;
 import com.pengxh.app.weatherplus.bean.HotCityBean;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -55,7 +55,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     private HotCityAdapter hotCityAdapter = null;
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
-    private AlertView alertView;
 
     @Override
     public int initLayoutView() {
@@ -200,7 +199,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     }
 
     @Override
-    public void showNetWorkData(NetWeatherBean weatherBean) {
+    public void showNetWorkData(WeatherBean weatherBean) {
         if (weatherBean != null) {
             //存数据库，sp不合适
             String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据

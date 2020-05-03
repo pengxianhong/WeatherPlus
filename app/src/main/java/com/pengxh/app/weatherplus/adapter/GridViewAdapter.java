@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.utils.Constant;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.List;
 
 public class GridViewAdapter extends BaseAdapter {
 
-    private List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList;
+    private List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList;
     private LayoutInflater mInflater;
 
-    public GridViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
+    public GridViewAdapter(Context mContext, List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         this.indexBeanList = indexBeanList;
         mInflater = LayoutInflater.from(mContext);
     }
@@ -66,7 +66,7 @@ public class GridViewAdapter extends BaseAdapter {
         private TextView mTextView_life_tipsTitle;
 
 
-        void bindData(NetWeatherBean.ResultBeanX.ResultBean.IndexBean indexBean, int index) {
+        void bindData(WeatherBean.ResultBeanX.ResultBean.IndexBean indexBean, int index) {
             mImageView_life_tipsIcon.setImageResource(Constant.ICONS[index]);
             mTextView_life_tipsValue.setText(indexBean.getIvalue());
             mTextView_life_tipsTitle.setText(indexBean.getIname());

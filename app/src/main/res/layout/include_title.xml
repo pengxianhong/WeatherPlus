@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/mImageView_title_back"
-        android:layout_width="96px"
-        android:layout_height="96px"
+        android:layout_width="80px"
+        android:layout_height="80px"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
         android:background="@drawable/back" />
@@ -26,8 +26,8 @@
 
     <ImageView
         android:id="@+id/mImageView_title_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80px"
+        android:layout_height="80px"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:background="@drawable/add" />

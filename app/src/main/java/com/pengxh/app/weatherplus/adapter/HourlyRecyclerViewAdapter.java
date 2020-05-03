@@ -12,17 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
 
 public class HourlyRecyclerViewAdapter extends RecyclerView.Adapter {
 
-    private List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList;
+    private List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList;
     private LayoutInflater inflater;
 
-    public HourlyRecyclerViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
+    public HourlyRecyclerViewAdapter(Context mContext, List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
         this.hourlyBeanList = hourlyBeanList;
         inflater = LayoutInflater.from(mContext);
     }
@@ -59,7 +59,7 @@ public class HourlyRecyclerViewAdapter extends RecyclerView.Adapter {
             mRecyclerView_hourly_temp = itemView.findViewById(R.id.mRecyclerView_hourly_temp);
         }
 
-        void bindHolder(NetWeatherBean.ResultBeanX.ResultBean.HourlyBean hourlyBean) {
+        void bindHolder(WeatherBean.ResultBeanX.ResultBean.HourlyBean hourlyBean) {
             mRecyclerView_hourly_time.setText(hourlyBean.getTime());
             mRecyclerView_hourly_weather.setText(hourlyBean.getWeather());
             mRecyclerView_hourly_img.setImageResource(OtherUtil.getImageResource(hourlyBean.getImg()));

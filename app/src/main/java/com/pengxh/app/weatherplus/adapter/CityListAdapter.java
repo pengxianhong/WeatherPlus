@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.pengxh.app.multilib.widget.swipemenu.BaseSwipeListAdapter;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.CityWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
@@ -25,10 +25,10 @@ public class CityListAdapter extends BaseSwipeListAdapter {
 
     private static final String TAG = "CityListAdapter";
 
-    private List<CityListWeatherBean> listWeatherBeans;
+    private List<CityWeatherBean> listWeatherBeans;
     private LayoutInflater inflater;
 
-    public CityListAdapter(Context context, List<CityListWeatherBean> list) {
+    public CityListAdapter(Context context, List<CityWeatherBean> list) {
         this.listWeatherBeans = list;
         inflater = LayoutInflater.from(context);
     }
@@ -79,7 +79,7 @@ public class CityListAdapter extends BaseSwipeListAdapter {
         void bindHolder(String weather) {
 //            Log.d(TAG, "bindHolder: " + weather);
             Gson gson = new Gson();
-            NetWeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, NetWeatherBean.class).getResult().getResult();
+            WeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, WeatherBean.class).getResult().getResult();
 
             mTextView_citylist_city.setText(bean.getCity());
             mTextView_citylist_quality.setText(bean.getAqi().getQuality());

@@ -12,17 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
 
 public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
-    private List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList;
+    private List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList;
     private LayoutInflater inflater;
 
-    public WeeklyRecyclerViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
+    public WeeklyRecyclerViewAdapter(Context mContext, List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         this.dailyBeanList = dailyBeanList;
         inflater = LayoutInflater.from(mContext);
     }
@@ -60,14 +60,14 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             mTextView_night_templow = itemView.findViewById(R.id.mTextView_night_templow);
         }
 
-        void bindHolder(NetWeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
+        void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
             mTextView_weekly_week.setText(dailyBean.getWeek());
 
-            NetWeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
+            WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
             mTextView_day_temphigh.setText(dayBean.getTemphigh());
 
-            NetWeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
+            WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
             mTextView_night_templow.setText(nightBean.getTemplow());
         }
     }

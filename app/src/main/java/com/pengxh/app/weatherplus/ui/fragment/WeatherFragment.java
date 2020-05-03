@@ -31,7 +31,7 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.service.LocationService;
@@ -193,28 +193,28 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 //    }
 
     @Override
-    public void showNetWorkData(NetWeatherBean weatherBean) {
+    public void showNetWorkData(WeatherBean weatherBean) {
         if (weatherBean != null) {
             // TODO 显示当天的详细天气情况
-            NetWeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
+            WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
             bindResultData(resultBean);
 
             // TODO 显示当天24h的天气情况
-            List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
+            List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
                     .getHourly();
             bindHourlyData(hourlyBeanList);
 
             // TODO 显示一周内的天气情况
-            List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
+            List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
                     .getDaily();
             bindDailyData(dailyBeanList);
 
             // TODO 显示详细空气质量
-            NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
+            WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
             bindAqiData(aqiBean);
 
             // TODO 绑定GridView
-            List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
+            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
                     .getIndex();
             bindIndexData(indexBeanList);
 
@@ -233,7 +233,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         }
     }
 
-    private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {
+    private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
         mTextViewRealtimeCityName.setText(resultBean.getCity());
         mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
         mTextViewRealtimeWeek.setText(resultBean.getWeek());
@@ -257,7 +257,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
     }
 
-    private void bindHourlyData(List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
+    private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
         HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(getContext(), hourlyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
@@ -265,7 +265,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mRecyclerViewHourly.setAdapter(adapter);
     }
 
-    private void bindDailyData(List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
+    private void bindDailyData(List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(getContext(), dailyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -273,7 +273,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mRecyclerViewWeekly.setAdapter(adapter);
     }
 
-    private void bindAqiData(NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
+    private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
 //        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
 //        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
@@ -285,7 +285,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mTextViewAirCO.setText(aqiBean.getCo());
     }
 
-    private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
+    private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(getContext(), indexBeanList);
         mCustomGridView_life.setAdapter(mGridViewAdapter);
         mCustomGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {

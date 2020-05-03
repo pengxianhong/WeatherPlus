@@ -59,6 +59,9 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mLocationClient == null) {
+            return;
+        }
         mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
     }

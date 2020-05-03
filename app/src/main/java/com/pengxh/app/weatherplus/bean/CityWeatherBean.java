@@ -1,6 +1,6 @@
 package com.pengxh.app.weatherplus.bean;
 
-public class CityListWeatherBean {
+public class CityWeatherBean {
 
     private String city;
     private String weather;

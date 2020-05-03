@@ -34,8 +34,8 @@ import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
-import com.pengxh.app.weatherplus.bean.NetWeatherBean;
+import com.pengxh.app.weatherplus.bean.CityWeatherBean;
+import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
@@ -97,7 +97,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
 
     @BindView(R.id.mTextView_air_aqi)
     TextView mTextViewAirAqi;
-//    @BindView(R.id.mDialProgress_air_aqi)
+    //    @BindView(R.id.mDialProgress_air_aqi)
 //    DialProgress mDialProgressAirAqi;
     @BindView(R.id.mTextView_air_pm10)
     TextView mTextViewAirPM10;
@@ -124,7 +124,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_weather, null);
         unbinder = ButterKnife.bind(this, view);
         init();
@@ -155,7 +155,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
             String action = intent.getAction();
             if (action != null && action.equals("action.changePosition")) {
                 int index = Integer.parseInt(intent.getStringExtra("position"));
-                List<CityListWeatherBean> weatherBeans = sqLiteUtil.loadCityList();
+                List<CityWeatherBean> weatherBeans = sqLiteUtil.loadCityWeatherList();
                 cityName = weatherBeans.get(index).getCity();
                 final String weather = weatherBeans.get(index).getWeather();
                 if (weather.equals("")) {
@@ -164,7 +164,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            NetWeatherBean weatherBean = JSONObject.parseObject(weather, NetWeatherBean.class);
+                            WeatherBean weatherBean = JSONObject.parseObject(weather, WeatherBean.class);
                             Message message = mHandler.obtainMessage();
                             message.obj = weatherBean;
                             message.what = 100;
@@ -182,7 +182,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         public void handleMessage(Message msg) {
             Log.d(TAG, "handleMessage: " + msg.what);
             if (msg.what == 100 || msg.what == 101) {
-                NetWeatherBean weatherBean = (NetWeatherBean) msg.obj;
+                WeatherBean weatherBean = (WeatherBean) msg.obj;
                 setWeather(weatherBean);
             } else {
                 Log.w(TAG, "handleMessage: error msg", new Throwable());
@@ -190,32 +190,32 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         }
     };
 
-    private void setWeather(NetWeatherBean weatherBean) {
+    private void setWeather(WeatherBean weatherBean) {
         // TODO 显示当天的详细天气情况
-        NetWeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
+        WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
         bindResultData(resultBean);
 
         // TODO 显示当天24h的天气情况
-        List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
+        List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList = weatherBean.getResult().getResult()
                 .getHourly();
         bindHourlyData(hourlyBeanList);
 
         // TODO 显示一周内的天气情况
-        List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
+        List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList = weatherBean.getResult().getResult()
                 .getDaily();
         bindDailyData(dailyBeanList);
 
         // TODO 显示详细空气质量
-        NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
+        WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
         bindAqiData(aqiBean);
 
         // TODO 绑定GridView
-        List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
+        List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
                 .getIndex();
         bindIndexData(indexBeanList);
     }
 
-    private void bindResultData(NetWeatherBean.ResultBeanX.ResultBean resultBean) {
+    private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
         mTextViewRealtimeCityName.setText(resultBean.getCity());
         mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
         mTextViewRealtimeWeek.setText(resultBean.getWeek());
@@ -238,7 +238,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
     }
 
-    private void bindHourlyData(List<NetWeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
+    private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
         HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(getContext(), hourlyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
@@ -246,7 +246,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         mRecyclerViewHourly.setAdapter(adapter);
     }
 
-    private void bindDailyData(List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
+    private void bindDailyData(List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
         WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(getContext(), dailyBeanList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -254,7 +254,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         mRecyclerViewWeekly.setAdapter(adapter);
     }
 
-    private void bindAqiData(NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
+    private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
 //        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
 //        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
@@ -266,7 +266,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         mTextViewAirCO.setText(aqiBean.getCo());
     }
 
-    private void bindIndexData(final List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
+    private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(getContext(), indexBeanList);
         mCustomGridView_life.setAdapter(mGridViewAdapter);
         mCustomGridView_life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -274,7 +274,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String iname = indexBeanList.get(position).getIname();
                 String detail = indexBeanList.get(position).getDetail();
-                new AlertView(iname, detail, null, new String[] { "确定" }, null, getContext(), AlertView.Style.Alert,
+                new AlertView(iname, detail, null, new String[]{"确定"}, null, getContext(), AlertView.Style.Alert,
                         new AlertViewItemClickListener()).show();
             }
         });
@@ -288,24 +288,24 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
         }
     }
 
-    @OnClick({ R.id.mImageView_realtime_add, R.id.mTextView_realtime_update })
+    @OnClick({R.id.mImageView_realtime_add, R.id.mTextView_realtime_update})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-        case R.id.mImageView_realtime_add:
-            startActivity(new Intent(getActivity(), CityListActivity.class));
-            break;
-        case R.id.mTextView_realtime_update:
-            // 手动更新天气
+            case R.id.mImageView_realtime_add:
+                startActivity(new Intent(getActivity(), CityListActivity.class));
+                break;
+            case R.id.mTextView_realtime_update:
+                // 手动更新天气
 //            List<AllCityBean> beanList = GreenDaoUtil.queryCity(cityName);
 //            if (beanList.size() > 0) {
 //                AllCityBean cityBean = beanList.get(0);
 //                weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), Integer.parseInt(cityBean.getCityid()),
 //                        Integer.parseInt(cityBean.getCitycode()));
 //            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
         }
     }
 
@@ -353,7 +353,7 @@ public class OtherWeatherFragment extends ImmersionFragment implements View.OnCl
     }
 
     @Override
-    public void showNetWorkData(NetWeatherBean weatherBean) {
+    public void showNetWorkData(WeatherBean weatherBean) {
         if (weatherBean != null) {
             String city = weatherBean.getResult().getResult().getCity();// 用于判断城市是否存在于表中，如果存在就更新天气数据
             String jsonString = JSONObject.toJSONString(weatherBean);
