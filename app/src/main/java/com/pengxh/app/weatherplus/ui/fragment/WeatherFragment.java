@@ -33,6 +33,7 @@ import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
+import com.pengxh.app.weatherplus.widgets.DashboardView;
 import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 
 import java.util.Arrays;
@@ -82,10 +83,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     @BindView(R.id.mRecyclerView_weekly)
     RecyclerView mRecyclerViewWeekly;
 
-    @BindView(R.id.mTextView_air_aqi)
-    TextView mTextViewAirAqi;
-    //    @BindView(R.id.mDialProgress_air_aqi)
-//    DialProgress mDialProgressAirAqi;
+    @BindView(R.id.dashboardView)
+    DashboardView dashboardView;
     @BindView(R.id.mTextView_air_pm10)
     TextView mTextViewAirPM10;
     @BindView(R.id.mTextView_air_pm2_5)
@@ -159,7 +158,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
 
             //显示详细空气质量
             WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean = weatherBean.getResult().getResult().getAqi();
-            bindAqiData(resultBean.getAqi().getAqiinfo().getColor(), aqiBean);
+            bindAqiData(aqiBean);
 
             //绑定GridView
             List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
@@ -182,10 +181,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     }
 
     private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
-//        mTextViewRealtimeCityName.setText(resultBean.getCity());
-//        mTextViewRealtimeDate.setText("\r\r" + resultBean.getDate() + "\r\r");
-//        mTextViewRealtimeWeek.setText(resultBean.getWeek());
-
         mImageViewRealtimeImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
         mTextViewRealtimeTemp.setText(resultBean.getTemp() + "°");
         mTextViewRealtimeWeather.setText(resultBean.getWeather());
@@ -221,11 +216,12 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         mRecyclerViewWeekly.setAdapter(adapter);
     }
 
-    private void bindAqiData(String color, WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
-        mTextViewAirAqi.setText(aqiBean.getQuality());
-        mTextViewAirAqi.setTextColor(Color.parseColor(color));
-//        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
-//        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
+    private void bindAqiData(WeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
+        //设置仪表盘属性
+        dashboardView.setDateStrPattern("更新时间：{date}");
+        dashboardView.setValueLevelPattern("{level}");
+        dashboardView.setValue(Integer.parseInt(aqiBean.getAqi()), true, false);
+
         mTextViewAirPM10.setText(aqiBean.getPm10());
         mTextViewAirPM2_5.setText(aqiBean.getPm2_5());
         mTextViewAirNO2.setText(aqiBean.getNo2());

@@ -3,29 +3,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="空气质量"
-            android:textColor="#fff"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/mTextView_air_aqi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:gravity="center"
-            android:text="良"
-            android:textColor="#fff"
-            android:textSize="18sp" />
-    </LinearLayout>
+        android:padding="10dp"
+        android:text="空气质量"
+        android:textColor="#fff"
+        android:textSize="16sp" />
 
     <include layout="@layout/include_divider" />
 
@@ -37,6 +21,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -49,40 +34,16 @@
                 android:text="污染指数"
                 android:textColor="#fff" />
 
-            <RelativeLayout
+            <com.pengxh.app.weatherplus.widgets.DashboardView
+                android:id="@+id/dashboardView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <!--                <com.pengxh.app.multilib.widget.DialProgress-->
-                <!--                    android:id="@+id/mDialProgress_air_aqi"-->
-                <!--                    android:layout_width="200dp"-->
-                <!--                    android:layout_height="200dp"-->
-                <!--                    android:layout_centerInParent="true"-->
-                <!--                    android:layout_gravity="center_horizontal"-->
-                <!--                    android:padding="10dp"-->
-                <!--                    app:animTime="1000"-->
-                <!--                    app:arcColors="@array/gradient_arc_color"-->
-                <!--                    app:arcWidth="15dp"-->
-                <!--                    app:dialIntervalDegree="3"-->
-                <!--                    app:dialWidth="2dp"-->
-                <!--                    app:hintSize="20sp"-->
-                <!--                    app:maxValue="500"-->
-                <!--                    app:startAngle="135"-->
-                <!--                    app:sweepAngle="270"-->
-                <!--                    app:unit="优"-->
-                <!--                    app:unitColor="#fff"-->
-                <!--                    app:unitSize="20sp"-->
-                <!--                    app:value="300"-->
-                <!--                    app:valueColor="#fff"-->
-                <!--                    app:valueSize="35sp" />-->
-
-            </RelativeLayout>
-
+                android:layout_height="170dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -108,7 +69,5 @@
             <include layout="@layout/include_air_co" />
 
         </LinearLayout>
-
     </LinearLayout>
-
 </LinearLayout>
