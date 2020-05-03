@@ -1,22 +1,22 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.pengxh.app.weatherplus"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
-    greendao {
-        //版本号，升级时可配置
-        schemaVersion 1
-        daoPackage 'com.pengxh.app.weatherplus.greendao'//这个是生成代码保存的包名
-        targetGenDir 'src/main/java'//保存到java代码
+    // Butterknife requires Java 8.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,34 +27,33 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'pub.devrel:easypermissions:1.0.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    implementation 'pub.devrel:easypermissions:1.3.0'
     //retrofit2+rxjava
-    implementation 'io.reactivex:rxjava:1.2.4'
+    implementation 'io.reactivex:rxjava:1.3.8'
     implementation 'io.reactivex:rxandroid:1.2.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-	implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.6.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
     //对话框
     implementation 'com.aihook:alertview:1.0.0'
     //基础依赖库
-    implementation 'com.github.pengxianhong:Android-library:1.4.1'
+    implementation 'com.github.pengxianhong:Android-library:1.5'
     //高德定位服务
-    implementation 'com.amap.api:location:4.6.0'
-    //greenDao数据库框架
-    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.amap.api:location:4.9.0'
     //高性能Json解析框架，阿里巴巴出品
-    implementation 'com.alibaba:fastjson:1.2.58'
-	//沉浸式状态栏。基础依赖包，必须要依赖
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0-beta05'
+    implementation 'com.alibaba:fastjson:1.2.68'
+    //沉浸式状态栏。基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     //fragment快速实现
-    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0-beta05'
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+    //Cannot fit requested classes in a single dex file (# methods: 67972 > 65536)
+    implementation 'com.android.support:multidex:1.0.3'
 }

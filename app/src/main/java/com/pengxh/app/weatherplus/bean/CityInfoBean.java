@@ -2,7 +2,7 @@ package com.pengxh.app.weatherplus.bean;
 
 import java.util.List;
 
-public class NetCityBean {
+public class CityInfoBean {
 
     /**
      * code : 10000

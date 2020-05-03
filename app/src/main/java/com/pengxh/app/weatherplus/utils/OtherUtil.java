@@ -2,50 +2,15 @@ package com.pengxh.app.weatherplus.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.graphics.Color;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListAdapter;
 
-import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.callback.HttpCallbackListener;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 public class OtherUtil {
-    /**
-     * 解决ScrollView嵌套另一个可滑动的View时，高度异常的问题
-     */
-    public static <T extends AbsListView> void measureViewHeight(Context mContext, T view) {
-        ListAdapter adapter = view.getAdapter();
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (adapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        View v;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            v = adapter.getView(i, null, view);
-            int i1 = View.MeasureSpec.makeMeasureSpec(DensityUtil.getScreenWidth(mContext), View.MeasureSpec.EXACTLY);
-            int i2 = View.MeasureSpec.makeMeasureSpec(i1, View.MeasureSpec.UNSPECIFIED);
-            v.measure(i1, i2);
-            totalHeight += v.getMeasuredHeight();
-        }
-        params.height = totalHeight + (view.getLayoutDirection() * (adapter.getCount() - 1));
-        view.setLayoutParams(params);
-    }
+    private static final String TAG = "OtherUtil";
 
     /**
      * List去重
@@ -74,51 +39,6 @@ public class OtherUtil {
             }
         }
         return false;
-    }
-
-    /**
-     * 随机颜色
-     */
-    public static int getRandomColor() {
-        Random random = new Random();
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
-        return Color.rgb(red, green, blue);
-    }
-
-    public static void sendHttpRequest(final String address,
-                                       final HttpCallbackListener listener) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                OkHttpClient okHttpClient = new OkHttpClient();
-                Request request = new Request
-                        .Builder()
-                        .url(address)
-                        .get()
-                        .build();
-                Call call = okHttpClient.newCall(request);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        if (listener != null) {
-                            listener.onError(e);
-                        }
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (listener != null) {
-                            /**
-                             * 不能用toString，否则返回的是地址字符串
-                             * */
-                            listener.onFinish(response.body().string());
-                        }
-                    }
-                });
-            }
-        }).start();
     }
 
     public static int getImageResource(String imgID) {

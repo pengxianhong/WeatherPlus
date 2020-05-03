@@ -1,28 +1,26 @@
 package com.pengxh.app.weatherplus.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.pengxh.app.multilib.utils.ColorUtil;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.bean.HotCityNameBean;
-import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.bean.HotCityBean;
 
 import java.util.List;
 
 public class HotCityAdapter extends RecyclerView.Adapter {
-
-    private Context mContext;
-    private List<HotCityNameBean> cityList;
+    private List<HotCityBean> cityList;
     private LayoutInflater inflater;
     private OnItemClickListener mOnItemClickListener;
 
-    public HotCityAdapter(Context mContext, List<HotCityNameBean> cityList) {
-        this.mContext = mContext;
+    public HotCityAdapter(Context mContext, List<HotCityBean> cityList) {
         this.cityList = cityList;
         inflater = LayoutInflater.from(mContext);
     }
@@ -52,7 +50,7 @@ public class HotCityAdapter extends RecyclerView.Adapter {
         return cityList == null ? 0 : cityList.size();
     }
 
-    class HotCityViewHolder extends RecyclerView.ViewHolder {
+    static class HotCityViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextView_hot_city;
 
@@ -61,9 +59,9 @@ public class HotCityAdapter extends RecyclerView.Adapter {
             mTextView_hot_city = itemView.findViewById(R.id.mTextView_hot_city);
         }
 
-        void bindHolder(HotCityNameBean hotCityNameBean) {
-            mTextView_hot_city.setText(hotCityNameBean.getCityName());
-            mTextView_hot_city.setBackgroundColor(OtherUtil.getRandomColor());
+        void bindHolder(HotCityBean hotCityNameBean) {
+            mTextView_hot_city.setText(hotCityNameBean.getCity());
+            mTextView_hot_city.setBackgroundColor(ColorUtil.getRandomColor());
         }
     }
 

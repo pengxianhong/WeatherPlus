@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_main"
-    android:orientation="vertical">
+    android:background="@mipmap/bg_main">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/mMainViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+    <ImageView
+        android:id="@+id/manageCity"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:background="@drawable/more" />
 
     <LinearLayout
-        android:id="@+id/mLlIndicator"
+        android:id="@+id/layoutView"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/mMainViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/mLlIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>

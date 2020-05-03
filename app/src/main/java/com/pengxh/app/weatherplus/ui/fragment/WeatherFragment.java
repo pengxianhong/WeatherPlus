@@ -1,14 +1,9 @@
 package com.pengxh.app.weatherplus.ui.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,32 +14,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.ImmersionFragment;
+import com.pengxh.app.multilib.utils.SaveKeyValues;
+import com.pengxh.app.multilib.widget.CustomGridView;
 import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
-import com.pengxh.app.weatherplus.event.CityBeanEvent;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
-import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
-import com.pengxh.app.weatherplus.utils.SaveKeyValues;
-import com.pengxh.app.weatherplus.widgets.CustomGridView;
-import com.pengxh.app.weatherplus.widgets.DialProgress;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,8 +95,8 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
     @BindView(R.id.mTextView_air_aqi)
     TextView mTextViewAirAqi;
-    @BindView(R.id.mDialProgress_air_aqi)
-    DialProgress mDialProgressAirAqi;
+//    @BindView(R.id.mDialProgress_air_aqi)
+//    DialProgress mDialProgressAirAqi;
     @BindView(R.id.mTextView_air_pm10)
     TextView mTextViewAirPM10;
     @BindView(R.id.mTextView_air_pm2_5)
@@ -122,7 +114,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @Nullable
     @Override
@@ -152,13 +144,13 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
 
-        final String district = (String) SaveKeyValues.getValue("location", "district", "");
+        final String district = (String) SaveKeyValues.getValue("district", "");
         if (TextUtils.isEmpty(district)) {
             EasyToast.showToast("定位失败，请退出稍后重试", EasyToast.ERROR);
         } else {
-            boolean isFirstGet = (boolean) SaveKeyValues.getValue("firstGetWeather", "isFirstGet", true);
+            boolean isFirstGet = (boolean) SaveKeyValues.getValue("isFirstGet", true);
             if (isFirstGet) {
-                SaveKeyValues.putValue("firstGetWeather", "isFirstGet", false);
+                SaveKeyValues.putValue("isFirstGet", false);
                 /**
                  * 首次加载可能会加载不出数据，线程控制规避此问题
                  * */
@@ -183,22 +175,22 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     }
 
     private void getCityBean(String district) {
-        List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
-        if (beanList.size() > 0) {
-            AllCityBean allCityBean = beanList.get(0);
-            EventBus.getDefault().postSticky(new CityBeanEvent(allCityBean));
-        }
+//        List<AllCityBean> beanList = GreenDaoUtil.queryCity(district);
+//        if (beanList.size() > 0) {
+//            AllCityBean allCityBean = beanList.get(0);
+//            EventBus.getDefault().postSticky(new CityBeanEvent(allCityBean));
+//        }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(CityBeanEvent event) {
-        AllCityBean allCityBean = event.getAllCityBean();
-        weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
-                Integer.parseInt(allCityBean.getCityid()),
-                Integer.parseInt(allCityBean.getCitycode()));
-
-        EventBus.getDefault().removeStickyEvent(event);
-    }
+//    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+//    public void onEventMainThread(CityBeanEvent event) {
+//        AllCityBean allCityBean = event.getAllCityBean();
+//        weatherPresenter.onReadyRetrofitRequest(allCityBean.getCity(),
+//                Integer.parseInt(allCityBean.getCityid()),
+//                Integer.parseInt(allCityBean.getCitycode()));
+//
+//        EventBus.getDefault().removeStickyEvent(event);
+//    }
 
     @Override
     public void showNetWorkData(NetWeatherBean weatherBean) {
@@ -235,7 +227,7 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
             weatherMap.put("weather", resultBean.getWeather());
             weatherMap.put("templow", resultBean.getTemplow());
             weatherMap.put("temphigh", resultBean.getTemphigh());
-            SaveKeyValues.putValue("location_weather", "weatherMap", new Gson().toJson(weatherMap));
+            SaveKeyValues.putValue("weatherMap", new Gson().toJson(weatherMap));
         } else {
             EasyToast.showToast("获取数据失败，请重试", EasyToast.ERROR);
         }
@@ -283,8 +275,8 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
 
     private void bindAqiData(NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
-        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
-        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
+//        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
+//        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
         mTextViewAirPM10.setText(aqiBean.getPm10());
         mTextViewAirPM2_5.setText(aqiBean.getPm2_5());
         mTextViewAirNO2.setText(aqiBean.getNo2());
@@ -318,12 +310,8 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
     @OnClick({R.id.mImageView_realtime_add})
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mImageView_realtime_add:
-                startActivity(new Intent(getActivity(), CityListActivity.class));
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.mImageView_realtime_add) {
+            startActivity(new Intent(getActivity(), CityListActivity.class));
         }
     }
 
@@ -344,17 +332,17 @@ public class WeatherFragment extends ImmersionFragment implements IWeatherView, 
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        EventBus.getDefault().unregister(this);
-    }
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        EventBus.getDefault().register(this);
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        EventBus.getDefault().unregister(this);
+//    }
 
     @Override
     public void onDestroyView() {

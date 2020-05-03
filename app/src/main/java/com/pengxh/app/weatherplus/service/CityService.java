@@ -3,28 +3,39 @@ package com.pengxh.app.weatherplus.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pengxh.app.weatherplus.bean.NetCityBean;
-import com.pengxh.app.weatherplus.callback.HttpCallbackListener;
+import com.pengxh.app.weatherplus.bean.CityInfoBean;
+import com.pengxh.app.weatherplus.listener.HttpCallbackListener;
 import com.pengxh.app.weatherplus.utils.Constant;
-import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
-import com.pengxh.app.weatherplus.utils.OtherUtil;
+import com.pengxh.app.weatherplus.utils.HttpUtil;
+import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+
+import okhttp3.Response;
 
 public class CityService extends Service {
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    private static final String TAG = "CityService";
 
-        OtherUtil.sendHttpRequest(Constant.CITY_URL, new HttpCallbackListener() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreate: 下载城市名单");
+        SQLiteUtil sqLiteUtil = SQLiteUtil.getInstance();
+        HttpUtil.sendHttpRequest(Constant.CITY_URL, new HttpCallbackListener() {
             @Override
-            public void onFinish(String response) {
+            public void onFinish(Response response) throws IOException {
                 //Gson解析效率太低，换fastJson
-                NetCityBean cityBean = JSONObject.parseObject(response, NetCityBean.class);
-                List<NetCityBean.ResultBeanX.ResultBean> result = cityBean.getResult().getResult();
+                String responseBody = Objects.requireNonNull(response.body()).string();
+                CityInfoBean cityBean = JSONObject.parseObject(responseBody, CityInfoBean.class);
+                List<CityInfoBean.ResultBeanX.ResultBean> result = cityBean.getResult().getResult();
 
                 for (int i = 0; i < result.size(); i++) {
                     String cityid = String.valueOf(result.get(i).getCityid());
@@ -33,20 +44,16 @@ public class CityService extends Service {
                     String city = result.get(i).getCity();
                     if (citycode != null && !citycode.equals("")) {
                         //保存城市详细信息
-                        GreenDaoUtil.saveCityToSQL(cityid, parentid, citycode, city);
-
-                        //保存城市名字
-                        GreenDaoUtil.saveCityNameToSQL(city);
+                        sqLiteUtil.saveCityInfoList(cityid, parentid, citycode, city);
                     }
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Throwable e) {
                 e.printStackTrace();
             }
         });
-        return super.onStartCommand(intent, flags, START_REDELIVER_INTENT);
     }
 
     @Nullable

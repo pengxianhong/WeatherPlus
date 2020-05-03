@@ -2,15 +2,15 @@ package com.pengxh.app.weatherplus.bean;
 
 public class CityListWeatherBean {
 
-    private String cityName;
+    private String city;
     private String weather;
 
-    public String getCityName() {
-        return cityName;
+    public String getCity() {
+        return city;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getWeather() {

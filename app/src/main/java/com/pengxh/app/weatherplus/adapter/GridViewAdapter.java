@@ -21,12 +21,10 @@ import java.util.List;
 public class GridViewAdapter extends BaseAdapter {
 
     private List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList;
-    private Context mContext;
     private LayoutInflater mInflater;
 
     public GridViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         this.indexBeanList = indexBeanList;
-        this.mContext = mContext;
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -62,7 +60,7 @@ public class GridViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private class MVPGridViewHolder {
+    static class MVPGridViewHolder {
         private ImageView mImageView_life_tipsIcon;
         private TextView mTextView_life_tipsValue;
         private TextView mTextView_life_tipsTitle;

@@ -10,10 +10,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,26 +19,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.alibaba.fastjson.JSONObject;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.ImmersionFragment;
+import com.pengxh.app.multilib.widget.CustomGridView;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.GridViewAdapter;
 import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
-import com.pengxh.app.weatherplus.bean.AllCityBean;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
-import com.pengxh.app.weatherplus.utils.GreenDaoUtil;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
-import com.pengxh.app.weatherplus.widgets.CustomGridView;
-import com.pengxh.app.weatherplus.widgets.DialProgress;
 
 import java.util.List;
 
@@ -51,8 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class OtherWeatherFragment extends ImmersionFragment
-        implements View.OnClickListener, IWeatherView {
+public class OtherWeatherFragment extends ImmersionFragment implements View.OnClickListener, IWeatherView {
 
     private static final String TAG = "OtherWeatherFragment";
 
@@ -100,8 +97,8 @@ public class OtherWeatherFragment extends ImmersionFragment
 
     @BindView(R.id.mTextView_air_aqi)
     TextView mTextViewAirAqi;
-    @BindView(R.id.mDialProgress_air_aqi)
-    DialProgress mDialProgressAirAqi;
+//    @BindView(R.id.mDialProgress_air_aqi)
+//    DialProgress mDialProgressAirAqi;
     @BindView(R.id.mTextView_air_pm10)
     TextView mTextViewAirPM10;
     @BindView(R.id.mTextView_air_pm2_5)
@@ -117,7 +114,7 @@ public class OtherWeatherFragment extends ImmersionFragment
     @BindView(R.id.mCustomGridView_life)
     CustomGridView mCustomGridView_life;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
     private PagePositionBroadcast broadcast = null;
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
@@ -126,7 +123,8 @@ public class OtherWeatherFragment extends ImmersionFragment
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_weather, null);
         unbinder = ButterKnife.bind(this, view);
         init();
@@ -138,19 +136,16 @@ public class OtherWeatherFragment extends ImmersionFragment
         weatherPresenter = new WeatherPresenterImpl(this);
 
         mImageView_realtime_location.setVisibility(View.GONE);
-        //TODO 解决页面太长，ScrollView默认不能置顶的问题
+        // TODO 解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
     }
 
-    //Fragment沉浸式状态栏
+    // Fragment沉浸式状态栏
     @Override
     public void initImmersionBar() {
-        ImmersionBar.with(this)
-                .statusBarColor("#00BAFF")
-                .fitsSystemWindows(true)
-                .init();
+        ImmersionBar.with(this).statusBarColor("#00BAFF").fitsSystemWindows(true).init();
     }
 
     class PagePositionBroadcast extends BroadcastReceiver {
@@ -161,7 +156,7 @@ public class OtherWeatherFragment extends ImmersionFragment
             if (action != null && action.equals("action.changePosition")) {
                 int index = Integer.parseInt(intent.getStringExtra("position"));
                 List<CityListWeatherBean> weatherBeans = sqLiteUtil.loadCityList();
-                cityName = weatherBeans.get(index).getCityName();
+                cityName = weatherBeans.get(index).getCity();
                 final String weather = weatherBeans.get(index).getWeather();
                 if (weather.equals("")) {
                     Log.w(TAG, "onEventMainThread: ", new Throwable());
@@ -261,8 +256,8 @@ public class OtherWeatherFragment extends ImmersionFragment
 
     private void bindAqiData(NetWeatherBean.ResultBeanX.ResultBean.AqiBean aqiBean) {
         mTextViewAirAqi.setText("污染指数\r\r" + aqiBean.getQuality());
-        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
-        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
+//        mDialProgressAirAqi.setValue(Float.parseFloat(aqiBean.getAqi()));
+//        mDialProgressAirAqi.setValueLevel(aqiBean.getQuality());
         mTextViewAirPM10.setText(aqiBean.getPm10());
         mTextViewAirPM2_5.setText(aqiBean.getPm2_5());
         mTextViewAirNO2.setText(aqiBean.getNo2());
@@ -279,8 +274,8 @@ public class OtherWeatherFragment extends ImmersionFragment
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String iname = indexBeanList.get(position).getIname();
                 String detail = indexBeanList.get(position).getDetail();
-                new AlertView(iname, detail, null, new String[]{"确定"}, null, getContext(),
-                        AlertView.Style.Alert, new AlertViewItemClickListener()).show();
+                new AlertView(iname, detail, null, new String[] { "确定" }, null, getContext(), AlertView.Style.Alert,
+                        new AlertViewItemClickListener()).show();
             }
         });
     }
@@ -293,25 +288,24 @@ public class OtherWeatherFragment extends ImmersionFragment
         }
     }
 
-    @OnClick({R.id.mImageView_realtime_add, R.id.mTextView_realtime_update})
+    @OnClick({ R.id.mImageView_realtime_add, R.id.mTextView_realtime_update })
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.mImageView_realtime_add:
-                startActivity(new Intent(getActivity(), CityListActivity.class));
-                break;
-            case R.id.mTextView_realtime_update:
-                //手动更新天气
-                List<AllCityBean> beanList = GreenDaoUtil.queryCity(cityName);
-                if (beanList.size() > 0) {
-                    AllCityBean cityBean = beanList.get(0);
-                    weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(),
-                            Integer.parseInt(cityBean.getCityid()),
-                            Integer.parseInt(cityBean.getCitycode()));
-                }
-                break;
-            default:
-                break;
+        case R.id.mImageView_realtime_add:
+            startActivity(new Intent(getActivity(), CityListActivity.class));
+            break;
+        case R.id.mTextView_realtime_update:
+            // 手动更新天气
+//            List<AllCityBean> beanList = GreenDaoUtil.queryCity(cityName);
+//            if (beanList.size() > 0) {
+//                AllCityBean cityBean = beanList.get(0);
+//                weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), Integer.parseInt(cityBean.getCityid()),
+//                        Integer.parseInt(cityBean.getCitycode()));
+//            }
+            break;
+        default:
+            break;
         }
     }
 
@@ -361,11 +355,11 @@ public class OtherWeatherFragment extends ImmersionFragment
     @Override
     public void showNetWorkData(NetWeatherBean weatherBean) {
         if (weatherBean != null) {
-            String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
+            String city = weatherBean.getResult().getResult().getCity();// 用于判断城市是否存在于表中，如果存在就更新天气数据
             String jsonString = JSONObject.toJSONString(weatherBean);
             sqLiteUtil.saveCityListWeather(city, jsonString);
 
-            //手动获取天气
+            // 手动获取天气
             Message message = mHandler.obtainMessage();
             message.obj = weatherBean;
             message.what = 101;

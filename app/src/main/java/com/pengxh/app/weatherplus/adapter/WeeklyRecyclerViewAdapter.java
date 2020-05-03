@@ -2,13 +2,14 @@ package com.pengxh.app.weatherplus.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
@@ -18,12 +19,10 @@ import java.util.List;
 
 public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
-    private Context mContext;
     private List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList;
     private LayoutInflater inflater;
 
     public WeeklyRecyclerViewAdapter(Context mContext, List<NetWeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
-        this.mContext = mContext;
         this.dailyBeanList = dailyBeanList;
         inflater = LayoutInflater.from(mContext);
     }
@@ -46,7 +45,7 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
         itemHolder.bindHolder(dailyBeanList.get(position));
     }
 
-    class WeeklyRecyclerViewHolder extends RecyclerView.ViewHolder {
+    static class WeeklyRecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextView_weekly_week;
         private ImageView mImageView_weekly_img;

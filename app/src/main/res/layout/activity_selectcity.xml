@@ -16,39 +16,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp">
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_edittext"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="80px"
+                android:layout_height="80px"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/search" />
 
             <AutoCompleteTextView
                 android:id="@+id/mAutoCompleteTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_edittext"
-                android:drawableStart="@drawable/search"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@null"
                 android:hint="搜索市、区、县等"
                 android:inputType="text"
-                android:paddingBottom="5dp"
+                android:padding="5dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp"
                 android:singleLine="true" />
-
         </LinearLayout>
-
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginBottom="1px"
-        android:layout_marginTop="1px"
-        android:background="#e5e5e5" />
 
     <include layout="@layout/include_current_location" />
 
     <include layout="@layout/include_hot_city" />
-
 </LinearLayout>

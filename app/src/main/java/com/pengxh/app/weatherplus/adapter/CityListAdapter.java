@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.pengxh.app.multilib.widget.swipemenu.BaseSwipListAdapter;
+import com.pengxh.app.multilib.widget.swipemenu.BaseSwipeListAdapter;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.CityListWeatherBean;
 import com.pengxh.app.weatherplus.bean.NetWeatherBean;
@@ -21,16 +21,14 @@ import java.util.List;
  * Created by Administrator on 2019/7/13.
  */
 
-public class CityListAdapter extends BaseSwipListAdapter {
+public class CityListAdapter extends BaseSwipeListAdapter {
 
     private static final String TAG = "CityListAdapter";
 
-    private Context context;
     private List<CityListWeatherBean> listWeatherBeans;
     private LayoutInflater inflater;
 
     public CityListAdapter(Context context, List<CityListWeatherBean> list) {
-        this.context = context;
         this.listWeatherBeans = list;
         inflater = LayoutInflater.from(context);
     }
@@ -70,7 +68,7 @@ public class CityListAdapter extends BaseSwipListAdapter {
         return convertView;
     }
 
-    class CityListHolder {
+    static class CityListHolder {
         private TextView mTextView_citylist_city;
         private TextView mTextView_citylist_quality;
         private ImageView mImageView_citylist_img;

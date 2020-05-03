@@ -15,7 +15,7 @@ public class RetrofitServiceManager {
 
     private static final String TAG = "RetrofitServiceManager";
 
-    public static Retrofit createRetrofit(String baseUrl) {
+    private static Retrofit createRetrofit(String baseUrl) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())//Gson转换器
@@ -30,7 +30,7 @@ public class RetrofitServiceManager {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
-                Log.d(TAG, "Http =>" + message);
+                Log.d(TAG, message);
             }
         });
         interceptor.setLevel(level);
