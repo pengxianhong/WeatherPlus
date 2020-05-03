@@ -9,7 +9,7 @@
     <color name="red">#EE0000</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="statusBar_color">#00BAFF</color>
+    <color name="statusBar_color">#0779E4</color>
 
     <integer-array name="gradient_arc_color">
         <item>@color/green</item>

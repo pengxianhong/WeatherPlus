@@ -12,12 +12,9 @@
         android:textColor="#fff"
         android:textSize="16sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ccc" />
+    <include layout="@layout/include_divider" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mRecyclerView_weekly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

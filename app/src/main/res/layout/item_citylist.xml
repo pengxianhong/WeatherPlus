@@ -36,8 +36,8 @@
             android:layout_gravity="center"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="晴"
-            android:textColor="#FFF" />
+            android:text="优"
+            android:textColor="#efa8e4" />
     </androidx.cardview.widget.CardView>
 
     <ImageView

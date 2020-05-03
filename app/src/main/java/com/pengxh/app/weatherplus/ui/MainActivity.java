@@ -1,46 +1,42 @@
 package com.pengxh.app.weatherplus.ui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
-import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.LocationService;
-import com.pengxh.app.weatherplus.utils.SQLiteUtil;
-import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
+import com.pengxh.app.weatherplus.ui.fragment.FragmentFactory;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
-public class MainActivity extends BaseNormalActivity implements View.OnClickListener {
+public class MainActivity extends BaseNormalActivity {
 
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.layoutView)
-    LinearLayout layoutView;
     @BindView(R.id.mMainViewPager)
     ViewPager mMainViewPager;
     @BindView(R.id.mLlIndicator)
     LinearLayout mLlIndicator;
-    private List<String> items = Arrays.asList("管理城市", "更新间隔");
-    private Intent locationIntent = null;
 
-    private SQLiteUtil sqLiteUtil;
-    private PageNumberUpdateBroadcast updateBroadcast = null;
+    private Intent locationIntent = null;
+    private List<Fragment> fragmentList = new ArrayList<>();
+
+//    private PageNumberUpdateBroadcast updateBroadcast = null;
 
     @Override
     public int initLayoutView() {
@@ -52,55 +48,64 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
         locationIntent = new Intent(this, LocationService.class);
         startService(locationIntent);
-        sqLiteUtil = SQLiteUtil.getInstance();
+        //默认添加当前位置天气页面
+        fragmentList.add(FragmentFactory.createFragment(0));
     }
 
     @Override
     public void initEvent() {
-
-    }
-
-    @OnClick(R.id.manageCity)
-    @Override
-    public void onClick(View v) {
-        EasyPopupWindow easyPopupWindow = new EasyPopupWindow(this, items);
-        easyPopupWindow.setPopupWindowClickListener(position -> {
-            if (position == 0) {
-                startActivity(new Intent(this, CityListActivity.class));
-            } else if (position == 1) {
-
-            }
-        });
-        easyPopupWindow.setBackgroundDrawable(null);
-        easyPopupWindow.showAsDropDown(layoutView,
-                layoutView.getWidth() - easyPopupWindow.getWidth() - DensityUtil.dp2px(this, 15),
-                DensityUtil.dp2px(this, 40));
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList);
+        mMainViewPager.setAdapter(pagerAdapter);
+        mMainViewPager.addOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentList.size()));
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (updateBroadcast != null) {
-            unregisterReceiver(updateBroadcast);
-        }
         if (locationIntent == null) {
             return;
         }
         stopService(locationIntent);
+//        if (updateBroadcast != null) {
+//            unregisterReceiver(updateBroadcast);
+//        }
+        super.onDestroy();
     }
 
-    class PageNumberUpdateBroadcast extends BroadcastReceiver {
+//    class PageNumberUpdateBroadcast extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action != null && action.equals("action.updatePageNumber")) {
+//
+//            }
+//        }
+//    }
+
+    private static class ViewPagerAdapter extends FragmentPagerAdapter {
+        private List<Fragment> mFragments;
+
+        ViewPagerAdapter(FragmentManager fm, List<Fragment> list) {
+            super(fm);
+            this.mFragments = list;
+        }
+
+        @NotNull
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action != null && action.equals("action.updatePageNumber")) {
-
+        public int getCount() {
+            if (mFragments == null) {
+                return 0;
             }
+            return mFragments.size();
         }
     }
 
-    private class WeatherPageChangeListener implements ViewPager.OnPageChangeListener {
+    private static class WeatherPageChangeListener implements ViewPager.OnPageChangeListener {
 
         private int mPageCount;//页数
         private List<ImageView> mImgList;//保存img总个数
@@ -152,17 +157,17 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
             }
-            /**
-             * position=0不能传过去
-             * */
-            if (position == 0) {
-                Log.w(TAG, "onPageSelected: 定位点位置不传", new Throwable());
-            } else {
-                Intent intent = new Intent();
-                intent.setAction("action.changePosition");
-                intent.putExtra("position", String.valueOf((position - 1)));//不能发int型
-                sendBroadcast(intent);
-            }
+//            /**
+//             * position=0不能传过去
+//             * */
+//            if (position == 0) {
+//                Log.w(TAG, "onPageSelected: 定位点位置不传", new Throwable());
+//            } else {
+//                Intent intent = new Intent();
+//                intent.setAction("action.changePosition");
+//                intent.putExtra("position", String.valueOf((position - 1)));//不能发int型
+//                sendBroadcast(intent);
+//            }
         }
 
         @Override

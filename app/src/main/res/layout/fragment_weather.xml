@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@mipmap/bg_main"
-    android:orientation="vertical">
-
-    <include layout="@layout/include_realtime_title" />
+    android:background="@drawable/bg_item">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/layoutView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -22,28 +19,26 @@
 
             <include layout="@layout/include_daily" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
+            <include layout="@layout/include_divider" />
 
             <include layout="@layout/include_weekly" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
+            <include layout="@layout/include_divider" />
 
             <include layout="@layout/include_air" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ccc" />
+            <include layout="@layout/include_divider" />
 
             <include layout="@layout/include_life" />
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/manageCity"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:background="@drawable/more" />
+</FrameLayout>

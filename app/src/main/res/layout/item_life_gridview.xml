@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="10dp">
 
     <ImageView
         android:id="@+id/mImageView_life_tipsIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/headache" />
+        android:layout_width="96px"
+        android:layout_height="96px"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/mTextView_life_tipsValue"
@@ -34,5 +32,4 @@
         android:text="穿衣指数"
         android:textColor="#fff"
         android:textSize="12sp" />
-
 </RelativeLayout>

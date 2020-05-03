@@ -30,6 +30,6 @@
         android:layout_height="80px"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:background="@drawable/add" />
+        android:background="@drawable/ic_add" />
 
 </RelativeLayout>

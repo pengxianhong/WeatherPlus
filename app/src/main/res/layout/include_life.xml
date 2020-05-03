@@ -11,10 +11,7 @@
         android:textColor="#fff"
         android:textSize="16sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ccc" />
+    <include layout="@layout/include_divider" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -9,7 +9,6 @@ public class Constant {
     //获取城市列表
     public static final String CITY_URL = BASE_URL + "jisuapi/weather1?appkey=e957ed7ad90436a57e604127d9d8fa32";
 
-    public static final int[] ICONS = {R.drawable.air, R.drawable.sports, R.drawable.sunny
-            , R.drawable.headache, R.drawable.car, R.drawable.airpollution
-            , R.drawable.yifu};
+    public static final int[] ICONS = {R.drawable.ic_air, R.drawable.ic_sports, R.drawable.ic_sunny,
+            R.drawable.ic_headache, R.drawable.ic_car, R.drawable.ic_airpollution, R.drawable.ic_yifu};
 }
