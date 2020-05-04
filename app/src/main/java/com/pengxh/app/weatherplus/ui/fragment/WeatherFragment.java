@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +34,7 @@ import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.DashboardView;
 import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +48,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     private static final String TAG = "WeatherFragment";
     @BindView(R.id.layoutView)
     LinearLayout layoutView;
+    @BindView(R.id.weatherRefreshLayout)
+    SmartRefreshLayout weatherRefreshLayout;
     @BindView(R.id.mImageView_realtime_img)
     ImageView mImageViewRealtimeImg;
     @BindView(R.id.mTextView_realtime_temp)
@@ -102,6 +104,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
     private SQLiteUtil sqLiteUtil;
+    private boolean isRefresh = false;
 
     @Override
     protected int setLayoutView() {
@@ -110,33 +113,33 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
 
     @Override
     protected void initData() {
-        context = getContext();
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
-    }
-
-    @Override
-    protected void loadData() {
+        context = getContext();
         sqLiteUtil = SQLiteUtil.getInstance();
-        //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
         //解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
-
-        final String currentLocation = (String) SaveKeyValues.getValue("location", "");
-        if (TextUtils.isEmpty(currentLocation)) {
-            EasyToast.showToast("定位失败，请重试", EasyToast.ERROR);
-        } else {
-            CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(currentLocation);
-            if (cityBean != null) {
-                getCityWeather(cityBean);
-            }
-        }
+        weatherRefreshLayout.setEnableLoadMore(false);
     }
 
-    private void getCityWeather(CityInfoBean.ResultBeanX.ResultBean cityBean) {
-        weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
+    @Override
+    protected void loadData() {
+        getCityWeather();
+        //刷新
+        weatherRefreshLayout.setOnRefreshListener(refreshLayout -> {
+            getCityWeather();
+            isRefresh = true;
+        });
+    }
+
+    private void getCityWeather() {
+        String currentLocation = (String) SaveKeyValues.getValue("location", "");
+        CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(currentLocation);
+        if (cityBean != null) {
+            weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
+        }
     }
 
     @Override
@@ -262,6 +265,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     public void hideProgress() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
+        }
+        if (isRefresh) {
+            weatherRefreshLayout.finishRefresh();
         }
     }
 

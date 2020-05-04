@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,32 +15,54 @@
         android:layout_margin="8dp"
         android:background="@drawable/more" />
 
-    <ScrollView
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/weatherRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <!--刷新字体为白色，默认为深灰色-->
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:srlAccentColor="#FFF" />
 
-            <include layout="@layout/include_realtime" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <include layout="@layout/include_daily" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
 
-            <include layout="@layout/include_divider" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <include layout="@layout/include_weekly" />
+                    <include layout="@layout/include_realtime" />
 
-            <include layout="@layout/include_divider" />
+                    <include layout="@layout/include_daily" />
 
-            <include layout="@layout/include_air" />
+                    <include layout="@layout/include_divider" />
 
-            <include layout="@layout/include_divider" />
+                    <include layout="@layout/include_weekly" />
 
-            <include layout="@layout/include_life" />
+                    <include layout="@layout/include_divider" />
 
-        </LinearLayout>
-    </ScrollView>
+                    <include layout="@layout/include_air" />
+
+                    <include layout="@layout/include_divider" />
+
+                    <include layout="@layout/include_life" />
+
+                </LinearLayout>
+            </ScrollView>
+        </androidx.core.widget.NestedScrollView>
+
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </LinearLayout>
