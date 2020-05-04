@@ -5,7 +5,6 @@
     android:layout_height="200dp"
     android:layout_alignParentTop="true"
     android:layout_alignParentEnd="true"
-    android:layout_marginTop="30dp"
     android:padding="10dp">
 
     <ImageView
@@ -23,7 +22,6 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="10dp"
         android:layout_toStartOf="@id/v"
-        android:text="25℃"
         android:textColor="#fff"
         android:textSize="45sp" />
 
@@ -43,7 +41,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
         android:layout_toEndOf="@id/v"
-        android:text="晴"
         android:textColor="#fff"
         android:textSize="18sp" />
 
@@ -90,7 +87,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/v"
-        android:text="20℃~"
         android:textColor="#fff"
         android:textSize="18sp" />
 
@@ -101,7 +97,6 @@
         android:layout_below="@id/mTextView_realtime_weather"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/mTextView_realtime_templow"
-        android:text="30℃"
         android:textColor="#fff"
         android:textSize="18sp" />
 
@@ -116,7 +111,6 @@
             android:id="@+id/currentLocationView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="海淀区"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -135,7 +129,6 @@
         android:layout_centerHorizontal="true"
         android:drawablePadding="5dp"
         android:gravity="center"
-        android:text="更新"
         android:textColor="#DDD"
         android:textSize="14sp" />
 

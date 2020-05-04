@@ -38,9 +38,9 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
         return new WeeklyRecyclerViewHolder(inflater.inflate(R.layout.item_weekly_recyclerview, parent, false));
     }
 
+    @SuppressLint("RecyclerView")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,
-                                 @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         WeeklyRecyclerViewHolder itemHolder = (WeeklyRecyclerViewHolder) holder;
         itemHolder.bindHolder(dailyBeanList.get(position));
     }
@@ -60,15 +60,16 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             mTextView_night_templow = itemView.findViewById(R.id.mTextView_night_templow);
         }
 
+        @SuppressLint("SetTextI18n")
         void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
             mTextView_weekly_week.setText(dailyBean.getWeek());
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
-            mTextView_day_temphigh.setText(dayBean.getTemphigh());
+            mTextView_day_temphigh.setText(dayBean.getTemphigh() + "℃");
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
-            mTextView_night_templow.setText(nightBean.getTemplow());
+            mTextView_night_templow.setText(nightBean.getTemplow() + "℃");
         }
     }
 }

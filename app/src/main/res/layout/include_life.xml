@@ -19,7 +19,7 @@
         android:padding="10dp">
 
         <com.pengxh.app.multilib.widget.CustomGridView
-            android:id="@+id/mCustomGridView_life"
+            android:id="@+id/mCustomGridView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

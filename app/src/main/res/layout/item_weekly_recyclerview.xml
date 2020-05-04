@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="15dp"
     android:paddingTop="5dp"
-    android:paddingRight="15dp"
     android:paddingBottom="5dp">
 
     <TextView
@@ -25,10 +23,21 @@
         android:id="@+id/mTextView_day_temphigh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_toStartOf="@id/mTextView_night_templow"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/t"
         android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_toStartOf="@id/mTextView_night_templow"
+        android:text="/"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <TextView
@@ -36,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:textColor="#ddd"
         android:textSize="18sp" />

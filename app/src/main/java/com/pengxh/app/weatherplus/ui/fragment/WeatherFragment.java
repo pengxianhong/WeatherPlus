@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aihook.alertview.library.AlertView;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseFragment;
 import com.pengxh.app.multilib.utils.DensityUtil;
@@ -38,9 +37,7 @@ import com.pengxh.app.weatherplus.widgets.DashboardView;
 import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -61,6 +58,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     TextView mTextViewRealtimeTemplow;
     @BindView(R.id.mTextView_realtime_temphigh)
     TextView mTextViewRealtimeTemphigh;
+    @BindView(R.id.currentLocationView)
+    TextView currentLocationView;
     @BindView(R.id.mTextView_realtime_update)
     TextView mTextViewRealtimeUpdate;
     @BindView(R.id.mTextView_realtime_humidity)
@@ -77,13 +76,10 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     TextView mTextViewRealtimeAqi;
     @BindView(R.id.mTextView_realtime_quality)
     TextView mTextViewRealtimeQuality;
-
     @BindView(R.id.mRecyclerView_hourly)
     RecyclerView mRecyclerViewHourly;
-
     @BindView(R.id.mRecyclerView_weekly)
     RecyclerView mRecyclerViewWeekly;
-
     @BindView(R.id.dashboardView)
     DashboardView dashboardView;
     @BindView(R.id.mTextView_air_pm10)
@@ -98,8 +94,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     TextView mTextViewAirO3;
     @BindView(R.id.mTextView_air_co)
     TextView mTextViewAirCO;
-    @BindView(R.id.mCustomGridView_life)
-    CustomGridView mCustomGridView_life;
+    @BindView(R.id.mCustomGridView)
+    CustomGridView mCustomGridView;
 
     private Context context;
     private List<String> items = Arrays.asList("管理城市", "更新间隔");
@@ -167,20 +163,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
             bindAqiData(aqiBean);
 
             //绑定GridView
-            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult()
-                    .getIndex();
+            List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList = weatherBean.getResult().getResult().getIndex();
             bindIndexData(indexBeanList);
-
-            //保存简单的天气信息
-            Map<String, String> weatherMap = new HashMap<>();
-            weatherMap.put("city", resultBean.getCity());
-            weatherMap.put("quality", aqiBean.getQuality());
-            weatherMap.put("color", aqiBean.getAqiinfo().getColor());
-            weatherMap.put("img", resultBean.getImg());
-            weatherMap.put("weather", resultBean.getWeather());
-            weatherMap.put("templow", resultBean.getTemplow());
-            weatherMap.put("temphigh", resultBean.getTemphigh());
-            SaveKeyValues.putValue("weatherMap", new Gson().toJson(weatherMap));
         } else {
             EasyToast.showToast("获取数据失败，请重试", EasyToast.ERROR);
         }
@@ -192,6 +176,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         mTextViewRealtimeWeather.setText(resultBean.getWeather());
         mTextViewRealtimeTemplow.setText(resultBean.getTemplow() + "℃~");
         mTextViewRealtimeTemphigh.setText(resultBean.getTemphigh() + "℃");
+        currentLocationView.setText(resultBean.getCity());
         String updateTime = resultBean.getUpdatetime();
         mTextViewRealtimeUpdate.setText(updateTime.substring(5, 16) + "\r\r更新");
         mTextViewRealtimeUpdate.setCompoundDrawables(null, null, null, null);//定位点隐藏刷新按钮
@@ -238,8 +223,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
 
     private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
         GridViewAdapter mGridViewAdapter = new GridViewAdapter(getContext(), indexBeanList);
-        mCustomGridView_life.setAdapter(mGridViewAdapter);
-        mCustomGridView_life.setOnItemClickListener((parent, view, position, id) -> {
+        mCustomGridView.setAdapter(mGridViewAdapter);
+        mCustomGridView.setOnItemClickListener((parent, view, position, id) -> {
             String iname = indexBeanList.get(position).getIname();
             String detail = indexBeanList.get(position).getDetail();
             new AlertView(iname, detail, null, new String[]{"确定"}, null, context, AlertView.Style.Alert, null).show();
