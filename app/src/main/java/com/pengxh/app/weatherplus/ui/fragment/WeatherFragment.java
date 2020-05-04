@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aihook.alertview.library.AlertView;
+import com.aihook.alertview.library.OnItemClickListener;
 import com.alibaba.fastjson.JSONObject;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseFragment;
@@ -100,6 +101,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     CustomGridView mCustomGridView;
 
     private Context context;
+    private String[] periodArray = {"1小时", "2小时", "6小时", "12小时", "24小时", "不更新"};
     private List<String> items = Arrays.asList("管理城市", "更新间隔");
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
@@ -189,9 +191,11 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         mTextViewRealtimeSport.setText(resultBean.getIndex().get(1).getDetail());
         mTextViewRealtimeDress.setText(resultBean.getIndex().get(6).getDetail());
 
-        mLayoutRealtime.setBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));
+        int color = Color.parseColor(resultBean.getAqi().getAqiinfo().getColor());
         mTextViewRealtimeAqi.setText(resultBean.getAqi().getAqi());
+        mTextViewRealtimeAqi.setTextColor(color);
         mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
+        mTextViewRealtimeQuality.setTextColor(color);
     }
 
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
@@ -242,7 +246,12 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
             if (position == 0) {
                 startActivity(new Intent(context, CityListActivity.class));
             } else if (position == 1) {
-
+                new AlertView("更新间隔", null, "取消", null, periodArray, context, AlertView.Style.ActionSheet, new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Object o, int position) {
+                        //TODO 获取到更新时间间隔之后设置按设定刷新时间
+                    }
+                }).show();
             }
         });
         easyPopupWindow.setBackgroundDrawable(null);

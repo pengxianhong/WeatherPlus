@@ -50,7 +50,7 @@ public class CityListAdapter extends BaseSwipeListAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         CityListHolder itemHolder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_current_city, null);
+            convertView = inflater.inflate(R.layout.item_city_list, null);
             itemHolder = new CityListHolder();
             itemHolder.mCityName = convertView.findViewById(R.id.mCityName);
             itemHolder.mCityQuality = convertView.findViewById(R.id.mCityQuality);
@@ -81,7 +81,7 @@ public class CityListAdapter extends BaseSwipeListAdapter {
 
             mCityName.setText(bean.getCity());
             mCityQuality.setText(bean.getAqi().getQuality());
-            mCityQuality.setBackgroundColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
+            mCityQuality.setTextColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
             mCityImage.setImageResource(OtherUtil.getImageResource(bean.getImg()));
             mCityWeather.setText(bean.getWeather());
             mCityLowTemp.setText(bean.getTemplow() + "℃~");

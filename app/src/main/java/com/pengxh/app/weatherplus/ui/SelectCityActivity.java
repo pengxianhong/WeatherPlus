@@ -110,7 +110,6 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     private void getCityWeather(CityInfoBean.ResultBeanX.ResultBean cityBean) {
         Log.d(TAG, "getCityWeather: 查询天气");
         weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
-//        EventBus.getDefault().postSticky(new TagEvent(SelectCityActivity.class.getSimpleName(), 1));
     }
 
     @SuppressLint("HandlerLeak")
@@ -190,8 +189,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     public void hideProgress() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
-            //延时关闭页面，确保CityListActivity页面能基本收到消息
-//            mHandler.sendEmptyMessageDelayed(10, 500);
+            finish();
         }
     }
 

@@ -1,9 +1,30 @@
 package com.pengxh.app.weatherplus.utils;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
 import com.pengxh.app.weatherplus.R;
 
 
 public class OtherUtil {
+
+    private static ProgressDialog progressDialog;
+
+    public static void showProgressDialog(Context context, String title, String message) {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(message);
+        progressDialog.show();
+    }
+
+    public static void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
     public static int getImageResource(String imgID) {
         switch (imgID) {
             case "0":

@@ -10,4 +10,5 @@
     <color name="white">#FFFFFF</color>
 
     <color name="statusBar_color">#0779E4</color>
+    <color name="tag_text_color">#40BAD5</color>
 </resources>

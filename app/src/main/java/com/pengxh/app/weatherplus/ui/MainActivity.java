@@ -36,8 +36,6 @@ public class MainActivity extends BaseNormalActivity {
     private Intent locationIntent = null;
     private List<Fragment> fragmentList = new ArrayList<>();
 
-//    private PageNumberUpdateBroadcast updateBroadcast = null;
-
     @Override
     public int initLayoutView() {
         return R.layout.activity_main;
@@ -65,22 +63,8 @@ public class MainActivity extends BaseNormalActivity {
             return;
         }
         stopService(locationIntent);
-//        if (updateBroadcast != null) {
-//            unregisterReceiver(updateBroadcast);
-//        }
         super.onDestroy();
     }
-
-//    class PageNumberUpdateBroadcast extends BroadcastReceiver {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if (action != null && action.equals("action.updatePageNumber")) {
-//
-//            }
-//        }
-//    }
 
     private static class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> mFragments;
@@ -157,17 +141,6 @@ public class MainActivity extends BaseNormalActivity {
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
             }
-//            /**
-//             * position=0不能传过去
-//             * */
-//            if (position == 0) {
-//                Log.w(TAG, "onPageSelected: 定位点位置不传", new Throwable());
-//            } else {
-//                Intent intent = new Intent();
-//                intent.setAction("action.changePosition");
-//                intent.putExtra("position", String.valueOf((position - 1)));//不能发int型
-//                sendBroadcast(intent);
-//            }
         }
 
         @Override

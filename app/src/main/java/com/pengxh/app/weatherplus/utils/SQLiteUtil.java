@@ -219,11 +219,12 @@ public class SQLiteUtil {
     }
 
     /**
-     * 加载所有城市天气
+     * 加载所有热门城市天气
      */
     public List<CityWeatherBean> loadCityWeatherList() {
         List<CityWeatherBean> list = new ArrayList<>();
-        Cursor cursor = db.query(WEATHER_TABLE, null, null, null, null, null, null);
+        //因为定位点天气存在第一第一行，所以加载热门城市不加载定位点天气
+        Cursor cursor = db.query(WEATHER_TABLE, null, null, null, null, null, "id ASC");//id升序
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             CityWeatherBean resultBean = new CityWeatherBean();
