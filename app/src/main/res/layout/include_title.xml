@@ -12,7 +12,8 @@
         android:layout_height="80px"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
-        android:background="@drawable/back" />
+        android:background="@drawable/selector_button"
+        android:src="@drawable/back" />
 
     <TextView
         android:id="@+id/mTitleView"
@@ -30,6 +31,7 @@
         android:layout_height="80px"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:background="@drawable/ic_add" />
+        android:background="@drawable/selector_button"
+        android:src="@drawable/ic_add" />
 
 </RelativeLayout>

@@ -15,6 +15,7 @@ import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.multilib.widget.dialog.PermissionDialog;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.CityService;
+import com.pengxh.app.weatherplus.test.TestActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +54,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         //判断是否有权限，如果版本大于5.1才需要判断（即6.0以上），其他则不需要判断。
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission(this)) {
-                startMainActivity();
+                startMainActivity(0);//测试改为1
             } else {
                 new PermissionDialog.Builder()
                         .setContext(this)
@@ -71,7 +72,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
                         }).build().show();
             }
         } else {
-            startMainActivity();
+            startMainActivity(0);
         }
     }
 
@@ -79,9 +80,13 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         return EasyPermissions.hasPermissions(mActivity, USER_PERMISSIONS);
     }
 
-    private void startMainActivity() {
-//        Intent intent = new Intent(this, TestActivity.class);
-        Intent intent = new Intent(this, MainActivity.class);
+    private void startMainActivity(int tag) {
+        Intent intent;
+        if (tag == 0) {
+            intent = new Intent(this, MainActivity.class);
+        } else {
+            intent = new Intent(this, TestActivity.class);
+        }
         startActivity(intent);
         finish();
     }
@@ -107,7 +112,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
 
             @Override
             public void onFinish() {
-                startMainActivity();
+                startMainActivity(0);
             }
         }.start();
     }
