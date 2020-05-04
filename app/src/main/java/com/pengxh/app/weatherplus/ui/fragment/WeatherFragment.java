@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aihook.alertview.library.AlertView;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseFragment;
@@ -104,6 +105,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     private List<String> items = Arrays.asList("管理城市", "更新间隔");
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
+    private SQLiteUtil sqLiteUtil;
 
     @Override
     protected int setLayoutView() {
@@ -118,7 +120,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
 
     @Override
     protected void loadData() {
-        SQLiteUtil sqLiteUtil = SQLiteUtil.getInstance();
+        sqLiteUtil = SQLiteUtil.getInstance();
         //获取天气数据
         weatherPresenter = new WeatherPresenterImpl(this);
         //解决页面太长，ScrollView默认不能置顶的问题
@@ -144,6 +146,10 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     @Override
     public void showNetWorkData(WeatherBean weatherBean) {
         if (weatherBean != null) {
+            String city = weatherBean.getResult().getResult().getCity();//用于判断城市是否存在于表中，如果存在就更新天气数据
+            String jsonString = JSONObject.toJSONString(weatherBean);
+            sqLiteUtil.saveCityListWeather(city, jsonString);
+
             //显示当天的详细天气情况
             WeatherBean.ResultBeanX.ResultBean resultBean = weatherBean.getResult().getResult();
             bindResultData(resultBean);

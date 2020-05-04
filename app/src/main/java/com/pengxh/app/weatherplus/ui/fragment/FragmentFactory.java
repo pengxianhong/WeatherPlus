@@ -14,7 +14,7 @@ import java.util.Map;
  * @date: 2020/5/3 21:32
  */
 public class FragmentFactory {
-    public static final int TAB_WEATHER = 0;
+    private static final int TAB_WEATHER = 0;
 
     private static Map<Integer, BaseFragment> mFragmentCache = new HashMap<>();
 

@@ -10,10 +10,4 @@
     <color name="white">#FFFFFF</color>
 
     <color name="statusBar_color">#0779E4</color>
-
-    <integer-array name="gradient_arc_color">
-        <item>@color/green</item>
-        <item>@color/blue</item>
-        <item>@color/red</item>
-    </integer-array>
 </resources>

@@ -1,46 +1,9 @@
 package com.pengxh.app.weatherplus.utils;
 
-import android.app.ActivityManager;
-import android.content.Context;
-
 import com.pengxh.app.weatherplus.R;
-
-import java.util.HashSet;
-import java.util.List;
 
 
 public class OtherUtil {
-    private static final String TAG = "OtherUtil";
-
-    /**
-     * List去重
-     */
-    public static List<String> removeDuplicate(List<String> list) {
-        HashSet<String> set = new HashSet<>(list);
-        list.clear();
-        list.addAll(set);
-        return list;
-    }
-
-    /**
-     * 判断服务是否在运行
-     *
-     * @param mContext  上下文
-     * @param className 　　Service.class.getName();
-     * @return
-     */
-    public static boolean isServiceRunning(Context mContext, String className) {
-        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> serviceList = am.getRunningServices(Integer.MAX_VALUE);
-        int myUid = android.os.Process.myUid();
-        for (ActivityManager.RunningServiceInfo runningServiceInfo : serviceList) {
-            if (runningServiceInfo.uid == myUid && runningServiceInfo.service.getClassName().equals(className)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static int getImageResource(String imgID) {
         switch (imgID) {
             case "0":
