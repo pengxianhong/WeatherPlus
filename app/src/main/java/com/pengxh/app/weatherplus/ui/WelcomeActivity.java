@@ -103,7 +103,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         }
 
         //延时加载
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(1500, 500) {
 
             @Override
             public void onTick(long millisUntilFinished) {

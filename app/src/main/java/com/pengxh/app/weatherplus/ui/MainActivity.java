@@ -2,6 +2,7 @@ package com.pengxh.app.weatherplus.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,25 +16,18 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.LocationService;
-import com.pengxh.app.weatherplus.ui.fragment.FragmentFactory;
+import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 public class MainActivity extends BaseNormalActivity {
 
     private static final String TAG = "MainActivity";
-
-    @BindView(R.id.mMainViewPager)
-    ViewPager mMainViewPager;
-    @BindView(R.id.mLlIndicator)
-    LinearLayout mLlIndicator;
-
-    private Intent locationIntent = null;
+    private ViewPager mMainViewPager;
+    private LinearLayout mLlIndicator;
     private List<Fragment> fragmentList = new ArrayList<>();
 
     @Override
@@ -43,26 +37,62 @@ public class MainActivity extends BaseNormalActivity {
 
     @Override
     public void initData() {
+        Log.d(TAG, "initData: ");
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
-        locationIntent = new Intent(this, LocationService.class);
-        startService(locationIntent);
-        //默认添加当前位置天气页面
-        fragmentList.add(FragmentFactory.createFragment(0));
+        startService(new Intent(this, LocationService.class));
+
+        mMainViewPager = findViewById(R.id.mMainViewPager);
+        mLlIndicator = findViewById(R.id.mLlIndicator);
     }
 
     @Override
     public void initEvent() {
+        fragmentList.add(new WeatherFragment());
+        //默认添加当前位置天气页面
+        int size = fragmentList.size();
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList);
         mMainViewPager.setAdapter(pagerAdapter);
-        mMainViewPager.addOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, fragmentList.size()));
+        mMainViewPager.addOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, size));
+    }
+
+    /**
+     * home键然后回到App：onPause->onStop->onRestart->onStart->onResume
+     * 返回键然后回到App：onPause->onStop->onDestroy->initData(onCreate)->onStart->onResume
+     */
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
     }
 
     @Override
     protected void onDestroy() {
-        if (locationIntent == null) {
-            return;
-        }
-        stopService(locationIntent);
+        Log.d(TAG, "onDestroy: ");
         super.onDestroy();
     }
 

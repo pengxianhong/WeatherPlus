@@ -14,7 +14,6 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
-import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuItem;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
@@ -131,10 +130,8 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mTitleBackView:
-                finish();
-                break;
             case R.id.mRelativeLayout_citylist:
-                EasyToast.showToast("定位点城市不能删除", EasyToast.WARING);
+                finish();
                 break;
             case R.id.mTitleAddView:
                 Intent intent = new Intent(this, SelectCityActivity.class);
