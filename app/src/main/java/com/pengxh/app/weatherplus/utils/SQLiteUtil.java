@@ -33,7 +33,7 @@ public class SQLiteUtil {
      */
     private static final int VERSION = 1;
     private SQLiteDatabase db;
-    private static SQLiteUtil sqLiteUtil = null;
+    private static volatile SQLiteUtil sqLiteUtil = null;
 
     public static void initDataBase(Context mContext) {
         context = mContext.getApplicationContext();

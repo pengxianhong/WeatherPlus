@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,7 @@ import com.pengxh.app.weatherplus.bean.CityInfoBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
+import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -119,26 +121,29 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         context = getContext();
         sqLiteUtil = SQLiteUtil.getInstance();
         weatherPresenter = new WeatherPresenterImpl(this);
+        LocationService.getLocation(location -> {
+            Log.d(TAG, "onGetLocation: " + location);
+            getCityWeather(location);
+        });
         //解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
+        //禁止上拉加载更多
         weatherRefreshLayout.setEnableLoadMore(false);
     }
 
     @Override
     protected void loadData() {
-        getCityWeather();
-        //刷新
         weatherRefreshLayout.setOnRefreshListener(refreshLayout -> {
-            getCityWeather();
+            String city = (String) SaveKeyValues.getValue("location", "");
+            getCityWeather(city);
             isRefresh = true;
         });
     }
 
-    private void getCityWeather() {
-        String currentLocation = (String) SaveKeyValues.getValue("location", "");
-        CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(currentLocation);
+    private void getCityWeather(String location) {
+        CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
         if (cityBean != null) {
             weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
         }
