@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mRelativeLayout_citylist"
+    android:id="@+id/cityListLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="15dp"
@@ -10,50 +9,33 @@
     android:paddingBottom="10dp">
 
     <TextView
-        android:id="@+id/mCityName"
+        android:id="@+id/cityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:text="海淀区"
         android:textColor="#FFF"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="50dp"
-        android:layout_toStartOf="@id/mCityImage"
+        android:layout_centerInParent="true"
         android:background="@drawable/bg_layout"
         android:gravity="center">
 
         <TextView
-            android:id="@+id/mCityQuality"
+            android:id="@+id/cityQuality"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:paddingLeft="8dp"
+            android:paddingTop="2dp"
             android:paddingRight="8dp"
-            android:text="优" />
+            android:paddingBottom="2dp"
+            android:text="空气质量：优" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/mCityImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:srcCompat="@mipmap/a0" />
-
-    <TextView
-        android:id="@+id/mCityWeather"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/mCityImage"
-        android:textColor="#fff"
-        android:textSize="16sp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -62,18 +44,23 @@
         android:layout_centerVertical="true">
 
         <TextView
-            android:id="@+id/mCityLowTemp"
+            android:id="@+id/cityNowTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/mCityHighTemp"
-            android:textColor="#fff" />
+            android:layout_alignParentEnd="true"
+            android:text="20℃"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/mCityHighTemp"
+            android:id="@+id/cityNowWeather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/cityNowTemp"
             android:layout_alignParentEnd="true"
-            android:textColor="#fff" />
+            android:text="阴"
+            android:textColor="#EEE"
+            android:textSize="14sp" />
     </RelativeLayout>
 </RelativeLayout>

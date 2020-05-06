@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -14,7 +13,6 @@ import com.pengxh.app.multilib.widget.swipemenu.BaseSwipeListAdapter;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.CityWeatherBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
-import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
 
@@ -52,12 +50,10 @@ public class CityListAdapter extends BaseSwipeListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_city_list, null);
             itemHolder = new CityListHolder();
-            itemHolder.mCityName = convertView.findViewById(R.id.mCityName);
-            itemHolder.mCityQuality = convertView.findViewById(R.id.mCityQuality);
-            itemHolder.mCityImage = convertView.findViewById(R.id.mCityImage);
-            itemHolder.mCityWeather = convertView.findViewById(R.id.mCityWeather);
-            itemHolder.mCityLowTemp = convertView.findViewById(R.id.mCityLowTemp);
-            itemHolder.mCityHighTemp = convertView.findViewById(R.id.mCityHighTemp);
+            itemHolder.cityName = convertView.findViewById(R.id.cityName);
+            itemHolder.cityQuality = convertView.findViewById(R.id.cityQuality);
+            itemHolder.cityNowTemp = convertView.findViewById(R.id.cityNowTemp);
+            itemHolder.cityNowWeather = convertView.findViewById(R.id.cityNowWeather);
             convertView.setTag(itemHolder);
         } else {
             itemHolder = (CityListHolder) convertView.getTag();
@@ -67,25 +63,21 @@ public class CityListAdapter extends BaseSwipeListAdapter {
     }
 
     static class CityListHolder {
-        private TextView mCityName;
-        private TextView mCityQuality;
-        private ImageView mCityImage;
-        private TextView mCityWeather;
-        private TextView mCityLowTemp;
-        private TextView mCityHighTemp;
+        private TextView cityName;
+        private TextView cityQuality;
+        private TextView cityNowTemp;
+        private TextView cityNowWeather;
 
         @SuppressLint("SetTextI18n")
         void bindHolder(String weather) {
             Gson gson = new Gson();
             WeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, WeatherBean.class).getResult().getResult();
 
-            mCityName.setText(bean.getCity());
-            mCityQuality.setText(bean.getAqi().getQuality());
-            mCityQuality.setTextColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
-            mCityImage.setImageResource(OtherUtil.getImageResource(bean.getImg()));
-            mCityWeather.setText(bean.getWeather());
-            mCityLowTemp.setText(bean.getTemplow() + "℃~");
-            mCityHighTemp.setText(bean.getTemphigh() + "℃");
+            cityName.setText(bean.getCity());
+            cityQuality.setText("空气质量：" + bean.getAqi().getQuality());
+            cityQuality.setTextColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
+            cityNowTemp.setText(bean.getTemp() + "℃");
+            cityNowWeather.setText(bean.getWeather());
         }
     }
 }
