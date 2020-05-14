@@ -1,7 +1,6 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,7 +14,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.weatherplus.R;
-import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +37,6 @@ public class MainActivity extends BaseNormalActivity {
     public void initData() {
         Log.d(TAG, "initData: ");
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
-        startService(new Intent(this, LocationService.class));
 
         mMainViewPager = findViewById(R.id.mMainViewPager);
         mLlIndicator = findViewById(R.id.mLlIndicator);

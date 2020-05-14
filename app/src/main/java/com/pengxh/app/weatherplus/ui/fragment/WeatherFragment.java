@@ -29,10 +29,11 @@ import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.CityInfoBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
-import com.pengxh.app.weatherplus.service.LocationService;
 import com.pengxh.app.weatherplus.ui.CityListActivity;
+import com.pengxh.app.weatherplus.utils.LocationClient;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.DashboardView;
@@ -109,6 +110,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     private ProgressDialog progressDialog;
     private SQLiteUtil sqLiteUtil;
     private boolean isRefresh = false;
+    private LocationClient locationClient;
 
     @Override
     protected int setLayoutView() {
@@ -121,32 +123,38 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         context = getContext();
         sqLiteUtil = SQLiteUtil.getInstance();
         weatherPresenter = new WeatherPresenterImpl(this);
-        LocationService.getLocation(location -> {
-            Log.d(TAG, "onGetLocation: " + location);
-            getCityWeather(location);
-        });
+        locationClient = new LocationClient(context);
         //解决页面太长，ScrollView默认不能置顶的问题
         mTextViewRealtimeQuality.setFocusable(true);
         mTextViewRealtimeQuality.setFocusableInTouchMode(true);
         mTextViewRealtimeQuality.requestFocus();
         //禁止上拉加载更多
         weatherRefreshLayout.setEnableLoadMore(false);
-    }
 
-    @Override
-    protected void loadData() {
+        getCityWeather();
         weatherRefreshLayout.setOnRefreshListener(refreshLayout -> {
-            String city = (String) SaveKeyValues.getValue("location", "");
-            getCityWeather(city);
+            getCityWeather();
             isRefresh = true;
         });
     }
 
-    private void getCityWeather(String location) {
-        CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
-        if (cityBean != null) {
-            weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
-        }
+    @Override
+    protected void loadData() {
+
+    }
+
+    private void getCityWeather() {
+        locationClient.obtainLocation(new LocationCallbackListener() {
+            @Override
+            public void onGetLocation(String location) {
+                Log.d(TAG, "onGetLocation: " + location);
+                SaveKeyValues.putValue("location", location);
+                CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
+                if (cityBean != null) {
+                    weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
+                }
+            }
+        });
     }
 
     @Override
@@ -289,5 +297,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     public void onDestroyView() {
         super.onDestroyView();
         weatherPresenter.onUnsubscribe();
+        if (locationClient != null) {
+            locationClient.destroyLocationClient();
+        }
     }
 }
