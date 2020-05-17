@@ -202,9 +202,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         realtimeWindDirect.setText(resultBean.getWinddirect() + resultBean.getWindpower());
         realtimeWindSpeed.setText(resultBean.getWindspeed() + "米/秒");
         realtimeHumidity.setText(resultBean.getHumidity() + "%");
-        int color = Color.parseColor(resultBean.getAqi().getAqiinfo().getColor());
         realtimeQuality.setText(resultBean.getAqi().getQuality());
-        qualityView.setBackgroundColor(color);
+        qualityView.setCardBackgroundColor(Color.parseColor(resultBean.getAqi().getAqiinfo().getColor()));
     }
 
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
