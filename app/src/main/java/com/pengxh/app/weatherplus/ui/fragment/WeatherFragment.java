@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,42 +51,43 @@ import butterknife.OnClick;
 public class WeatherFragment extends BaseFragment implements IWeatherView, View.OnClickListener {
 
     private static final String TAG = "WeatherFragment";
+    //头布局和刷新
     @BindView(R.id.layoutView)
     LinearLayout layoutView;
     @BindView(R.id.weatherRefreshLayout)
     SmartRefreshLayout weatherRefreshLayout;
-    @BindView(R.id.mImageView_realtime_img)
-    ImageView mImageViewRealtimeImg;
-    @BindView(R.id.mTextView_realtime_temp)
-    TextView mTextViewRealtimeTemp;
-    @BindView(R.id.mTextView_realtime_weather)
-    TextView mTextViewRealtimeWeather;
-    @BindView(R.id.mTextView_realtime_templow)
-    TextView mTextViewRealtimeTemplow;
-    @BindView(R.id.mTextView_realtime_temphigh)
-    TextView mTextViewRealtimeTemphigh;
+    //实时天气View
+    @BindView(R.id.realtimeWeatherImg)
+    ImageView realtimeWeatherImg;
+    @BindView(R.id.realtimeTemp)
+    TextView realtimeTemp;
+    @BindView(R.id.realtimeWeather)
+    TextView realtimeWeather;
+    @BindView(R.id.qualityView)
+    CardView qualityView;
+    @BindView(R.id.realtimeQuality)
+    TextView realtimeQuality;
+    @BindView(R.id.realtimeLowTemp)
+    TextView realtimeLowTemp;
+    @BindView(R.id.realtimeHighTemp)
+    TextView realtimeHighTemp;
     @BindView(R.id.currentLocationView)
     TextView currentLocationView;
-    @BindView(R.id.mTextView_realtime_update)
-    TextView mTextViewRealtimeUpdate;
-    @BindView(R.id.mTextView_realtime_humidity)
-    TextView mTextViewRealtimeHumidity;
-    @BindView(R.id.mTextView_realtime_purple)
-    TextView mTextViewRealtimePurple;
-    @BindView(R.id.mTextView_realtime_sport)
-    TextView mTextViewRealtimeSport;
-    @BindView(R.id.mTextView_realtime_dress)
-    TextView mTextViewRealtimeDress;
-    @BindView(R.id.mLayout_realtime)
-    LinearLayout mLayoutRealtime;
-    @BindView(R.id.mTextView_realtime_aqi)
-    TextView mTextViewRealtimeAqi;
-    @BindView(R.id.mTextView_realtime_quality)
-    TextView mTextViewRealtimeQuality;
+    @BindView(R.id.realtimeUpdateTime)
+    TextView realtimeUpdateTime;
+    @BindView(R.id.realtimeWindDirect)
+    TextView realtimeWindDirect;
+    @BindView(R.id.realtimeWindSpeed)
+    TextView realtimeWindSpeed;
+    @BindView(R.id.realtimeHumidity)
+    TextView realtimeHumidity;
+    //当天天气View
     @BindView(R.id.mRecyclerView_hourly)
     RecyclerView mRecyclerViewHourly;
+    //本周天气View
     @BindView(R.id.mRecyclerView_weekly)
     RecyclerView mRecyclerViewWeekly;
+    //污染指数View
     @BindView(R.id.dashboardView)
     DashboardView dashboardView;
     @BindView(R.id.mTextView_air_pm10)
@@ -100,6 +102,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     TextView mTextViewAirO3;
     @BindView(R.id.mTextView_air_co)
     TextView mTextViewAirCO;
+    //生活指数View
     @BindView(R.id.mCustomGridView)
     CustomGridView mCustomGridView;
 
@@ -125,9 +128,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
         weatherPresenter = new WeatherPresenterImpl(this);
         locationClient = new LocationClient(context);
         //解决页面太长，ScrollView默认不能置顶的问题
-        mTextViewRealtimeQuality.setFocusable(true);
-        mTextViewRealtimeQuality.setFocusableInTouchMode(true);
-        mTextViewRealtimeQuality.requestFocus();
+        realtimeWeatherImg.setFocusable(true);
+        realtimeWeatherImg.setFocusableInTouchMode(true);
+        realtimeWeatherImg.requestFocus();
         //禁止上拉加载更多
         weatherRefreshLayout.setEnableLoadMore(false);
 
@@ -189,26 +192,19 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     }
 
     private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
-        mImageViewRealtimeImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
-        mTextViewRealtimeTemp.setText(resultBean.getTemp() + "°");
-        mTextViewRealtimeWeather.setText(resultBean.getWeather());
-        mTextViewRealtimeTemplow.setText(resultBean.getTemplow() + "℃~");
-        mTextViewRealtimeTemphigh.setText(resultBean.getTemphigh() + "℃");
+        realtimeWeatherImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
+        realtimeTemp.setText(resultBean.getTemp() + "°");
+        realtimeWeather.setText(resultBean.getWeather());
+        realtimeLowTemp.setText(resultBean.getTemplow() + "°~");
+        realtimeHighTemp.setText(resultBean.getTemphigh() + "°");
         currentLocationView.setText(resultBean.getCity());
-        String updateTime = resultBean.getUpdatetime();
-        mTextViewRealtimeUpdate.setText(updateTime.substring(5, 16) + "\r\r更新");
-        mTextViewRealtimeUpdate.setCompoundDrawables(null, null, null, null);//定位点隐藏刷新按钮
-
-        mTextViewRealtimeHumidity.setText(resultBean.getHumidity() + "%");
-        mTextViewRealtimePurple.setText(resultBean.getIndex().get(2).getDetail());
-        mTextViewRealtimeSport.setText(resultBean.getIndex().get(1).getDetail());
-        mTextViewRealtimeDress.setText(resultBean.getIndex().get(6).getDetail());
-
+        realtimeUpdateTime.setText(resultBean.getUpdatetime() + "\r\r更新");
+        realtimeWindDirect.setText(resultBean.getWinddirect() + resultBean.getWindpower());
+        realtimeWindSpeed.setText(resultBean.getWindspeed() + "米/秒");
+        realtimeHumidity.setText(resultBean.getHumidity() + "%");
         int color = Color.parseColor(resultBean.getAqi().getAqiinfo().getColor());
-        mTextViewRealtimeAqi.setText(resultBean.getAqi().getAqi());
-        mTextViewRealtimeAqi.setTextColor(color);
-        mTextViewRealtimeQuality.setText(resultBean.getAqi().getQuality());
-        mTextViewRealtimeQuality.setTextColor(color);
+        realtimeQuality.setText(resultBean.getAqi().getQuality());
+        qualityView.setBackgroundColor(color);
     }
 
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {

@@ -40,9 +40,9 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
     @SuppressLint("RecyclerView")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         WeeklyRecyclerViewHolder itemHolder = (WeeklyRecyclerViewHolder) holder;
-        itemHolder.bindHolder(dailyBeanList.get(position));
+        itemHolder.bindHolder(dailyBeanList.get(position), position);
     }
 
     static class WeeklyRecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -61,8 +61,12 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
         @SuppressLint("SetTextI18n")
-        void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean) {
-            mTextView_weekly_week.setText(dailyBean.getWeek());
+        void bindHolder(WeatherBean.ResultBeanX.ResultBean.DailyBean dailyBean, int position) {
+            if (position == 0) {
+                mTextView_weekly_week.setText("今天");
+            } else {
+                mTextView_weekly_week.setText(dailyBean.getWeek());
+            }
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));

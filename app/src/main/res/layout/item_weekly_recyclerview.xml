@@ -9,14 +9,14 @@
         android:id="@+id/mTextView_weekly_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:textColor="#fff"
         android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/mImageView_weekly_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="128px"
+        android:layout_height="128px"
         android:layout_centerInParent="true" />
 
     <TextView
