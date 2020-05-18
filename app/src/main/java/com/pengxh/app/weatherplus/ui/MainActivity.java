@@ -1,7 +1,9 @@
 package com.pengxh.app.weatherplus.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,20 +12,34 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import butterknife.BindView;
+import butterknife.OnClick;
 
+import com.aihook.alertview.library.AlertView;
+import com.aihook.alertview.library.OnItemClickListener;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
+import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherFragment;
+import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends BaseNormalActivity {
+public class MainActivity extends BaseNormalActivity implements View.OnClickListener{
 
     private static final String TAG = "MainActivity";
+
+    //头布局
+    @BindView(R.id.layoutView)
+    LinearLayout layoutView;
+
+    private String[] periodArray = {"1小时", "2小时", "6小时", "12小时", "24小时", "不更新"};
+    private List<String> items = Arrays.asList("管理城市", "更新间隔");
     private ViewPager mMainViewPager;
     private LinearLayout mLlIndicator;
     private List<Fragment> fragmentList = new ArrayList<>();
@@ -51,6 +67,29 @@ public class MainActivity extends BaseNormalActivity {
         mMainViewPager.setAdapter(pagerAdapter);
         mMainViewPager.addOnPageChangeListener(new WeatherPageChangeListener(this, mLlIndicator, size));
     }
+
+    @OnClick(R.id.manageCity)
+    @Override
+    public void onClick(View v) {
+        EasyPopupWindow easyPopupWindow = new EasyPopupWindow(this, items);
+        easyPopupWindow.setPopupWindowClickListener(position -> {
+            if (position == 0) {
+                startActivity(new Intent(this, CityListActivity.class));
+            } else if (position == 1) {
+                new AlertView("更新间隔", null, "取消", null, periodArray, this, AlertView.Style.ActionSheet, new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Object o, int position) {
+                        //TODO 获取到更新时间间隔之后设置按设定刷新时间
+                    }
+                }).show();
+            }
+        });
+        easyPopupWindow.setBackgroundDrawable(null);
+        easyPopupWindow.showAsDropDown(layoutView,
+                layoutView.getWidth() - easyPopupWindow.getWidth() - DensityUtil.dp2px(this, 15),
+                DensityUtil.dp2px(this, 40));
+    }
+
 
     /**
      * home键然后回到App：onPause->onStop->onRestart->onStart->onResume

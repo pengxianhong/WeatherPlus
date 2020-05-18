@@ -3,24 +3,15 @@ package com.pengxh.app.weatherplus.ui.fragment;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.aihook.alertview.library.AlertView;
-import com.aihook.alertview.library.OnItemClickListener;
 import com.alibaba.fastjson.JSONObject;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseFragment;
-import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.multilib.widget.CustomGridView;
 import com.pengxh.app.multilib.widget.EasyToast;
@@ -33,27 +24,24 @@ import com.pengxh.app.weatherplus.bean.WeatherBean;
 import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
-import com.pengxh.app.weatherplus.ui.CityListActivity;
 import com.pengxh.app.weatherplus.utils.LocationClient;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.DashboardView;
-import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
-import java.util.Arrays;
 import java.util.List;
 
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import butterknife.OnClick;
 
 @SuppressLint("SetTextI18n")
-public class WeatherFragment extends BaseFragment implements IWeatherView, View.OnClickListener {
+public class WeatherFragment extends BaseFragment implements IWeatherView {
 
     private static final String TAG = "WeatherFragment";
-    //头布局和刷新
-    @BindView(R.id.layoutView)
-    LinearLayout layoutView;
+    //刷新View
     @BindView(R.id.weatherRefreshLayout)
     SmartRefreshLayout weatherRefreshLayout;
     //实时天气View
@@ -107,8 +95,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
     CustomGridView mCustomGridView;
 
     private Context context;
-    private String[] periodArray = {"1小时", "2小时", "6小时", "12小时", "24小时", "不更新"};
-    private List<String> items = Arrays.asList("管理城市", "更新间隔");
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
     private SQLiteUtil sqLiteUtil;
@@ -244,28 +230,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherView, View.
             String detail = indexBeanList.get(position).getDetail();
             new AlertView(iname, detail, null, new String[]{"确定"}, null, context, AlertView.Style.Alert, null).show();
         });
-    }
-
-    @OnClick(R.id.manageCity)
-    @Override
-    public void onClick(View v) {
-        EasyPopupWindow easyPopupWindow = new EasyPopupWindow(context, items);
-        easyPopupWindow.setPopupWindowClickListener(position -> {
-            if (position == 0) {
-                startActivity(new Intent(context, CityListActivity.class));
-            } else if (position == 1) {
-                new AlertView("更新间隔", null, "取消", null, periodArray, context, AlertView.Style.ActionSheet, new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Object o, int position) {
-                        //TODO 获取到更新时间间隔之后设置按设定刷新时间
-                    }
-                }).show();
-            }
-        });
-        easyPopupWindow.setBackgroundDrawable(null);
-        easyPopupWindow.showAsDropDown(layoutView,
-                layoutView.getWidth() - easyPopupWindow.getWidth() - DensityUtil.dp2px(context, 15),
-                DensityUtil.dp2px(context, 40));
     }
 
     @Override
