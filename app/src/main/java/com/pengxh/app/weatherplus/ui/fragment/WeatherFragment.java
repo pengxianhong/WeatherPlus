@@ -8,6 +8,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aihook.alertview.library.AlertView;
 import com.alibaba.fastjson.JSONObject;
 import com.gyf.immersionbar.ImmersionBar;
@@ -32,9 +36,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 @SuppressLint("SetTextI18n")
@@ -178,7 +179,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     }
 
     private void bindResultData(WeatherBean.ResultBeanX.ResultBean resultBean) {
-        realtimeWeatherImg.setImageResource(OtherUtil.getImageResource(resultBean.getImg()));
+        realtimeWeatherImg.setImageResource(OtherUtil.getImageResource(OtherUtil.getCurrentHour(), resultBean.getImg()));
         realtimeTemp.setText(resultBean.getTemp() + "°");
         realtimeWeather.setText(resultBean.getWeather());
         realtimeLowTemp.setText(resultBean.getTemplow() + "°~");
@@ -193,16 +194,16 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     }
 
     private void bindHourlyData(List<WeatherBean.ResultBeanX.ResultBean.HourlyBean> hourlyBeanList) {
-        HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(getContext(), hourlyBeanList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        HourlyRecyclerViewAdapter adapter = new HourlyRecyclerViewAdapter(context, hourlyBeanList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);// 横向滚动
         mRecyclerViewHourly.setLayoutManager(layoutManager);
         mRecyclerViewHourly.setAdapter(adapter);
     }
 
     private void bindDailyData(List<WeatherBean.ResultBeanX.ResultBean.DailyBean> dailyBeanList) {
-        WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(getContext(), dailyBeanList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        WeeklyRecyclerViewAdapter adapter = new WeeklyRecyclerViewAdapter(context, dailyBeanList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewWeekly.setLayoutManager(layoutManager);
         mRecyclerViewWeekly.setAdapter(adapter);
@@ -223,7 +224,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     }
 
     private void bindIndexData(final List<WeatherBean.ResultBeanX.ResultBean.IndexBean> indexBeanList) {
-        GridViewAdapter mGridViewAdapter = new GridViewAdapter(getContext(), indexBeanList);
+        GridViewAdapter mGridViewAdapter = new GridViewAdapter(context, indexBeanList);
         mCustomGridView.setAdapter(mGridViewAdapter);
         mCustomGridView.setOnItemClickListener((parent, view, position, id) -> {
             String iname = indexBeanList.get(position).getIname();
@@ -235,7 +236,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     @Override
     public void showProgress() {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getContext());
+            progressDialog = new ProgressDialog(context);
             progressDialog.setMessage("正在加载天气数据...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();

@@ -60,9 +60,13 @@ public class HourlyRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
         void bindHolder(WeatherBean.ResultBeanX.ResultBean.HourlyBean hourlyBean) {
-            mRecyclerView_hourly_time.setText(hourlyBean.getTime());
+            //time : 16:00
+            String time = hourlyBean.getTime();
+            mRecyclerView_hourly_time.setText(time);
             mRecyclerView_hourly_weather.setText(hourlyBean.getWeather());
-            mRecyclerView_hourly_img.setImageResource(OtherUtil.getImageResource(hourlyBean.getImg()));
+            //分割时间
+            int hour = Integer.parseInt(time.split(":")[0]);
+            mRecyclerView_hourly_img.setImageResource(OtherUtil.getImageResource(hour, hourlyBean.getImg()));
             mRecyclerView_hourly_temp.setText(hourlyBean.getTemp() + "°");
         }
     }

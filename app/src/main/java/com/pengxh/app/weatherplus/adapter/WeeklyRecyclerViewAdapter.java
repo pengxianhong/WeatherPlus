@@ -69,7 +69,8 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
             }
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
-            mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
+            //本周的天气不用设置夜间天气，故时间设置为12点
+            mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(12, dayBean.getImg()));
             mTextView_day_temphigh.setText(dayBean.getTemphigh() + "°");
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();

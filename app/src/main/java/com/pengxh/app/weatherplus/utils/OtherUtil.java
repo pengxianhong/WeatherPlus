@@ -1,13 +1,18 @@
 package com.pengxh.app.weatherplus.utils;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.pengxh.app.weatherplus.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class OtherUtil {
 
+    private static final String TAG = "OtherUtil";
     private static ProgressDialog progressDialog;
 
     public static void showProgressDialog(Context context, String title, String message) {
@@ -25,15 +30,32 @@ public class OtherUtil {
         }
     }
 
-    public static int getImageResource(String imgID) {
+    @SuppressLint("SimpleDateFormat")
+    public static int getCurrentHour() {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH");
+        return Integer.parseInt(formatter.format(date));
+    }
+
+    public static int getImageResource(int hour, String imgID) {
+        //hour>19||hour<5
         switch (imgID) {
             case "0":
+                if (hour > 19 || hour < 5) {
+                    return R.drawable.ic_y_a0;//夜间晴
+                }
                 return R.drawable.ic_a0;//晴
             case "1":
+                if (hour > 19 || hour < 5) {
+                    return R.drawable.ic_y_a1;//夜间多云
+                }
                 return R.drawable.ic_a1;//多云
             case "2":
                 return R.drawable.ic_a2;//阴
             case "3":
+                if (hour > 19 || hour < 5) {
+                    return R.drawable.ic_y_a3;//夜间阵雨
+                }
                 return R.drawable.ic_a3;//阵雨
             case "4":
             case "5":
@@ -54,6 +76,9 @@ public class OtherUtil {
             case "12":
                 return R.drawable.ic_a12;//特大暴雨
             case "13":
+                if (hour > 19 || hour < 5) {
+                    return R.drawable.ic_y_a13;//夜间阵雪
+                }
                 return R.drawable.ic_a13;//阵雪
             case "14":
             case "302":
