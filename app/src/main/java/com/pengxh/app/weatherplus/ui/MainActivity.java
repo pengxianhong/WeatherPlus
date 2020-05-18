@@ -12,8 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
@@ -30,7 +28,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends BaseNormalActivity implements View.OnClickListener{
+import butterknife.BindView;
+import butterknife.OnClick;
+
+public class MainActivity extends BaseNormalActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -85,9 +86,9 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
             }
         });
         easyPopupWindow.setBackgroundDrawable(null);
-        easyPopupWindow.showAsDropDown(layoutView,
-                layoutView.getWidth() - easyPopupWindow.getWidth() - DensityUtil.dp2px(this, 15),
-                DensityUtil.dp2px(this, 40));
+        easyPopupWindow.showAsDropDown(layoutView
+                , layoutView.getWidth() - easyPopupWindow.getWidth() - DensityUtil.dp2px(this, 20)
+                , DensityUtil.dp2px(this, 40));
     }
 
 

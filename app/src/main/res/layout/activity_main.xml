@@ -25,9 +25,7 @@
         android:id="@+id/mLlIndicator"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="#40BAD5"
         android:gravity="center"
-        android:orientation="horizontal">
-        <!--指示器位置-->
-    </LinearLayout>
+        android:orientation="horizontal" />
+    <!--指示器位置-->
 </LinearLayout>
