@@ -4,11 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="green">#00FF00</color>
-    <color name="blue">#EE9A00</color>
-    <color name="red">#EE0000</color>
     <color name="white">#FFFFFF</color>
 
     <color name="statusBar_color">#0779E4</color>
-    <color name="tag_text_color">#40BAD5</color>
 </resources>

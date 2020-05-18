@@ -28,7 +28,7 @@
                 android:layout_height="80px"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/search" />
+                android:background="@mipmap/search" />
 
             <AutoCompleteTextView
                 android:id="@+id/mAutoCompleteTextView"

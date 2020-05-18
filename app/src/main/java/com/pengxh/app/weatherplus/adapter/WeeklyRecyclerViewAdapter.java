@@ -70,10 +70,10 @@ public class WeeklyRecyclerViewAdapter extends RecyclerView.Adapter {
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.DayBean dayBean = dailyBean.getDay();
             mImageView_weekly_img.setImageResource(OtherUtil.getImageResource(dayBean.getImg()));
-            mTextView_day_temphigh.setText(dayBean.getTemphigh() + "℃");
+            mTextView_day_temphigh.setText(dayBean.getTemphigh() + "°");
 
             WeatherBean.ResultBeanX.ResultBean.DailyBean.NightBean nightBean = dailyBean.getNight();
-            mTextView_night_templow.setText(nightBean.getTemplow() + "℃");
+            mTextView_night_templow.setText(nightBean.getTemplow() + "°");
         }
     }
 }

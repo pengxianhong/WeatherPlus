@@ -13,7 +13,7 @@
         android:layout_gravity="end"
         android:layout_margin="8dp"
         android:background="@drawable/selector_button"
-        android:src="@drawable/more" />
+        android:src="@mipmap/more" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mMainViewPager"
