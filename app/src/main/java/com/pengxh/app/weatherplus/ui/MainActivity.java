@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
 import com.gyf.immersionbar.ImmersionBar;
@@ -33,11 +37,7 @@ import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -108,16 +108,23 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                 if (action != null) {
                     switch (action) {
                         case "action_addCity":
-                            //TODO 需要考虑怎么批量添加
-//                            String city = intent.getStringExtra("data");
-                            CopyOnWriteArrayList<Fragment> fragmentList = pagerAdapter.getFragmentList();
+                            List<Fragment> fragmentList = pagerAdapter.getFragmentList();
                             List<CityWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityWeatherList();
+
+                            List<String> fragmentTitleList = new ArrayList<>();
                             for (Fragment f : fragmentList) {
                                 String fragmentTitle = f.getArguments().getString("fragment_title");
-                                if (weatherBeans.contains(fragmentTitle)) {
-                                    Log.d(TAG, "onReceive: 包含" + fragmentTitle);
-                                }
-//                                pagerAdapter.addPage(PageFragment.newInstance(city));
+                                fragmentTitleList.add(fragmentTitle);
+                            }
+                            List<String> weatherCityList = new ArrayList<>();
+                            for (CityWeatherBean weatherBean : weatherBeans) {
+                                weatherCityList.add(weatherBean.getCity());
+                            }
+                            //求差集
+                            weatherCityList.removeAll(fragmentTitleList);
+                            Log.d(TAG, "新增页面: " + weatherCityList);
+                            for (String title : weatherCityList) {
+                                pagerAdapter.addPage(PageFragment.newInstance(title));
                             }
                             break;
                         case "action_delCity":

@@ -82,8 +82,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
             return true;
         });
         mSwipeMenuListView.setOnItemClickListener((parent, view, position, id) -> {
-            //TODO 发送add广播,单个添加。如果点击返回键，批量添加怎么实现？
-            String city = weatherBeans.get(position).getCity();
+            //TODO 发送add广播
             broadcastManager.sendBroadcast("action_addCity", "");
             finish();
         });
@@ -94,6 +93,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mTitleBackView:
+                broadcastManager.sendBroadcast("action_addCity", "");
                 finish();
                 break;
             case R.id.mTitleAddView:
@@ -102,5 +102,11 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        broadcastManager.sendBroadcast("action_addCity", "");
     }
 }

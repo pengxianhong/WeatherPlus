@@ -1,12 +1,11 @@
 package com.pengxh.app.weatherplus.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author: Pengxh
@@ -15,13 +14,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
  * @date: 2020/5/18 16:50
  */
 public class WeatherPageAdapter extends FragmentPagerAdapter {
-    private CopyOnWriteArrayList<Fragment> mFragmentList = new CopyOnWriteArrayList<>();
+    private List<Fragment> mFragmentList = new CopyOnWriteArrayList<>();
 
     public WeatherPageAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public CopyOnWriteArrayList<Fragment> getFragmentList() {
+    public List<Fragment> getFragmentList() {
         return mFragmentList;
     }
 
