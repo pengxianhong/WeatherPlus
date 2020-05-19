@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
+import com.pengxh.app.multilib.utils.BroadcastManager;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuItem;
@@ -34,6 +35,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
     private CityListAdapter cityAdapter;
     private SQLiteUtil sqLiteUtil;
     private List<CityWeatherBean> weatherBeans;
+    private BroadcastManager broadcastManager;
 
     @Override
     public int initLayoutView() {
@@ -45,6 +47,7 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
         currentLocation = (String) SaveKeyValues.getValue("location", "");
         sqLiteUtil = SQLiteUtil.getInstance();
+        broadcastManager = BroadcastManager.getInstance(this);
     }
 
     @Override
@@ -70,21 +73,21 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         });
         mSwipeMenuListView.setOnMenuItemClickListener((position, menu, index) -> {
             if (index == 0) {//先删除数据库数据，再删除List，不然会出现角标越界
-                //TODO 发送del广播
-//                    sendUpdateBroadcast("del");
                 sqLiteUtil.deleteCityByName(weatherBeans.get(position).getCity());
                 weatherBeans.remove(position);
                 cityAdapter.notifyDataSetChanged();
+                //TODO 发送del广播
+                broadcastManager.sendBroadcast("action_delCity", String.valueOf(position));
             }
             return true;
         });
         mSwipeMenuListView.setOnItemClickListener((parent, view, position, id) -> {
-            //TODO 发送add广播
-//                sendUpdateBroadcast("add");
+            //TODO 发送add广播,单个添加。如果点击返回键，批量添加怎么实现？
+            String city = weatherBeans.get(position).getCity();
+            broadcastManager.sendBroadcast("action_addCity", "");
             finish();
         });
     }
-
 
     @OnClick({R.id.mTitleBackView, R.id.mTitleAddView})
     @Override

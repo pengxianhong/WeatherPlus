@@ -11,4 +11,6 @@ public class Constant {
 
     public static final int[] ICONS = {R.drawable.ic_air, R.drawable.ic_sports, R.drawable.ic_sunny,
             R.drawable.ic_headache, R.drawable.ic_car, R.drawable.ic_airpollution, R.drawable.ic_yifu};
+
+    public static final String[] PAGE_ACTIONS = new String[]{"action_addCity", "action_delCity"};
 }

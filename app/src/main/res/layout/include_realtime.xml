@@ -28,6 +28,7 @@
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
+                    android:id="@+id/locationView"
                     android:layout_width="48px"
                     android:layout_height="48px"
                     android:background="@drawable/ic_location" />
