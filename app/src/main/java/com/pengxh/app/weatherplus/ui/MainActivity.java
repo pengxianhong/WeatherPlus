@@ -23,7 +23,6 @@ import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.BroadcastManager;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
-import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.WeatherPageAdapter;
 import com.pengxh.app.weatherplus.bean.CityWeatherBean;
@@ -128,12 +127,8 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                             }
                             break;
                         case "action_delCity":
-                            int size = pagerAdapter.getFragmentList().size();
-                            if (size == 1) {
-                                EasyToast.showToast("默认天气页无法删除", EasyToast.WARING);
-                                return;
-                            }
                             String index = intent.getStringExtra("data");
+                            assert index != null;
                             pagerAdapter.delPage(Integer.parseInt(index));
                             break;
                     }

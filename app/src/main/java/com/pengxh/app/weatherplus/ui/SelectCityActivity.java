@@ -90,10 +90,10 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Override
     public void initEvent() {
         hotCityList = sqLiteUtil.loadHotCity();
-        if (hotCityList != null) {
-            mHotCityImageView.setVisibility(View.VISIBLE);
-        } else {
+        if (hotCityList == null || hotCityList.size() == 0) {
             mHotCityImageView.setVisibility(View.INVISIBLE);
+        } else {
+            mHotCityImageView.setVisibility(View.VISIBLE);
         }
         hotCityAdapter = new HotCityAdapter(SelectCityActivity.this, hotCityList);
         mRecyclerViewHotCity.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
