@@ -55,7 +55,7 @@ dependencies {
     //fragment快速实现
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
     //Cannot fit requested classes in a single dex file (# methods: 67972 > 65536)
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     //上拉加载下拉刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
 }

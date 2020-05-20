@@ -11,17 +11,27 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.aihook.alertview.library.AlertView;
-import com.aihook.alertview.library.OnItemClickListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.BroadcastManager;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.weatherplus.R;
+import com.pengxh.app.weatherplus.adapter.BottomSheetAdapter;
 import com.pengxh.app.weatherplus.adapter.WeatherPageAdapter;
 import com.pengxh.app.weatherplus.bean.CityWeatherBean;
 import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
@@ -35,10 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -194,12 +200,39 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
             if (position == 0) {
                 startActivity(new Intent(this, CityListActivity.class));
             } else if (position == 1) {
-                new AlertView("更新间隔", null, "取消", null, periodArray, this, AlertView.Style.ActionSheet, new OnItemClickListener() {
+                BottomSheetDialog dialog = new BottomSheetDialog(this);
+                View view = getLayoutInflater().inflate(R.layout.dialog_bottom, null);
+                ListView bottomListView = view.findViewById(R.id.bottomListView);
+                TextView bottomCancelView = view.findViewById(R.id.bottomCancelView);
+
+                BottomSheetAdapter bottomAdapter = new BottomSheetAdapter(this, periodArray);
+                bottomListView.setAdapter(bottomAdapter);
+                bottomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(Object o, int position) {
-                        //TODO 获取到更新时间间隔之后设置按设定刷新时间
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String s = periodArray[position];
+                        SaveKeyValues.putValue("hours", s);
+                        String time;
+                        if (s.contains("小时")) {
+                            time = s.split("小时")[0];
+                        } else {
+                            //不更新
+                            time = "9999999";
+                        }
+                        int hours = Integer.parseInt(time);
+                        //TODO 启动定时服务
+
+                        RadioButton radioButton = view.findViewById(R.id.radioButton);
+                        //每次选择一个item时都要清除所有的状态，防止出现多个被选中
+                        bottomAdapter.clearStates(position);
+                        radioButton.setChecked(bottomAdapter.getStates(position));
+                        bottomAdapter.notifyDataSetChanged();
                     }
-                }).show();
+                });
+                bottomCancelView.setOnClickListener(v1 -> dialog.dismiss());
+
+                dialog.setContentView(view);
+                dialog.show();
             }
         });
         easyPopupWindow.setBackgroundDrawable(null);
@@ -250,9 +283,9 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                 params.height = imgSize;
                 params.width = imgSize;
                 if (i == 0) {
-                    imageView.setBackgroundResource(img_unSelect);
-                } else {
                     imageView.setBackgroundResource(img_select);
+                } else {
+                    imageView.setBackgroundResource(img_unSelect);
                 }
                 //为LinearLayout添加ImageView
                 mIndicator.addView(imageView, params);
@@ -270,9 +303,9 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
             for (int i = 0; i < mPageCount; i++) {
                 //选中的页面改变小圆点为选中状态，反之为未选中
                 if ((position % mPageCount) == i) {
-                    mImgList.get(i).setBackgroundResource(img_unSelect);
-                } else {
                     mImgList.get(i).setBackgroundResource(img_select);
+                } else {
+                    mImgList.get(i).setBackgroundResource(img_unSelect);
                 }
             }
         }
