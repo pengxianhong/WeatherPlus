@@ -4,17 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import com.aihook.alertview.library.AlertView;
 import com.aihook.alertview.library.OnItemClickListener;
@@ -37,6 +35,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -70,6 +72,27 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
 
         broadcastManager = BroadcastManager.getInstance(this);
         locationClient = new LocationClient(this);
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            new AlertView("提醒", "GPS定位可能没打开", "取消", new String[]{"打开"}, null, this, AlertView.Style.AlertDialog, (o, position) -> {
+                switch (position) {
+                    case -1:
+                        finish();
+                        break;
+                    case 0:
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(intent, 10);
+                        break;
+                }
+            }).show();
+        } else {
+            initPage();
+        }
+    }
+
+    private void initPage() {
+        Log.d(TAG, "initPage: ");
         locationClient.obtainLocation(new LocationCallbackListener() {
             @Override
             public void onGetLocation(String location) {
@@ -96,6 +119,14 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                 mMainViewPager.setAdapter(pagerAdapter);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10 && resultCode == 0) {
+            initPage();
+        }
     }
 
     @Override
