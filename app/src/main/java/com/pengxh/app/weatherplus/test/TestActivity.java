@@ -17,7 +17,7 @@ import com.pengxh.app.multilib.utils.BroadcastManager;
 import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.adapter.WeatherPageAdapter;
-import com.pengxh.app.weatherplus.ui.fragment.PageFragment;
+import com.pengxh.app.weatherplus.ui.fragment.WeatherPageFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class TestActivity extends BaseNormalActivity implements View.OnClickList
         indicatorLayout = findViewById(R.id.indicatorLayout);
         broadcastManager = BroadcastManager.getInstance(this);
         pagerAdapter = new WeatherPageAdapter(getSupportFragmentManager());
-        pagerAdapter.addPage(PageFragment.newInstance("海淀区"));
+        pagerAdapter.addPage(WeatherPageFragment.newInstance("海淀区"));
         mTestViewPager.setAdapter(pagerAdapter);
 
         //首次启动默认显示一个点，后面启动从数据库读取数据
@@ -77,7 +77,7 @@ public class TestActivity extends BaseNormalActivity implements View.OnClickList
                 if (action != null) {
                     switch (action) {
                         case "action_addCity":
-                            pagerAdapter.addPage(PageFragment.newInstance(intent.getStringExtra("data")));
+                            pagerAdapter.addPage(WeatherPageFragment.newInstance(intent.getStringExtra("data")));
                             break;
                         case "action_delCity":
                             int size = pagerAdapter.getFragmentList().size();

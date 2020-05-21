@@ -4,18 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.aihook.alertview.library.AlertView;
 import com.alibaba.fastjson.JSONObject;
-import com.gyf.immersionbar.ImmersionBar;
-import com.pengxh.app.multilib.base.BaseFragment;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.multilib.widget.CustomGridView;
 import com.pengxh.app.multilib.widget.EasyToast;
@@ -25,10 +22,8 @@ import com.pengxh.app.weatherplus.adapter.HourlyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.adapter.WeeklyRecyclerViewAdapter;
 import com.pengxh.app.weatherplus.bean.CityInfoBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
-import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
-import com.pengxh.app.weatherplus.utils.LocationClient;
 import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.DashboardView;
@@ -36,12 +31,24 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
+/**
+ * @author: Pengxh
+ * @email: 290677893@qq.com
+ * @description: TODO
+ * @date: 2020/5/18 9:59
+ */
 @SuppressLint("SetTextI18n")
-public class WeatherFragment extends BaseFragment implements IWeatherView {
+public class WeatherPageFragment extends BasePageFragment implements IWeatherView {
 
-    private static final String TAG = "WeatherFragment";
+    private static final String TAG = "PageFragment";
     //刷新View
     @BindView(R.id.weatherRefreshLayout)
     SmartRefreshLayout weatherRefreshLayout;
@@ -60,6 +67,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     TextView realtimeLowTemp;
     @BindView(R.id.realtimeHighTemp)
     TextView realtimeHighTemp;
+    @BindView(R.id.locationView)
+    ImageView locationView;
     @BindView(R.id.currentLocationView)
     TextView currentLocationView;
     @BindView(R.id.realtimeUpdateTime)
@@ -95,56 +104,87 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     @BindView(R.id.mCustomGridView)
     CustomGridView mCustomGridView;
 
+    private Unbinder unbinder;
     private Context context;
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
     private SQLiteUtil sqLiteUtil;
     private boolean isRefresh = false;
-    private LocationClient locationClient;
+    private String location;
 
-    @Override
-    protected int setLayoutView() {
-        return R.layout.fragment_weather;
+    public static WeatherPageFragment newInstance(String title) {
+        WeatherPageFragment fragment = new WeatherPageFragment();
+        Bundle args = new Bundle();
+        args.putString("fragment_title", title);
+        fragment.setArguments(args);
+        return fragment;
     }
 
+    @Nullable
     @Override
-    protected void initData() {
-        ImmersionBar.with(this).statusBarColor(R.color.statusBar_color).fitsSystemWindows(true).init();
+    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = LayoutInflater.from(this.getContext()).inflate(R.layout.fragment_weather, null);
+        unbinder = ButterKnife.bind(this, view);
         context = getContext();
+        initEvent();
+        return view;
+    }
+
+    private void initEvent() {
+        String currentLocation = (String) SaveKeyValues.getValue("location", "");
+        location = getArguments().getString("fragment_title");
+        currentLocationView.setText(location);
+        if (!currentLocation.equals(location)) {
+            locationView.setVisibility(View.GONE);
+        } else {
+            locationView.setVisibility(View.VISIBLE);
+        }
         sqLiteUtil = SQLiteUtil.getInstance();
         weatherPresenter = new WeatherPresenterImpl(this);
-        locationClient = new LocationClient(context);
         //解决页面太长，ScrollView默认不能置顶的问题
         realtimeWeatherImg.setFocusable(true);
         realtimeWeatherImg.setFocusableInTouchMode(true);
         realtimeWeatherImg.requestFocus();
         //禁止上拉加载更多
         weatherRefreshLayout.setEnableLoadMore(false);
-
-        getCityWeather();
         weatherRefreshLayout.setOnRefreshListener(refreshLayout -> {
-            getCityWeather();
+            CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
+            if (cityBean != null) {
+                weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
+            }
             isRefresh = true;
         });
     }
 
     @Override
-    protected void loadData() {
-
+    public void fetchData() {
+        /**
+         * 在这里请求网络。
+         * */
+        CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
+        if (cityBean != null) {
+            weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
+        }
     }
 
-    private void getCityWeather() {
-        locationClient.obtainLocation(new LocationCallbackListener() {
-            @Override
-            public void onGetLocation(String location) {
-                Log.d(TAG, "onGetLocation: " + location);
-                SaveKeyValues.putValue("location", location);
-                CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
-                if (cityBean != null) {
-                    weatherPresenter.onReadyRetrofitRequest(cityBean.getCity(), cityBean.getCityid(), Integer.parseInt(cityBean.getCitycode()));
-                }
-            }
-        });
+    @Override
+    public void showProgress() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("正在加载天气数据...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        if (isRefresh) {
+            weatherRefreshLayout.finishRefresh();
+        }
     }
 
     @Override
@@ -234,31 +274,10 @@ public class WeatherFragment extends BaseFragment implements IWeatherView {
     }
 
     @Override
-    public void showProgress() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("正在加载天气数据...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        }
-    }
-
-    @Override
-    public void hideProgress() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        if (isRefresh) {
-            weatherRefreshLayout.finishRefresh();
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        weatherPresenter.onUnsubscribe();
-        if (locationClient != null) {
-            locationClient.destroyLocationClient();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 }

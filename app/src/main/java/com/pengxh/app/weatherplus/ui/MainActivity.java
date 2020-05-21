@@ -18,11 +18,6 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import com.aihook.alertview.library.AlertView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gyf.immersionbar.ImmersionBar;
@@ -35,7 +30,7 @@ import com.pengxh.app.weatherplus.adapter.BottomSheetAdapter;
 import com.pengxh.app.weatherplus.adapter.WeatherPageAdapter;
 import com.pengxh.app.weatherplus.bean.CityWeatherBean;
 import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
-import com.pengxh.app.weatherplus.ui.fragment.PageFragment;
+import com.pengxh.app.weatherplus.ui.fragment.WeatherPageFragment;
 import com.pengxh.app.weatherplus.utils.Constant;
 import com.pengxh.app.weatherplus.utils.LocationClient;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
@@ -45,6 +40,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -102,16 +101,19 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
         locationClient.obtainLocation(new LocationCallbackListener() {
             @Override
             public void onGetLocation(String location) {
+                Log.d(TAG, "onGetLocation: " + location);
                 SaveKeyValues.putValue("location", location);
                 pagerAdapter = new WeatherPageAdapter(getSupportFragmentManager());
                 //首次启动默认显示一个点，后面启动从数据库读取数据
                 List<CityWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityWeatherList();
                 if (weatherBeans == null || weatherBeans.size() == 0) {
-                    pagerAdapter.addPage(PageFragment.newInstance(location));
+                    Log.d(TAG, "onGetLocation: 初次加载数据");
+                    pagerAdapter.addPage(WeatherPageFragment.newInstance(location));
                 } else {
-                    for (int i = 0; i < weatherBeans.size(); i++) {
+                    pagerAdapter.addPage(0, WeatherPageFragment.newInstance(location));
+                    for (int i = 1; i < weatherBeans.size(); i++) {
                         String city = weatherBeans.get(i).getCity();
-                        pagerAdapter.addPage(PageFragment.newInstance(city));
+                        pagerAdapter.addPage(i, WeatherPageFragment.newInstance(city));
                     }
                 }
                 Message message = indicatorHandler.obtainMessage();
@@ -160,7 +162,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                             weatherCityList.removeAll(fragmentTitleList);
                             Log.d(TAG, "新增页面: " + weatherCityList);
                             for (String title : weatherCityList) {
-                                pagerAdapter.addPage(PageFragment.newInstance(title));
+                                pagerAdapter.addPage(WeatherPageFragment.newInstance(title));
                             }
                             break;
                         case "action_delCity":
