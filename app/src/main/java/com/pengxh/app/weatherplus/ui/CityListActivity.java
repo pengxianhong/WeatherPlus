@@ -11,7 +11,6 @@ import com.pengxh.app.multilib.base.BaseNormalActivity;
 import com.pengxh.app.multilib.utils.BroadcastManager;
 import com.pengxh.app.multilib.utils.DensityUtil;
 import com.pengxh.app.multilib.utils.SaveKeyValues;
-import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuItem;
 import com.pengxh.app.multilib.widget.swipemenu.SwipeMenuListView;
 import com.pengxh.app.weatherplus.R;
@@ -75,13 +74,12 @@ public class CityListActivity extends BaseNormalActivity implements View.OnClick
         mSwipeMenuListView.setOnMenuItemClickListener((position, menu, index) -> {
             if (index == 0) {//先删除数据库数据，再删除List，不然会出现角标越界
                 // 发送del广播
+                sqLiteUtil.deleteCityByName(weatherBeans.get(position).getCity());
+                weatherBeans.remove(position);
+                cityAdapter.notifyDataSetChanged();
+                broadcastManager.sendBroadcast("action_delCity", String.valueOf(position));
                 if (position == 0) {
-                    EasyToast.showToast("默认天气页无法删除", EasyToast.WARING);
-                } else {
-                    sqLiteUtil.deleteCityByName(weatherBeans.get(position).getCity());
-                    weatherBeans.remove(position);
-                    cityAdapter.notifyDataSetChanged();
-                    broadcastManager.sendBroadcast("action_delCity", String.valueOf(position));
+                    startActivity(new Intent(this, SelectCityActivity.class));
                 }
             }
             return true;

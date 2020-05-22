@@ -1,7 +1,6 @@
 package com.pengxh.app.weatherplus.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aihook.alertview.library.AlertView;
 import com.alibaba.fastjson.JSONObject;
@@ -31,10 +35,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -107,7 +107,6 @@ public class WeatherPageFragment extends BasePageFragment implements IWeatherVie
     private Unbinder unbinder;
     private Context context;
     private WeatherPresenterImpl weatherPresenter;
-    private ProgressDialog progressDialog;
     private SQLiteUtil sqLiteUtil;
     private boolean isRefresh = false;
     private String location;
@@ -169,19 +168,11 @@ public class WeatherPageFragment extends BasePageFragment implements IWeatherVie
 
     @Override
     public void showProgress() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("正在加载天气数据...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
-        }
+
     }
 
     @Override
     public void hideProgress() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
         if (isRefresh) {
             weatherRefreshLayout.finishRefresh();
         }

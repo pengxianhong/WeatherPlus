@@ -24,8 +24,10 @@ import com.pengxh.app.weatherplus.adapter.HotCityAdapter;
 import com.pengxh.app.weatherplus.bean.CityInfoBean;
 import com.pengxh.app.weatherplus.bean.HotCityBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
 import com.pengxh.app.weatherplus.mvp.presenter.WeatherPresenterImpl;
 import com.pengxh.app.weatherplus.mvp.view.IWeatherView;
+import com.pengxh.app.weatherplus.utils.LocationClient;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     private HotCityAdapter hotCityAdapter = null;
     private WeatherPresenterImpl weatherPresenter;
     private ProgressDialog progressDialog;
+    private LocationClient locationClient;
 
     @Override
     public int initLayoutView() {
@@ -74,6 +77,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
             mCurrentLocation.setText("定位失败");
         }
 
+        locationClient = new LocationClient(this);
         weatherPresenter = new WeatherPresenterImpl(this);
         sqLiteUtil = SQLiteUtil.getInstance();
         //加载所有城市名并转为数组
@@ -155,7 +159,7 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
         }
     };
 
-    @OnClick({R.id.mTitleBackView, R.id.mHotCityImageView})
+    @OnClick({R.id.mTitleBackView, R.id.mHotCityImageView, R.id.mCurrentLocation})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -171,6 +175,22 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
                         mHotCityImageView.setVisibility(View.INVISIBLE);
                     }
                 }).setCancelable(false).show();
+                break;
+            case R.id.mCurrentLocation:
+                locationClient.obtainLocation(new LocationCallbackListener() {
+                    @Override
+                    public void onGetLocation(String location) {
+                        if (!TextUtils.isEmpty(location)) {
+                            mCurrentLocation.setText(location);
+                            CityInfoBean.ResultBeanX.ResultBean cityBean = sqLiteUtil.queryCityInfo(location);
+                            if (cityBean != null) {
+                                getCityWeather(cityBean);
+                            }
+                        } else {
+                            mCurrentLocation.setText("定位失败，请重试");
+                        }
+                    }
+                });
                 break;
         }
     }
@@ -206,6 +226,11 @@ public class SelectCityActivity extends BaseNormalActivity implements IWeatherVi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        weatherPresenter.onUnsubscribe();
+        if (weatherPresenter != null) {
+            weatherPresenter.onUnsubscribe();
+        }
+        if (locationClient != null) {
+            locationClient.destroyLocationClient();
+        }
     }
 }

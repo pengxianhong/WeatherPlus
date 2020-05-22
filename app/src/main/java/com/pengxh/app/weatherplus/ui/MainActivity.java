@@ -18,6 +18,11 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.aihook.alertview.library.AlertView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gyf.immersionbar.ImmersionBar;
@@ -40,10 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -63,6 +64,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
     private LinearLayout indicatorLayout;
     private BroadcastManager broadcastManager;
     private LocationClient locationClient;
+    private SQLiteUtil sqLiteUtil;
 
     @Override
     public int initLayoutView() {
@@ -75,6 +77,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
         mMainViewPager = findViewById(R.id.mMainViewPager);
         indicatorLayout = findViewById(R.id.mLlIndicator);
 
+        sqLiteUtil = SQLiteUtil.getInstance();
         broadcastManager = BroadcastManager.getInstance(this);
         locationClient = new LocationClient(this);
 
@@ -110,11 +113,18 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                     Log.d(TAG, "onGetLocation: 初次加载数据");
                     pagerAdapter.addPage(WeatherPageFragment.newInstance(location));
                 } else {
-                    pagerAdapter.addPage(0, WeatherPageFragment.newInstance(location));
-                    for (int i = 1; i < weatherBeans.size(); i++) {
+//                    pagerAdapter.addPage(0, WeatherPageFragment.newInstance(location));
+//                    for (int i = 1; i < weatherBeans.size(); i++) {
+//                        String city = weatherBeans.get(i).getCity();
+//                        pagerAdapter.addPage(i, WeatherPageFragment.newInstance(city));
+//                    }
+                    List<Fragment> fragmentList = new ArrayList<>();
+                    for (int i = 0; i < weatherBeans.size(); i++) {
                         String city = weatherBeans.get(i).getCity();
-                        pagerAdapter.addPage(i, WeatherPageFragment.newInstance(city));
+                        Fragment fragment = WeatherPageFragment.newInstance(city);
+                        fragmentList.add(fragment);
                     }
+                    pagerAdapter.updatePage(fragmentList);
                 }
                 Message message = indicatorHandler.obtainMessage();
                 message.what = 1000;
@@ -147,7 +157,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                     switch (action) {
                         case "action_addCity":
                             List<Fragment> fragmentList = pagerAdapter.getFragmentList();
-                            List<CityWeatherBean> weatherBeans = SQLiteUtil.getInstance().loadCityWeatherList();
+                            List<CityWeatherBean> weatherBeans = sqLiteUtil.loadCityWeatherList();
 
                             List<String> fragmentTitleList = new ArrayList<>();
                             for (Fragment f : fragmentList) {
@@ -190,6 +200,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
             if (msg.what == 1000) {
                 int pageSize = (int) msg.obj;
                 pageChangeListener.setIndicator(pageSize);
+                mMainViewPager.setOffscreenPageLimit(pageSize);
             }
         }
     };
