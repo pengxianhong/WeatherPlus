@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import com.pengxh.app.multilib.widget.swipemenu.BaseSwipeListAdapter;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.bean.CityWeatherBean;
 import com.pengxh.app.weatherplus.bean.WeatherBean;
+import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import java.util.List;
 
@@ -51,9 +53,9 @@ public class CityListAdapter extends BaseSwipeListAdapter {
             convertView = inflater.inflate(R.layout.item_city_list, null);
             itemHolder = new CityListHolder();
             itemHolder.cityName = convertView.findViewById(R.id.cityName);
-            itemHolder.cityQuality = convertView.findViewById(R.id.cityQuality);
+            itemHolder.cityWeatherImg = convertView.findViewById(R.id.cityWeatherImg);
             itemHolder.cityNowTemp = convertView.findViewById(R.id.cityNowTemp);
-            itemHolder.cityNowWeather = convertView.findViewById(R.id.cityNowWeather);
+            itemHolder.cityQuality = convertView.findViewById(R.id.cityQuality);
             convertView.setTag(itemHolder);
         } else {
             itemHolder = (CityListHolder) convertView.getTag();
@@ -64,9 +66,9 @@ public class CityListAdapter extends BaseSwipeListAdapter {
 
     static class CityListHolder {
         private TextView cityName;
-        private TextView cityQuality;
+        private ImageView cityWeatherImg;
         private TextView cityNowTemp;
-        private TextView cityNowWeather;
+        private TextView cityQuality;
 
         @SuppressLint("SetTextI18n")
         void bindHolder(String weather) {
@@ -74,10 +76,10 @@ public class CityListAdapter extends BaseSwipeListAdapter {
             WeatherBean.ResultBeanX.ResultBean bean = gson.fromJson(weather, WeatherBean.class).getResult().getResult();
 
             cityName.setText(bean.getCity());
-            cityQuality.setText("空气质量：" + bean.getAqi().getQuality());
+            cityWeatherImg.setImageResource(OtherUtil.getImageResource(OtherUtil.getCurrentHour(), bean.getImg()));
+            cityNowTemp.setText(bean.getTemp() + "°");
+            cityQuality.setText("空气：" + bean.getAqi().getQuality());
             cityQuality.setTextColor(Color.parseColor(bean.getAqi().getAqiinfo().getColor()));
-            cityNowTemp.setText(bean.getTemp() + "℃");
-            cityNowWeather.setText(bean.getWeather());
         }
     }
 }
