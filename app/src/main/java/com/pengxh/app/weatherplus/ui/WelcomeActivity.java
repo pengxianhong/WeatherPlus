@@ -6,38 +6,48 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.app.multilib.base.BaseNormalActivity;
+import com.pengxh.app.multilib.utils.SaveKeyValues;
 import com.pengxh.app.multilib.widget.EasyToast;
 import com.pengxh.app.multilib.widget.dialog.PermissionDialog;
 import com.pengxh.app.weatherplus.R;
 import com.pengxh.app.weatherplus.service.CityService;
 import com.pengxh.app.weatherplus.test.TestActivity;
+import com.pengxh.app.weatherplus.utils.OtherUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by Administrator on 2019/6/23.
  */
 
-public class WelcomeActivity extends BaseNormalActivity implements EasyPermissions.PermissionCallbacks {
+public class WelcomeActivity extends BaseNormalActivity implements
+        EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     private static final String TAG = "WelcomeActivity";
     private static final int PERMISSIONS_CODE = 999;
     private static final String[] USER_PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private boolean isFirstLaunch = true;
+    private boolean isChecked = (boolean) SaveKeyValues.getValue("isChecked", true);
+
+    @BindView(R.id.checkBoxView)
+    CheckBox checkBoxView;
 
     @Override
     public int initLayoutView() {
@@ -47,6 +57,7 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
     @Override
     public void initData() {
         ImmersionBar.with(this).statusBarColor(R.color.white).fitsSystemWindows(true).init();
+        checkBoxView.setChecked(isChecked);
     }
 
     @Override
@@ -87,8 +98,30 @@ public class WelcomeActivity extends BaseNormalActivity implements EasyPermissio
         } else {
             intent = new Intent(this, TestActivity.class);
         }
-        startActivity(intent);
-        finish();
+        if (isChecked) {
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @OnClick({R.id.checkBoxView, R.id.serviceAgreementView, R.id.privacyPolicyView})
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.checkBoxView:
+                if (isChecked) {
+                    checkBoxView.setChecked(false);
+                    SaveKeyValues.putValue("isChecked", false);
+                } else {
+                    checkBoxView.setChecked(true);
+                    SaveKeyValues.putValue("isChecked", true);
+                }
+                break;
+            case R.id.serviceAgreementView:
+            case R.id.privacyPolicyView:
+                OtherUtil.showAlertDialog(this);
+                break;
+        }
     }
 
     @Override

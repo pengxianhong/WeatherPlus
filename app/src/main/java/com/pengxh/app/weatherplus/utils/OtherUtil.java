@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.pengxh.app.weatherplus.R;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +30,17 @@ public class OtherUtil {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    public static void showAlertDialog(Context context) {
+        new AlertDialog.Builder(context)
+                .setIcon(R.mipmap.logo_512x512)
+                .setTitle("服务协议和隐私政策")
+                .setMessage(context.getString(R.string.content))
+                .setCancelable(true)
+                .setPositiveButton("看完了", null)
+                .create()
+                .show();
     }
 
     @SuppressLint("SimpleDateFormat")

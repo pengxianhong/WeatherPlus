@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -38,6 +39,7 @@ import com.pengxh.app.weatherplus.listener.LocationCallbackListener;
 import com.pengxh.app.weatherplus.ui.fragment.WeatherPageFragment;
 import com.pengxh.app.weatherplus.utils.Constant;
 import com.pengxh.app.weatherplus.utils.LocationClient;
+import com.pengxh.app.weatherplus.utils.OtherUtil;
 import com.pengxh.app.weatherplus.utils.SQLiteUtil;
 import com.pengxh.app.weatherplus.widgets.EasyPopupWindow;
 
@@ -57,7 +59,7 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
     LinearLayout layoutView;
 
     private String[] periodArray = {"1小时", "2小时", "6小时", "12小时", "24小时", "不更新"};
-    private List<String> items = Arrays.asList("管理城市", "更新间隔");
+    private List<String> items = Arrays.asList("管理城市", "更新间隔", "隐私政策");
     private WeatherPageChangeListener pageChangeListener;
     private WeatherPageAdapter pagerAdapter;
     private ViewPager mMainViewPager;
@@ -113,11 +115,6 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                     Log.d(TAG, "onGetLocation: 初次加载数据");
                     pagerAdapter.addPage(WeatherPageFragment.newInstance(location));
                 } else {
-//                    pagerAdapter.addPage(0, WeatherPageFragment.newInstance(location));
-//                    for (int i = 1; i < weatherBeans.size(); i++) {
-//                        String city = weatherBeans.get(i).getCity();
-//                        pagerAdapter.addPage(i, WeatherPageFragment.newInstance(city));
-//                    }
                     List<Fragment> fragmentList = new ArrayList<>();
                     for (int i = 0; i < weatherBeans.size(); i++) {
                         String city = weatherBeans.get(i).getCity();
@@ -246,6 +243,8 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
 
                 dialog.setContentView(view);
                 dialog.show();
+            } else if (position == 2) {
+                OtherUtil.showAlertDialog(this);
             }
         });
         easyPopupWindow.setBackgroundDrawable(null);

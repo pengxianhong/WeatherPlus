@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">极简天气</string>
+    <string name="service_agreement"><u>服务协议</u></string>
+    <string name="privacy_policy"><u>隐私政策</u></string>
+    <string name="content">
+        1.本软件需要使用用户手动授予存储文件权限和获取用户位置信息权限。\n
+        2.『存储权限』用来保存首次进入软件时候从网络获取到全国3000多个城市表格，此后再无须使用此权限。\n
+        3.『位置信息权限』需要在使用期间开启，否则将无法获取到使用者当前位置，从而导致无法获取当前位置的天气信息，这不影响其他功能使用。\n
+        4.本软件不包含其他任何广告插件，不存在流量诱导等后台操作。\n
+        5.本软件不涉及用户登录以及其他收集用户隐私信息的操作，用户可以放心使用
+    </string>
 </resources>
