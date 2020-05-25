@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -116,10 +115,23 @@ public class MainActivity extends BaseNormalActivity implements View.OnClickList
                     pagerAdapter.addPage(WeatherPageFragment.newInstance(location));
                 } else {
                     List<Fragment> fragmentList = new ArrayList<>();
-                    for (int i = 0; i < weatherBeans.size(); i++) {
-                        String city = weatherBeans.get(i).getCity();
-                        Fragment fragment = WeatherPageFragment.newInstance(city);
-                        fragmentList.add(fragment);
+                    String s = weatherBeans.get(0).getCity();
+                    if (location.equals(s)) {
+                        Log.d(TAG, "onGetLocation: 当前位置和定位点相同");
+                        //每次启动都检查是否与数据库第一个城市相同
+                        for (int i = 0; i < weatherBeans.size(); i++) {
+                            String city = weatherBeans.get(i).getCity();
+                            Fragment fragment = WeatherPageFragment.newInstance(city);
+                            fragmentList.add(fragment);
+                        }
+                    } else {
+                        sqLiteUtil.deleteCityByName(s);
+                        fragmentList.add(0, WeatherPageFragment.newInstance(location));
+                        for (int i = 1; i < weatherBeans.size(); i++) {
+                            String city = weatherBeans.get(i).getCity();
+                            Fragment fragment = WeatherPageFragment.newInstance(city);
+                            fragmentList.add(i, fragment);
+                        }
                     }
                     pagerAdapter.updatePage(fragmentList);
                 }
